@@ -1,0 +1,59 @@
+# <FilesMatch ".*">
+# 	require all denied
+# </FilesMatch>
+
+# <Files "club_closed.php">
+#     require all granted
+# </Files>
+
+# <Files "club_edit_home.php">
+#     require all granted
+# </Files>
+
+# <Files "club_edit_main.php">
+#     require all granted
+# </Files>
+
+# <Files "club_match_result.php">
+#     require all granted
+# </Files>
+
+# <Files "club_member_admin.php">
+#     require all granted
+# </Files>
+
+# <Files "club_member_join.php">
+#     require all granted
+# </Files>
+
+# <Files "club_member_list.php">
+#     require all granted
+# </Files>
+
+# <Files "club_move_master.php">
+#     require all granted
+# </Files>
+
+# <Files "club_myinfo.php">
+#     require all granted
+# </Files>
+
+# <Files "club_notice.php">
+#     require all granted
+# </Files>
+
+# <Files "club_prejoin_agree.php">
+#     require all granted
+# </Files>
+
+# <Files "club_private_bbs_list.php">
+#     require all granted
+# </Files>
+
+# <Files "index.php">
+#     require all granted
+# </Files>
+
+# <FilesMatch "\.(html|htm|gif|png|jpe?g|js|css)$">
+# 	require all granted
+# </FilesMatch>

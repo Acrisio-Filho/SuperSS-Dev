@@ -1,0 +1,6 @@
+# Diretorio phpmailer
+<Directory "${DOCROOT}/PHPMailer/">
+    
+    require all denied
+
+ </Directory>

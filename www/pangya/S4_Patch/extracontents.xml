@@ -1,0 +1,10 @@
+<?xml version="1.0" standalone="yes" ?>
+
+<extracontents>
+
+	<themes>
+		<pangya_default src="pangya_default.xml" url="http://superss.ga:7273/S4_Patch/extracontents/default/"/>
+		<!-- pangya_default src="pangya_default.xml" url="http://superss.ga:8080/S4_Patch/extracontents/default/"/> -->
+	</themes>
+	
+</extracontents>

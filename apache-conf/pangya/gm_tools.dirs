@@ -1,0 +1,39 @@
+# Diretorio GM Tools
+<Directory "${DOCROOT}/gm_tools/">
+    
+    RewriteEngine On
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^$ https://${VHNAME}:${VHPORT}/pangya.php [L,R=301]
+
+    ErrorDocument 404 "Erro arquivo nao existe"
+    ErrorDocument 403 "https://${VHNAME}:${VHPORT}/pangya.php"
+
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+
+    <Files "golden_time.php">
+        require all granted
+    </Files>
+    
+    <Files "login_reward.php">
+        require all granted
+    </Files>
+
+    <Files "bot_gm_event.php">
+        require all granted
+    </Files>
+
+    <Files "stream_monitor.php">
+        require all granted
+    </Files>
+
+    <Files "block_word_register.php">
+        require all granted
+    </Files>
+
+    <FilesMatch "\.(png|gif|jpe?g|js|css|htm?l)$">
+        require all granted
+    </FilesMatch>
+
+ </Directory>

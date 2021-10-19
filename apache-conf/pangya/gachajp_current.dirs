@@ -1,0 +1,20 @@
+# Diretorio gachajp_current
+<Directory "${DOCROOT}/gachaJP/current/">
+
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+	
+	<Files "gacha_item.php">
+        require all granted
+    </Files>
+
+    <Files "gacha_tip.php">
+        require all granted
+    </Files>
+
+    <FilesMatch "\.(png|gif|jpe?g|js|css)$">
+        require all granted
+    </FilesMatch>
+
+ </Directory>

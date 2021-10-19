@@ -1,0 +1,21 @@
+# Diretorio selfdesign
+<Directory "${DOCROOT_HTTP}/SelfDesign/">
+
+    Options FollowSymLinks
+    
+    RewriteEngine On
+	RewriteCond %{HTTP_HOST} !-d
+	RewriteRule ^$ http://${VHNAME_HTTP}:${VHPORT_HTTP}/pangya.php [L,R=301]
+
+    ErrorDocument 404 "Erro arquivo nao existe"
+    ErrorDocument 403 "http://${VHNAME_HTTP}:${VHPORT_HTTP}/pangya.php"
+
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+
+    <Files "UploadFiles.php">
+        require all granted
+    </Files>
+
+ </Directory>

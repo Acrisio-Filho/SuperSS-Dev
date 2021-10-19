@@ -1,0 +1,22 @@
+# RewriteEngine On
+# 	RewriteCond %{HTTP_HOST} !-d
+# 	RewriteRule ^$ https://localhost:447/pangya.php [L,R=301]
+
+# ErrorDocument 404 "Erro arquivo nao existe"
+# ErrorDocument 403 "https://localhost:447/pangya.php"
+
+# <FilesMatch ".*">
+# 	require all denied
+# </FilesMatch>
+
+# <Files "BugReport.php">
+# 	require all granted
+# </Files>
+
+# <Files "CrashReport.php">
+# 	require all granted
+# </Files>
+
+# <Files "CrimeReport.php">
+# 	require all granted
+# </Files>

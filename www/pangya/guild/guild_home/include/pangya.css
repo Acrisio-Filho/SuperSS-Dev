@@ -1,0 +1,138 @@
+* {
+	FONT-SIZE: 12px; SCROLLBAR-HIGHLIGHT-COLOR: #e5e5e5; FONT-FAMILY: "MS UI Gothic","???? ??????????", "???? ????????", Osaka; SCROLLBAR-TRACK-COLOR: #e5e5e5; SCROLLBAR-FACE-COLOR: #e5e5e5; COLOR: #333333; SCROLLBAR-3DLIGHT-COLOR: #808080; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; SCROLLBAR-ARROW-COLOR: #ea8533; PADDING-LEFT: 0px; MARGIN: 0px; LINE-HEIGHT: 120%; PADDING-RIGHT: 0px; SCROLLBAR-SHADOW-COLOR: #dfdfdf; SCROLLBAR-DARKSHADOW-COLOR: #808080
+}
+a {
+	display: block;
+}
+img {
+	display: block;
+}
+.lightgreen_N {
+	FONT-SIZE: 11px; COLOR: #81a100
+}
+.lightorg_N {
+	FONT-SIZE: 11px; COLOR: #db7a23
+}
+.lightorg_N12 {
+	FONT-SIZE: 12px; COLOR: #db7a23
+}
+.black_N {
+	FONT-SIZE: 11px; COLOR: #000000
+}
+.black_N12 {
+	FONT-SIZE: 12px; COLOR: #000000
+}
+.board_lists {
+	FONT-SIZE: 11px; COLOR: #555555
+}
+.board_lists12 {
+	FONT-SIZE: 12px; COLOR: #555555
+}
+.form_footer {
+	FONT-SIZE: 11px; BORDER-TOP: gray 1px solid; BORDER-RIGHT: gray 1px solid; BORDER-BOTTOM: gray 1px solid; COLOR: gray; TEXT-ALIGN: center; BORDER-LEFT: gray 1px solid; BACKGROUND-COLOR: rgb(240,240,240)
+}
+.top_30px {
+	PADDING-TOP: 30px
+}
+.top_3px {
+	PADDING-TOP: 3px
+}
+.margin {
+	PADDING-BOTTOM: 50px; PADDING-TOP: 20px
+}
+.board_blue {
+	FONT-WEIGHT: bold; COLOR: #00a6d0; LINE-HEIGHT: 20px
+}
+.blue_normal {
+	COLOR: #00a6d0; LINE-HEIGHT: 20px
+}
+.text_normal {
+	COLOR: #644636; LINE-HEIGHT: 22px
+}
+.textbox {
+	BORDER-TOP: rgb(221,221,221) 1px solid; BORDER-RIGHT: rgb(221,221,221) 1px solid; BORDER-BOTTOM: rgb(221,221,221) 1px solid; COLOR: rgb(111,111,111); BORDER-LEFT: rgb(221,221,221) 1px solid; LINE-HEIGHT: 20px; BACKGROUND-COLOR: rgb(255,255,255)
+}
+.main_text {
+	COLOR: #555555; LINE-HEIGHT: 22px
+}
+.table_listgn {
+	COLOR: #627400; LINE-HEIGHT: 20px
+}
+.table_listgn A:link {
+	TEXT-DECORATION: none; COLOR: #627400
+}
+.table_listgn A:visited {
+	TEXT-DECORATION: none; COLOR: #627400
+}
+.table_listgn A:active {
+	TEXT-DECORATION: none; COLOR: #ff6b09
+}
+.table_listgn A:hover {
+	TEXT-DECORATION: none; COLOR: #ff6b09
+}
+.board_listgs {
+	COLOR: #627400; LINE-HEIGHT: 20px
+}
+.green_normal {
+	COLOR: #627400; LINE-HEIGHT: 20px
+}
+.board_listgsB {
+	FONT-SIZE: 11px; FONT-WEIGHT: bold; COLOR: #627400; LINE-HEIGHT: 20px
+}
+.board_greenB {
+	FONT-SIZE: 12px; FONT-WEIGHT: bold; COLOR: #627400; LINE-HEIGHT: 20px
+}
+.board_orangeB {
+	FONT-SIZE: 12px; FONT-WEIGHT: bold; COLOR: #f49126; LINE-HEIGHT: 20px
+}
+.board_orangeN {
+	FONT-SIZE: 11px; FONT-WEIGHT: bold; COLOR: #f49126; LINE-HEIGHT: 20px
+}
+.board_listgr {
+	FONT-SIZE: 12px; COLOR: #555555; LINE-HEIGHT: 20px
+}
+.board_listgr A:link {
+	TEXT-DECORATION: none; COLOR: #555555
+}
+.board_listgr A:visited {
+	TEXT-DECORATION: none; COLOR: #555555
+}
+.board_listgr A:active {
+	TEXT-DECORATION: none; COLOR: #808080
+}
+.board_listgr A:hover {
+	TEXT-DECORATION: none; COLOR: #808080
+}
+.board_linklist {
+	FONT-SIZE: 11px; COLOR: #555555; LINE-HEIGHT: 20px
+}
+.board_linklist A:link {
+	TEXT-DECORATION: none; COLOR: #555555
+}
+.board_linklist A:visited {
+	TEXT-DECORATION: none; COLOR: #555555
+}
+.board_linklist A:active {
+	TEXT-DECORATION: none; COLOR: #808080
+}
+.board_linklist A:hover {
+	TEXT-DECORATION: none; COLOR: #808080
+}
+A:link {
+	TEXT-DECORATION: none; COLOR: #555555
+}
+A:visited {
+	TEXT-DECORATION: none; COLOR: #555555
+}
+A:active {
+	TEXT-DECORATION: none; COLOR: #808080
+}
+A:hover {
+	TEXT-DECORATION: none; COLOR: #808080
+}
+.board_listgrB {
+	FONT-SIZE: 12px; FONT-WEIGHT: bold; COLOR: #555555; LINE-HEIGHT: 20px
+}
+.form_scroll {
+    BORDER-TOP: rgb(221,221,221) 1px solid; BORDER-RIGHT: rgb(221,221,221) 1px solid; BORDER-BOTTOM: rgb(221,221,221) 1px solid;COLOR: rgb(153,153,153); PADDING-BOTTOM: 5px; PADDING-TOP: 5px; PADDING-LEFT: 5px; BORDER-LEFT: rgb(221,221,221) 1px solid; PADDING-RIGHT: 5px; BACKGROUND-COLOR: rgb(246,246,250)
+}

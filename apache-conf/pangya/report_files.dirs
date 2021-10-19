@@ -1,0 +1,6 @@
+# Diretorio report_files
+<Directory "${DOCROOT}/report_files/">
+    
+    require all denied
+
+ </Directory>

@@ -1,0 +1,277 @@
+<?xml version="1.0" standalone="yes" ?>
+
+<!-- definitions
+##################################
+   element    : <file>, <normal>, <over>, <selected>, <blink>
+   attribute  : 
+               name    : [must]   filename                                      ex) name="pangya.jpg"
+               url     : [option] default "./" (current folder)                 ex) url="http://10.10.10.10:8888/extracontents/"
+               version : [option] if specify, filename must be "name.version"   ex) name="pangya.jpg" version="1" 
+                                                                                    The name of a file in a folder : "pangya.jpg.1"	
+##################################
+    element   : <weblink>
+    attribute :
+               url    : target url  ex) url="http://pangya.gametree.co.kr"	
+    child     : <normal>, <over>, <selected>, <bllink>
+##################################
+	element   : <image>
+	child     : <file>, <normal>, <over>, <selected>, <bllink>
+##################################
+	element   : <event>
+	attribute :
+               name   : event name that supplied from ntreev   ex) cardpack3rd, pointshop
+        child     : <normal>, <over>, <selected>, <bllink>
+##################################
+	element   : <wallpaper>
+	attribute :
+	           prob    : relative probability (positive integer) ex) prob="10"
+        child     : <file>
+##################################
+    element   : <topicons>
+    child     : <weblink>, <image>, <event>
+//////////////////////////
+    element   : <lobby>
+    child     : <wallpaper>
+##################################
+    element   : <loading>
+    child     : <wallpaper>
+##################################
+    element   : <replacement>
+    child     : <file>
+##################################
+-->
+
+<extracontents>
+	
+	<topicons>
+	<!--  icon image files
+              <normal>   : [must]
+              <over>     : [optional] default <normal>
+              <selected> : [optional] default <normal>
+              <blink>    : [optional] default <normal>
+	-->	
+		<!--
+		<event name="event_2014_arin">
+			<normal name="icon_2014_arin_n.tga"/>
+			<over name="icon_2014_arin_o.tga"/>
+			<blink name="icon_2014_arin_p.tga"/>
+		</event>
+		
+		
+		<image>
+			<file name="toon6_ingame_550_1.jpg"/>
+			<file name="toon6_ingame_550_2.jpg"/>
+			<file name="toon6_ingame_550_3.jpg"/>
+			<file name="toon6_ingame_550_4.jpg"/>
+			<normal name="webtoon_main_btn_n.tga"/>
+			<over name="webtoon_main_btn_o.tga"/>
+			<blink name="webtoon_main_btn_o.tga"/>
+			<caption name="cap_01"/>
+		</image>
+		
+		
+		<event name="event_2014_halloween">
+			<normal name="event_2014_halloween_icon_n.tga"/>
+			<over name="event_2014_halloween_icon_o.tga"/>
+			<blink name="event_2014_halloween_icon_p.tga"/>
+		</event>
+		
+		
+		
+		<image>
+			<file name="2014christmas_about.png"/>
+			<normal name="2014xmas_icon_n.png"/>
+			<over name="2014xmas_icon_o.png"/>
+			<blink name="2014xmas_icon_o.png"/>
+			<caption name="cap_01"/>
+		</image>
+		
+		-->
+		<event name="one_day_quest">
+			<normal name="2012_quest_arin_main_btn_n.tga"/>
+			<over name="2012_quest_arin_main_btn_o.tga"/>
+			<blink name="2012_quest_arin_main_btn_o.tga"/>
+		</event>
+<!--	
+		<weblink url="http://pangya.gamerage.com/ingame/Events/20120905_ftbp/gameport.aspx">
+			<normal name="first_n.tga"/>
+			<over name="first_o.tga"/>
+			<blink name="first_o.tga"/>
+		</weblink>
+-->		
+<!--
+		<event name="cardpack3rd">
+			<normal name="cardpack04_btn_n.tga"/>
+			<over name="cardpack04_btn_o.tga"/>
+			<blink name="cardpack04_btn_o.tga"/>
+		</event>
+-->
+<!--
+		<event name="event_2013_christmas">
+			<normal name="event_club_main_btn_n.tga"/>
+			<over name="event_club_main_btn_o.tga"/>
+			<blink name="event_club_main_btn_o.tga"/>
+		</event>
+-->
+<!--		
+		<event name="event_2013_workshop">
+			<normal name="event_club_main_btn_n.tga"/>
+			<over name="event_club_main_btn_o.tga"/>
+			<blink name="event_club_main_btn_o.tga"/>
+		</event>
+-->
+<!-- 
+		<weblink url="http://pangya.gamerage.com/ingame/Events/20130507_KeepGreen/gameport.aspx">
+			<normal name="btn_n.tga"/>
+			<over name="btn_o.tga"/>			
+		</weblink>
+-->	
+<!-- off the record
+		<image>
+			<file name="event_notice_toon3_01.jpg"/>
+			<file name="event_notice_toon3_02.jpg"/>
+			<file name="event_notice_toon3_03.jpg"/>
+			<normal name="webtoon_main_btn_n.tga"/>
+			<over name="webtoon_main_btn_o.tga"/>
+			<blink name="webtoon_main_btn_o.tga"/>
+			<caption name="cap_01"/>
+		</image>	
+-->
+<!-- sample code	-->
+		<!-- <weblink url="http://pangya.gamerage.com/ingame/Events/20121205FastPass/gameport.aspx"> -->
+
+		<weblink url="http://127.0.0.1:8080/event/event_13122016.php?ID=%s&KID=%s">
+			<normal name="icon_gz_n.tga"/>
+			<over name="icon_gz_o.tga"/>
+			<blink name="icon_gz_o.tga"/>
+		</weblink>
+		
+<!--
+		<image>
+			<file name="notice_popup01.jpg"/>
+			<normal name="wte_mainicon_n.tga"/>
+			<over name="wte_mainicon_o.tga"/>
+			<blink name="wte_mainicon_o.tga"/>
+		</image>			
+		<event name="cardpack3rd">
+			<normal name="cardpack03_btn_n.tga"/>
+			<over name="cardpack03_btn_o.tga"/>
+			<blink name="cardpack03_btn_o.tga"/>
+		</event>
+-->
+	</topicons>	
+
+	<!-- in game noticies -->
+	<notice>
+		<file name="2016121601.jpg"/>
+		<file name="2016121600.jpg" />
+		<file name="2016121500.jpg" />
+	</notice>	
+
+	<!-- lobby background images -->
+	<lobby>
+		<wallpaper prob="1">
+			<file name="main_bg.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="main_bg_2.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="main_bg_3.jpg"/>
+		</wallpaper>		
+		<wallpaper prob="10">
+			<file name="main_bg_4.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="main_bg_5.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="main_bg_7.jpg"/>
+		</wallpaper>
+		<wallpaper prob="30">
+			<file name="main_bg_8.jpg"/>
+		</wallpaper>		
+	</lobby>
+
+	<!-- game loading images -->
+	<loading>
+		<wallpaper prob="1">
+			<file name="loading_background.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_01.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_02.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_03.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_04.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_05.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_06.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_07.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_08.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_09.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_10.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_11.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_12.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_13.jpg"/>
+		</wallpaper>
+		<wallpaper prob="1">
+			<file name="background_14.jpg"/>
+		</wallpaper>
+	</loading>
+
+	<!-- replace existing files -->	
+	<replacement>
+	
+<!--    PPL files
+		<file name="green_ppl01.jpg"/>
+		<file name="green_ppl02.jpg"/>
+		<file name="green_ppl03.jpg"/>
+		<file name="icee_ppl01.jpg"/>
+		<file name="icee_ppl02.jpg"/>
+		<file name="icee_ppl03.jpg"/>
+		<file name="pink_ppl01.jpg"/>
+		<file name="pink_ppl02.jpg"/>
+		<file name="pink_ppl03.jpg"/>
+		<file name="pola_ppl01.jpg"/>
+		<file name="pola_ppl02.jpg"/>
+		<file name="pola_ppl03.jpg"/>
+		<file name="sand_ppl01.jpg"/>
+		<file name="sand_ppl02.jpg"/>
+		<file name="sand_ppl03.jpg"/>
+		<file name="silv_ppl.jpg"/>
+		<file name="silv_ppl02.jpg"/>
+		<file name="silv_ppl03.jpg"/>
+		<file name="west_ppl01.jpg"/>
+		<file name="west_ppl02.jpg"/>
+		<file name="west_ppl03.jpg"/>
+		<file name="wizct_ppl01.jpg"/>
+		<file name="wizct_ppl02.jpg"/>
+		<file name="wizct_ppl03.jpg"/>		
+-->	
+
+	</replacement>
+		
+</extracontents>

@@ -1,0 +1,32 @@
+# RewriteEngine On
+# 	RewriteCond %{REQUEST_FILENAME} !-d
+# 	RewriteRule ^$ https://localhost:447/pangya.php [L,R=301]
+# 	ReWriteRule ^(.*)\.aspx$ $1.php [L]
+
+# ErrorDocument 404 "Erro arquivo nao existe"
+# ErrorDocument 403 "https://localhost:447/pangya.php"
+
+# <FilesMatch ".*">
+# 	require all denied
+# </FilesMatch>
+
+# <Files "Guild.php">
+# 	require all granted
+# </Files>
+
+# <Files "login.php">
+# 	require all granted
+# </Files>
+
+# <Files "rss.php">
+# 	require all granted
+# </Files>
+
+# # aqui tem que tirar depois que vou mudar o endereço no projectg para .php em vez de .aspx
+# <Files "rss.aspx">
+# 	require all granted
+# </Files>
+
+# <FilesMatch "\.(html|htm|gif|png|jpe?g|js|css)$">
+# 	require all granted
+# </FilesMatch>

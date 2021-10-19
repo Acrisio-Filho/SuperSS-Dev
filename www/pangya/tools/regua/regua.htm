@@ -1,0 +1,107 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Régua para todas as resoluções - Acrisio SuperSS Dev</title>
+        <script>
+            function popUp() {
+
+                var width = document.getElementById("reWidth").value
+                var height = document.getElementById("reHeight").value;
+
+                var w = window.open('popup.htm?w=' + width + '&h=' + height, 'Régua - Acrisio SuperSS Dev', 'width=' + (parseInt(width) < 700 ? 750 : parseInt(width)+50) + ',height=250,scrollbars=no,resizable=no');
+            }
+        </script>
+    </head>
+    <body>
+        <table border="0" padding="0" width="100%">
+            <tr>
+                <td align="center">
+                    <table>
+                        <tr>
+                            <td colspan="4">
+                                Resolução do PangYa
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <input id="reWidth" type="text" value="1366">
+                            </td>
+                            <td align="left" width="12">
+                                x
+                            </td>
+                            <td align="left" width="150">
+                                <input id="reHeight" type="text" value="768">
+                            </td>
+                            <td align="left">
+                                <button id="btnPopup" onclick="popUp()">Abrir Régua</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div style="margin-top: 50px; width: 750px">
+                                    <h3>Como usar</h3>
+                                    Régua de navegador para todas as resoluções, só colocar a resolução do PangYa e clicar em abrir régua, depois de aberta faça o alinhamento com pangya, 
+                                    para usar só colocar o desvio(resultado da tacada) e colocar o mouse no traço azul que vai aparece e dá alt+tab e arraste até a bandeira do hole ficar em cima do mouse
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div style="margin-top: 50px; width: 750px">
+                                    <h3>Salvar a posição da régua no seu computado</h3>
+                                    Salvar: Clique no botão "Save Position" para salvar a posição atual da janela da régua.<br>
+                                    Deletar: Clique no botão "Delete Position" para deletar a posição atual selecionado no combobox(caixa de seleção).<br>
+                                    Para selecionar uma posição salva é só clicar no combobox(caixa de seleção) e escolher uma opção das opções que tem na lista que vai aparecer.<br>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div style="margin-top: 50px;">
+                                    <h3>Alinhamento da régua com o PangYa</h3>
+                                    Alinhamento da régua
+                                </div>
+                                <img src="img/align_ruler.png" width="800">
+                                <div style="margin-top: 10px;">Alinhamento da régua com zoom nos cantos e no meio</div>
+                                <img src="img/align_ruler_zoom.png" width="800">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div style="margin-top: 50px; width: 750px">
+                                    <h3>PBA+(Plus</h3>
+                                    PBA+(Plus) é o um jeito de dá um certo zoom no pangya mais ou menos automático.<br>
+                                    Primeiro você aperta del+0(zero) para dá o zoom do PBA, depois disso você arrasta até o hole ou sua referência, 
+                                    depois aperta a tecla "end" até diminuir o zoom consideravalmente, 
+                                    depois você aperta as teclas "home" e "end" juntas e mantém precionadas que o pangya vai começar a dá zoom sozinho, 
+                                    quando ele não aumentar mais o zoom aperte a tecla "esc" depois que aperta a tecla "esc" pode para de precionar as teclas "home" e "end".
+                                    Pronto você fez o PBA+(Plus), o valor é de 1.032y(para quem quiser saber).<br>
+                                    <br>
+                                    Créditos à o H2oH(pen) por ter ensinado esse truque.
+                                    <br>
+                                    <br>
+                                    Vídeo demonstrando o PBA+(Plus):
+                                </div>
+                                <iframe width="560" height="315" src="https://www.youtube.com/embed/AvFlLs2ECGc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div style="margin-top: 50px; width: 750px;">
+                                    <h3>Desvio por Referência</h3>
+                                    Desvio por referência você pode utilizar quando o resultado(desvio) da sua tacada for maior do que a sua tela(resolução) em todos os resultados como PBA/+(Plus),
+                                    então você procura um referência antes do hole até o valor encaixar na sua tela, pega o valor da distância em yards(jardas) 
+                                    e colocar no input de referência e a distância do hole no input do hole e marque o checkbox("Result by reference") que a régua vai dá o valor para você arrastar para aquela referência.
+                                    <br>
+                                    <br>
+                                    Vídeo demonstrando o desvio por Referência:
+                                </div>
+                                <iframe width="560" height="315" src="https://www.youtube.com/embed/efsT8zZjdGo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

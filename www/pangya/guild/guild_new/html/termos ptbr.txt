@@ -1,0 +1,273 @@
+Artigo 1 Objetivo
+  Estes Termos e Condições se aplicam aos direitos, obrigações e responsabilidades entre a Empresa e o usuário quando o usuário utiliza o clube de "PangYa SuperSS" (doravante denominado "Jogo") fornecido pelo Acrisio SuperSS Dev (doravante "Onganização sem fins lucrativos"). O objetivo é especificar assuntos.
+Ao "concordar" com esses termos e concluir o processo de registro, significa que o usuário concordou com todos os termos desses termos.
+ 
+    Artigo 2.º Definição de termos
+ 1 "Usuário" significa uma pessoa que se inscreveu no Serviço Panya.
+
+  
+2) “Membro do Clube” significa um usuário que concorda com os Termos como Usuário do Serviço Panya e usa o Serviço Panya Club (o “Serviço”).
+
+  
+3) "Clube" significa um clube exclusivo criado pelo Usuário no Serviço.
+
+  
+4) “Club Master” significa o usuário que abriu um clube com este serviço.
+
+  
+5) “Submaster” significa um sócio do clube selecionado pelo mestre do clube para este serviço e que opera o clube com o mestre do clube.
+ 
+    Artigo 3. Estabelecimento e dissolução de clubes
+ 1 Os usuários podem criar um clube Panya e atuar como um mestre do clube.
+No entanto, um usuário que não tem permissão para escrever no quadro de avisos e que é menor que o Iniciante E não pode abrir um clube.
+Além disso, se for determinado que o objetivo de estabelecer um clube se enquadra em qualquer um dos itens a seguir, a Companhia poderá encerrar ou excluir o clube estabelecido sem aviso prévio.
+
+
+・ Com o objetivo de publicar conteúdo que viole os direitos de outros usuários, terceiros ou da empresa
+
+ 
+・ Conteúdo que prejudica a honra e a confiança da Empresa, outros usuários ou terceiros e a finalidade de publicar conteúdo que pode causar danos
+
+ 
+・ Para fins de deturpação ou atos fraudulentos de nossa empresa, outros usuários ou terceiros
+
+ 
+・ Com o objetivo de publicar reclamações, expressões e materiais obscenos e seu conteúdo
+
+ 
+・ Com o objetivo de publicar conteúdo que viole a ordem e a moral do público
+
+ 
+・ Para uso comercial, com ou sem fins lucrativos, compra e venda, independentemente da corporação / indivíduo, publicação de anúncios e materiais promocionais não aprovados pela nossa empresa
+
+ 
+・ Com o objetivo de publicar conteúdo que viole ou possa violar várias leis e regulamentos
+
+ 
+・ Outros propósitos para postar conteúdo considerado inapropriado pela Empresa
+
+ 
+  
+2) Os mestres de clube podem dissolver um clube estabelecido, solicitando “Limpar clube” no menu Administrador do clube.
+No entanto, se a autoridade do diretor do clube for delegada a outra pessoa ou se a pessoa que o estabeleceu se retirar deste serviço, toda a autoridade como mestre do clube pertencerá à pessoa delegada ou à nossa empresa.
+
+  
+3) No caso de a senha de administração do clube ter vazado devido ao gerenciamento inadequado do mestre do clube etc., e o clube ser usado ou fechado etc., o mestre do clube assume a responsabilidade pela administração e nossa empresa não assume nenhuma responsabilidade. Não será suportado.
+
+  
+4) Se o mestre do clube solicitar o “encerramento do clube”, o clube receberá um período de encerramento de 7 dias a partir da data da solicitação, e o pedido de encerramento do clube poderá ser cancelado dentro do período de retenção.
+Se você cancelar sua inscrição dentro do período de espera, poderá usar o clube como antes. Observe que o clube só está disponível para visualização durante o período de suspensão do pedido de fechamento e o quadro de avisos não pode ser escrito.
+
+  
+5) Após a inscrição para “Encerramento de clube”, o clube será automaticamente dissolvido e fechado após o período de 7 dias.
+
+  
+6) Clubes que foram dissolvidos pelo mestre do clube não podem ser restaurados após o período de espera prescrito.
+ 
+    Artigo 4 Funções e autoridades dos dirigentes, submestres e sócios de clube
+ 1 As informações inseridas ao ingressar no clube são gerenciadas e operadas sob a responsabilidade e autoridade do dirigente do clube ou de um sócio ao qual tenha sido delegada autoridade dominante do clube separadamente das informações de registro de sócio deste serviço. E
+
+  
+2) A autoridade para visualizar, escrever, modificar e excluir sócios do clube é dada ao mestre do clube apropriado. No entanto, o comandante do clube é responsável pela autoridade concedida.
+
+  
+3) Os mestres e submasters do clube não têm permissão para divulgar informações pessoais sem a permissão do usuário. Além disso, o diretor do clube se responsabiliza por todos os danos causados ​​pelas informações pessoais do usuário sem permissão, e a Empresa não assume nenhuma responsabilidade.
+
+  
+4) Os membros do clube (incluindo mestres e submasters) não devem executar nenhuma das seguintes ações:
+Se for determinado que qualquer um desses atos é aplicável, a Empresa poderá revogar as restrições de uso do clube e a qualificação do usuário e as informações da conta do usuário.
+
+
+・ Atos que violam qualquer disposição deste Contrato
+
+ 
+・ Ações que interferem na operação deste serviço
+
+ 
+・ Qualquer tentativa de alterar, alterar ou excluir dados ilegalmente neste serviço
+
+ 
+・ Acesso não autorizado a nossos servidores que não é permitido
+
+ 
+・ Atos que usam este serviço para outros fins que não o de usar este serviço
+
+ 
+・ Atua de forma contrária à ordem e moral públicas
+
+ 
+・ Atos que violam ou podem violar várias leis e regulamentos
+
+ 
+・ Atos que prejudicam a honra e a confiança da Empresa, outros usuários ou terceiros e atos que personificam terceiros
+
+ 
+・ Declaração falsa de inscrição
+
+ 
+・ Uso não autorizado de contas e senhas, divulgação a terceiros, transferência ou empréstimo
+
+ 
+-Observações, uso e distribuição de ferramentas externas que afetam clientes e comunicações
+
+ 
+・ Outros atos que a Companhia julgar inapropriados, como violação de maneiras
+  
+ 
+    Artigo 5 Gerenciamento de sócios do clube
+ 1 Os usuários podem se inscrever no Panya Club e usar este serviço.
+
+  
+2) O processamento dos candidatos deve ser determinado pelo mestre do clube, de acordo com o método e condições de afiliação aplicáveis ​​do clube em questão.
+ 
+    Artigo 6 Gerenciamento / exclusão de conteúdo publicado no quadro de avisos e na página do clube
+ 1 O mestre do clube assume toda a responsabilidade pelo gerenciamento e operação do conteúdo publicado no quadro de avisos e na página do clube.
+
+  
+2) O criador tem autoridade para publicar o conteúdo publicado no quadro de avisos e nas páginas do clube.
+
+  
+3) Os membros do clube não têm permissão para publicar o conteúdo listado nos seguintes itens, sob nenhuma circunstância.
+Além disso, o próprio criador é responsável por danos causados ​​pela publicação do conteúdo correspondente aos itens a seguir.
+
+
+・ Outros usuários, terceiros, violação de nossos direitos
+
+ 
+・ Serviços de quadro de avisos do clube e outros usuários, terceiros, calúnia contra nossa empresa, calúnia
+
+ 
+・ Atos que prejudicam outros usuários, terceiros ou a empresa
+
+ 
+・ Falar ou deturpar nossos funcionários ou o nome da empresa ou deliberadamente deturpar o nome de outra pessoa e difamar a pessoa
+
+ 
+・ Campanhas eleitorais, atividades religiosas ou atos semelhantes
+
+ 
+・ Atua de forma contrária à ordem pública e à moral, como reclamações, expressões obscenas etc.
+
+ 
+・ Com fins lucrativos / sem fins lucrativos, corporações / indivíduos, etc.
+
+ 
+・ Introdução de sites, incluindo o acima
+
+ 
+・ Comentários com uso de bate-papo, personalização e frases notavelmente longas
+
+ 
+- Comentários sobre clientes e ferramentas que afetam a comunicação
+
+ 
+・ Outro conteúdo considerado inadequado pela Empresa
+
+ 
+  
+4) Os mestres e submasters do clube são obrigados a gerenciar o conteúdo publicado no quadro de avisos e na página do clube.Se o conteúdo correspondente ao acima for descoberto ou relatado, o conteúdo relevante deve ser indicado. Precisamos dar atenção aos usuários postados.
+Os Clubmasters devem excluir imediatamente o conteúdo apropriado.
+Além disso, o mestre do clube pode ser retirado à força de um usuário que cometeu uma violação sem o consentimento do usuário.
+
+  
+5) Se confirmarmos que o acima exposto, emitiremos uma recomendação de exclusão por e-mail ao mestre do clube apropriado.
+Se o conteúdo não for excluído, mesmo após o envio do e-mail e a intenção de fazê-lo não ser reconhecida, a Empresa poderá avisar o clube relevante e o conteúdo relevante poderá ser excluído diretamente.
+
+  
+ 
+    Artigo 7 Aviso e fechamento forçado
+ 1 Se uma atividade do clube se enquadrar no artigo 6 (3), podemos avisar o mestre do clube por e-mail.
+Se um mestre de clube receber um aviso, ele deve corrigi-lo imediatamente.
+
+  
+2) Determinamos que um nome de clube semelhante já existe no jogo e o nome é válido ou que estamos usando um nome semelhante com o objetivo de usar ou roubar mal um clube existente. Se isso acontecer, podemos tomar medidas de aviso.
+
+  
+3) O clube pode ser fechado à força depois de notificar o mestre do clube por e-mail se for determinado que os seguintes itens são aplicáveis.
+
+
+・ Quando operado apenas para os fins especificados no Artigo 3, Parágrafo 1
+
+ 
+・ Quando a comunicação entre o mestre do clube e nossa empresa não for possível há mais de 3 meses
+
+ 
+・ Se você se enquadra no Artigo 6 Cláusula 3 e recebeu um aviso, mas não está disposto a responder de acordo com o Artigo 6 Cláusula 4
+
+ 
+・ Outros casos em que a empresa julga inapropriados
+  
+ 
+    Artigo 8 Medidas de suspensão de clubes
+ 1 Se o usuário deste serviço ou um terceiro fizer uma declaração de violação à Empresa com base na violação legal do conteúdo publicado no Serviço, a Empresa fará sua própria conclusão por seu próprio julgamento. Até lá, você pode limitar temporariamente o acesso a conteúdo relacionado ou clubes relacionados.
+
+  
+2) Não estaremos envolvidos em disputas dentro ou entre clubes.
+No entanto, até que a conclusão seja alcançada, a Companhia poderá, a seu exclusivo critério, limitar temporariamente o acesso ao clube associado.
+
+  
+3) Se houver um motivo que conflite com várias leis ou regulamentos relativos ao conteúdo publicado neste serviço, a agência governamental tomará medidas para preservar as evidências e, se necessário, suspender temporariamente a operação do clube relevante Deve ser capaz.
+
+  
+4) No caso do parágrafo anterior, a Companhia notificará o Mestre do Clube das medidas que suspenderam a operação por e-mail.
+
+  
+5) Além disso, quando reconhecemos que há uma necessidade urgente de suspensão, podemos limitar temporariamente o conteúdo relacionado ou o acesso ao clube relevante.
+ 
+    Artigo 9 Armazenamento de conteúdos relacionados a este serviço
+  Qualquer conteúdo que esteja em conflito com qualquer uma das disposições do Artigo 3, Parágrafos 1 e 6, Parágrafo 6, Parágrafo 5 e Artigo 7 não será restaurado.
+ 
+    Artigo 10 Retirada do usuário e perda de qualificação
+ 1 Os usuários podem sair voluntariamente do clube.
+
+  
+2) O mestre do clube terá autoridade para suspender e bloquear o acesso aos sócios do clube e assumirá todas as responsabilidades.
+
+  
+3) Se um sócio do clube cometer um ato que viole estes termos, toda a responsabilidade administrativa será temporariamente assumida pelo mestre do clube.
+Enquanto isso, se nenhuma outra medida ou correção for feita, apesar de nossa solicitação e aviso de correção, suspenderemos o uso deste serviço pelo mestre do clube e pelo usuário correspondente e cancelaremos a qualificação do usuário e as informações da conta. Deve ser possível.
+
+4) Se um mestre de clube for desqualificado, a autoridade do mestre de clube será automaticamente transferida para o submaster.
+Se não houver um submaster aplicável, ou se o submaster for menor que o Iniciante E, um novo master deve ser selecionado dentre os associados dentro de um mês e contatado por nós.
+ 
+    Artigo 11 Isenção de responsabilidade
+ 1 O conteúdo deste serviço pode ser fornecido pela Empresa naquele momento.
+Não assumimos nenhuma responsabilidade pela integridade, precisão, aplicabilidade, utilidade, etc. das informações fornecidas e do conteúdo registrado e divulgado pelos usuários.
+
+  
+2) As informações do servidor armazenadas no servidor do jogo como parte deste serviço e todas as outras informações de gerenciamento podem ser alteradas ou excluídas acidentalmente ou por nossa intenção, com ou sem aviso prévio. Sim, não seremos obrigados a restaurar informações de gerenciamento sob nenhuma circunstância.
+
+  
+3) A Empresa não se responsabiliza por quaisquer danos incorridos pelos usuários em relação a este serviço.
+No entanto, isso não se aplica a casos causados ​​por negligência intencional ou grave da empresa operadora.
+
+  
+4) A Empresa não se responsabiliza por qualquer garantia por danos causados ​​pelas ações do usuário por outros usuários ou terceiros.
+
+  
+5) A Empresa não deve se envolver em nenhuma disputa que surja entre o usuário e outros usuários ou terceiros, e o usuário deve resolver a disputa por sua própria conta e responsabilidade.
+ 
+    Artigo 12.º Aditamento e alteração do presente acordo
+ 1 A Empresa poderá adicionar ou alterar estes Termos sem aviso prévio.
+
+  
+2) Ao adicionar ou alterar estes Termos, a Empresa notificará o usuário do conteúdo no site oficial e na página de Serviço.
+
+  
+3) Concordar com os Termos inclui que o usuário visite periodicamente a página Serviço e revise quaisquer adições ou alterações aos Termos.
+A Empresa não se responsabiliza por danos causados ​​pelo usuário que não confirme adições ou alterações.
+Além disso, considera-se que o usuário aceitou a adição ou alteração deste contrato participando deste serviço após a adição ou alteração deste contrato.
+
+  
+ 
+    Artigo 13 Lei aplicável e jurisdição
+ 1 A aplicabilidade, interpretação e validade destes Termos serão determinados de acordo com a lei japonesa.
+
+  
+2) Assuntos que não estejam explicitamente declarados neste contrato serão regidos pelos termos de uso deste jogo e pelas leis e regulamentos relacionados no Japão.
+
+  
+3) Se surgir um problema entre o usuário e a Empresa em conexão com este serviço, ambas as partes deverão consultar de boa fé.Se o problema não puder ser resolvido mesmo após a consulta, o primeiro julgamento será realizado pelo Tribunal Distrital de Tóquio ou pelo Tribunal Resumo de Tóquio. O tribunal de jurisdição de contrato exclusivo.
+ 
+ 
+ Esses termos serão aplicáveis ​​a partir de 18 de agosto de 2005.

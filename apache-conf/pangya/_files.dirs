@@ -1,0 +1,19 @@
+# Diretorio _Files
+<Directory "${DOCROOT}/_Files/">
+
+    RewriteEngine On
+        RewriteCond %{HTTP_HOST} !-d
+        RewriteRule ^$ http://${VHNAME:${VHPORT}/pangya.php [L,R=301]
+
+    ErrorDocument 404 "Erro arquivo nao existe"
+    ErrorDocument 403 "http://${VHNAME}:${VHPORT}/pangya.php"
+
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+
+    <FilesMatch "\.(png|jpe?g)$">
+        require all granted
+    </FilesMatch>
+
+ </Directory>
