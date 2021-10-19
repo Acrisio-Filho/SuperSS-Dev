@@ -1,0 +1,90 @@
+# RewriteEngine On
+# 	RewriteCond %{HTTP_HOST} ^127.0.0.1$
+# 	RewriteRule ^$ https://127.0.0.1:%{SERVER_PORT}/pangya.php [L,R=301]
+# 	RewriteCond %{HTTP_HOST} ^192.168.0.101$
+# 	RewriteRule ^$ https://192.168.0.101:%{SERVER_PORT}/pangya.php [L,R=301]
+# 	RewriteCond %{HTTP_HOST} ^supers.sytes.net$
+# 	RewriteRule ^$ https://supers.sytes.net/pangya.php [L,R=301]
+# 	RewriteCond %{HTTP_HOST} ^superss.sytes.net$
+# 	RewriteRule ^$ https://superss.sytes.net%{SERVER_PORT}/pangya.php [L,R=301]
+# 	RewriteCond %{HTTP_HOST} ^200.168.3.167$
+# 	RewriteRule ^$ https://200.168.3.167:%{SERVER_PORT}/pangya.php [L,R=301]
+# 	RewriteCond %{HTTP_HOST} ^192.168.0.101$
+# 	RewriteRule ^$ https://192.168.0.101:%{SERVER_PORT}/pangya.php [L,R=301]
+
+# 	#ErrorDocument 404 "https://127.0.0.1:%{SERVER_PORT}/pangya.php"
+# 	#ErrorDocument 403 "https://127.0.0.1:%{SERVER_PORT}/pangya.php"
+
+# Options -Indexes
+
+# <FilesMatch ".*">
+# 	require all denied
+# </FilesMatch>
+
+# <Files "adm_edit_player.php">
+# 	require all granted
+# </Files>
+
+# <Files "changeip.php">
+# 	require all granted
+# </Files>
+
+# <Files "change_nickname.php>
+# 	require all granted
+# </Files>
+
+# <Files "change_password.php">
+# 	require all granted
+# </Files>
+
+# <Files "rescue_password.php">
+# 	require all granted
+# </Files>
+
+# <Files "disponibiliza.php">
+# 	require all granted
+# </Files>
+
+# <Files "event_to_post.php">
+# 	require all granted
+# </Files>
+
+# <Files "from_post_array_test.php">
+# 	require all granted
+# </Files>
+
+# <Files "notice.php">
+# 	require all granted
+# </Files>
+
+# <Files "pangya.php">
+# 	require all granted
+# </Files>
+
+# <Files "recharge.php">
+# 	require all granted
+# </Files>
+
+# <Files "test_smtp.php">
+# 	require all granted
+# </Files>
+
+# <Files "teste_array.php">
+# 	require all granted
+# </Files>
+
+# <Files "teste_img.php">
+# 	require all granted
+# </Files>
+
+# <Files "teste_mssql.php">
+# 	require all granted
+# </Files>
+
+# <Files "time.php">
+# 	require all granted
+# </Files>
+
+# <FilesMatch "\.(html|htm)$">
+# 	require all granted
+# </FilesMatch>

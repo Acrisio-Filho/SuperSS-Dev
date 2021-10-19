@@ -1,0 +1,1178 @@
+a:40:{i:0;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:25:"Beta 02/2019 ~ indefinido";s:4:"body";s:0:"";s:4:"date";i:1550703600;s:2:"id";i:0;}i:1;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:41:"Sistemas e jogabilidades não concluídas";s:4:"body";s:254:"<span>
+        - Pang Battle<br>
+        - Approach<br>
+        - Guild Battle<br>
+        - Gacha<br>
+        - Entrance<br>
+        - Ranking System<br>
+        - Grand Zodiac - Hole in one<br>
+        - Grand Zodiac - Practice<br>
+    </span>";s:4:"date";i:1562796000;s:2:"id";i:1;}i:2;O:8:"stdClass":5:{s:4:"type";s:1:"2";s:5:"title";s:18:"Drop Abbot Cristal";s:4:"body";s:0:"";s:4:"date";i:1550703600;s:2:"id";i:2;}i:3;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 984.00";s:4:"body";s:0:"";s:4:"date";i:1549231200;s:2:"id";i:3;}i:4;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 984.01";s:4:"body";s:0:"";s:4:"date";i:1550354400;s:2:"id";i:4;}i:5;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 984.02";s:4:"body";s:0:"";s:4:"date";i:1550703600;s:2:"id";i:5;}i:6;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:36:"Update 984.03 Correções change log";s:4:"body";s:377:"<h3>Bugs corrigidos</h3>
+<span>
+        - Corrigido bug dos emoticons no nickname<br>
+		- Corrigido bug quantidade de item errada no cauldron<br>
+		- Corrigido bug impossibilidade desequipar posters & skins(Level, frame etc)<br>
+    </span>
+	
+	<h2>Informações adicionais</h2>
+		<span>
+			- Usúarios com nickname bugado poderam trocar-lo ao logar no game.
+		</span>";s:4:"date";i:1551387600;s:2:"id";s:1:"6";}i:7;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 984.03";s:4:"body";s:0:"";s:4:"date";i:1551387600;s:2:"id";i:7;}i:8;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:13:"Update 984.04";s:4:"body";s:202:"<h3>Tradução parcial dos textos do cliente</h3>
+
+    <span>
+        - Tradução do japan.dat de japanês para inglês. (Maior parte)<br>
+		- Renovação do VPS para mais um mês.<br>
+    </span>";s:4:"date";i:1553205600;s:2:"id";s:1:"8";}i:9;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 984.04";s:4:"body";s:0:"";s:4:"date";i:1553205600;s:2:"id";i:9;}i:10;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:13:"Update 984.05";s:4:"body";s:3842:"<h3>Bugs corrigidos</h3>
+
+    <span>
+        - Não contava o course SSC no achievement.<br>
+        - Não contava o Booster no achievement quando o jogador estava com Premium ativado.<br>
+        - Pink Wind e Mystic Ruins alguns holes os scores mostravam errados.<br>
+        - Match pontuação dos times estavam errados independente dos scores dos times.<br>
+        - Quando um jogador entrava em um campeonato já em andamento, seu ícone na lobby não atualizava para os que estavam na lobby.<br>
+        - Não registrava o record dos jogadores que não terminaram o campeonato à tempo.<br>
+        - Itens de ação do Cadie Cauldron que troca por medalhas, agora suas ações são mostradas para o jogador e todos que estão na sala lounge, quando o comando é enviado no chat.<br>
+        - Avg. Score, e Avg. Fairway. Agora tem os seus valores corrigidos.<br>
+        - Ícone do jogador na lobby agora mostra se ele é um jogador que tem 3% o menos de desistência(quit rate) e estiver com a asa de anjo de pangs do shop equipado no character ele vai ter um ícone roxo.<br>
+        - Algumas skins(Sticker) do shop depois de compradas não contava o tempo de termino do item.<br>
+        - Os itens que dá Drop rate e Treasure Point não estavam contando os efeitos.<br>
+        - Os jogadores que não terminaram o campeonato, não estavam ganhando experiência.<br>
+        - Quando um jogador que é chutado da sala de Versus/Match por fazer 3 time out em 1 hole ou 3 give up no jogo, agora seus achievement são contados.<br>
+        - Quando tem 2 ou mais jogadores na sala de Versus/Match alguns jogadores que estavam ready(pronto) quando um outro jogador entrava ou sair ele poderia ficar unready.<br>
+        - Quando na hora de criação da sala clicar em short game e depois em Versus e criar ela, a sala era criada com erros.(1)<br>
+        - Trocar o número de jogadores de jogadores da sala menor do que tinha na sala.<br>
+        - Não conseguia upar o stats do character quando estava equipado com anel que dá slot para upar o stats do character.<br>
+        - Quando recebia um e-mail com mais de um item, o aviso mostrava todos os itens como se tivesse recebido mais de um e-mail.<br>
+        - Itens no dolphin locker não contava para checagem dos itens que não pode ter mais do que um.<br>
+        - O record feito com assist mode ativado não mostrava no info do jogador.<br>
+        - Anéis que consome por hole não estavam sendo consumidos.<br>
+        - Alguns itens de Boost(Pang, Exp) não estavam contando o efeito e não estavam sendo consumidos.<br>
+        - Alguns itens de chance de chuva não estavam contando o efeito.<br><br>
+    </span>
+
+    <span>
+        - (1): A combinação do modo short game só pode ser feita com o Special Shuffle Course(SSC).
+    </span>
+	
+	<h3>Adições</h3>
+		<span>
+            - Ticket report se ele não for aberto em um dia(24 horas) depois que ele foi gerado, no próximo login ele vai ser automaticamente aberto e o jogador vai receber os seus valores.<br>
+            - Trocar a mensagem do Mascot. Apenas os que possui essa opção.<br>
+            - Lounge quando criado tem a change de está chovendo.<br>
+            - Itens do Papel Shop e Spinning Cube e itens que pode vender no shop pessoal agora está liberado para ter mais do que um do mesmo item.<br>
+            - Evento de redução da desistência(quit rate) do jogador, a cada jogo concluído uma desistência(quit) é reduzido do jogador.(1,2)<br><br>
+        </span>
+
+        <span>
+            - (1): Tipos de jogos que não contam: (Practice Course, Hole Repeat e Chip-in Practice).<br>
+            - (2): O evento está ativo quando o ícone de asa de anjo estiver ao lado do nome do servidor na seleção de canais. 
+        </span>";s:4:"date";i:1559001600;s:2:"id";i:10;}i:11;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 984.05";s:4:"body";s:0:"";s:4:"date";i:1559001600;s:2:"id";i:11;}i:12;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:13:"Update 985.00";s:4:"body";s:4315:"<h3>Bugs corrigidos</h3>
+
+    <span>
+        - Practice mode, jogador após um jogo, não conseguia da start(play), tinha que sair da sala e criar novamente.<br>
+        - Info do jogador que está offline não mostrava os seus troféus.<br>
+        - No modo versus quando um jogado está com problemas na conexão e demora para responder ele era desconectado e todos que estavam na sala com ele, eram desconectado também. <br>
+        - Papel Shop limite de vezes que pode jogar no dia, após o login do início de um novo dia o limite não voltava com  100, e sim com um valor mais baixo, agora todos os dia o limite de vezes que pode jogar reseta para 100.<br>
+    </span>
+	
+	<h3>Adições - Shop</h3>
+		<span>
+            - Foram adicionados os itens padrão do shop de cookies.<br>
+            - Todos os itens do shop que estavam por 1 CP agora estão com os seus valores padrão.<br>
+            - 3 Pack de Auto Caliper foram adicionados. 250 Auto Caliper custa 13CP, 400 Auto Caliper custa 20CP e 1000 Auto Caliper custa 40CP.<br>
+            - Premium Ticket 30 dias custa 60CP.<br>
+            - Pack de (Key of Fortune, Pang) e (Key of Fortune, Candy), agora tem Spinning Cube nos dois Pack, 10 Key, 10,000 Pang e 10 Spinning Cube. 10 Key, 10 Candy e 10 Spinning Cube. Cada pack custa 5CP<br>
+            - Cristal de upgrade Mascot SD, troca esse cristal e seu Mascot SD pelo Mascot SD(upgrade) no Cadie Cauldron terceira aba.
+            - Card Pack Vol.1,2,3,4,5 foram adicionados ao shop.<br>
+            - Mascot SD Ovo Vol.1(1) custa 25CP.<br><br>
+        </span>
+
+        <span>
+            - Obs: (1) É uma caixa quando aberta tem a chance de ganhar um Mascot SD.<br>
+        </span>
+
+        <h4>Mascot Lista:</h4>
+        
+        <span>
+            - Mascot Kooh SD.<br>
+            - Mascot Nell SD.<br>
+            - Mascot Cecilia SD.<br>
+            - Mascot Hana SD.<br>
+            - Mascot Lucia SD.<br>
+            - Mascot Arin SD.<br>
+            - Mascot Spika SD.<br>
+            - Mascot Tiki SD.<br>
+            - Mascot Dolph SD.<br>
+            - Mascot Cadie SD.<br>
+            - Mascot Lolo SD.<br>
+            - Mascot Kaz Dragon SD.<br>
+        </span>
+        
+        <h4>Item Lista:</h4>
+        <table style="text-align: left">
+            <tr>
+                <th>Item name</th><th>Quantidade</th>
+            </tr>
+            <tr>
+                <td>Joia upgrade Mascot SD</td><td>100</td>
+            </tr>
+            <tr>
+                <td>Memorial Coin(Premium)</td><td>5</td>
+            </tr>
+            <tr>
+                <td>Memorial Coin(Normal)</td><td>10</td>
+            </tr>
+            <tr>
+                <td>Auto Caliper</td><td>1000</td>
+            </tr>
+            <tr>
+                <td>Time Booster</td><td>1000</td>
+            </tr>
+            <tr>
+                <td>Cristal upgrade Mascot SD</td><td>1</td>
+            </tr>
+            <tr>
+                <td>Candy Pang x2</td><td>100</td>
+            </tr>
+            <tr>
+                <td>Candy Exp x2</td><td>100</td>
+            </tr>
+        </table>
+
+    <h3>Adições - Cadie Cauldron</h3>
+		<span>
+            - Adicionado a troca de Scratchy Ticket(E) por Memorial Coin(Normal) e Memorial Coin(Premium) na primeira aba.<br>
+        </span>
+
+    <h3>Adições - Treasure Hunter</h3>
+		<span>
+            - Agora pode vir a joia de upgrade dos Mascot SD que está no Cadie Cauldron na terceira aba. 10 joia e o Mascot SD trocam por um ovo que quando abrir ele tem a change de vir o Mascot SD(upgrade) ou seu Mascot SD antigo.<br>
+        </span>
+
+    <h3>Outras alterações</h3>
+		<span>
+            - Informção de muitos itens foram traduzidos de japonês para inglês.<br>
+            - Novos jogadores que cadastrarem apartir do dia 06/06/2019 após a mautenção vão começar com o level Rookie F, 1000000 de Pang e 90 CP.<br>
+            - Apartir da manutenção de 06/06/2019 todas as contas terão os seus Cookie Point resetados para 90, exceto as contas que fizeram doação.<br>
+            - As contas que fizeram doação terão seus Cookie Point resetados para a soma do valor que foi doado convertido em CP, 1 Real é igual a 10 CP.<br>
+        </span>";s:4:"date";i:1559862000;s:2:"id";i:12;}i:13;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 985.00";s:4:"body";s:0:"";s:4:"date";i:1559862000;s:2:"id";i:13;}i:14;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:34:"Pacotes de doação (informação)";s:4:"body";s:830:"<h3>Os pacotes de doção não vão ser adicionados nessa manutenção</h3>
+
+    <span>
+        - Tenho que criar uma lista grande dos itens para fazer os pacotes de doação. No momento vai ficar desse jeito para quem fazer doação.<br>
+        - O valor da doação vai ser convertido para CP(Cookie Point), 1 Real é igual a 10CP.<br>
+		- O valor da doação vai ganhar itens a escolha.<br>
+		- R$ 10 é 2 itens, R$ 20 é 4 itens, R$ 30 é 6 itens, R$ 40 é 8 itens e etc. (A cada 10 reais é 2 itens que pode escolher)<br>
+        - Card (Secreto) pode escolher 1, (Super Raro) pode escolher 2, (Raro) pode escolher 3 e (Normal) pode escolher 5 no total 11 cards é equivalente a 1 item dos itens que pode escolher.<br>
+    
+        <br><br>Lista de itens que pode escolher. <a href="/item_list.php">Aqui.</a></span>";s:4:"date";i:1597250325;s:2:"id";s:2:"14";}i:15;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:13:"Update 986.00";s:4:"body";s:489:"<h3>Grand Prix sistema implementado.</h3>
+        <span>
+            - Ele ainda tem bugs, se encontrar um bug por favor reporte no canal do discord.<br>
+            - Grand Prix Aba evento ainda não foi liberado, vai ser liberado na próxima atualização.<br>
+        </span>
+
+	<h3>Edição - Shop</h3>
+		<span>
+            - Memorial coin premium e pack(10+1) não pode mais ser presenteado.<br>
+            - Mascot SD Ovo não pode mais ser presenteado.<br>
+        </span>";s:4:"date";i:1562796000;s:2:"id";s:2:"15";}i:16;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 986.00";s:4:"body";s:0:"";s:4:"date";i:1562796000;s:2:"id";i:16;}i:17;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:13:"Update 987.00";s:4:"body";s:1294:"<h3>Game</h3>
+        <h4>Bot</h4>
+        <span>
+            - Nos modos de jogo Tourney, Short Game e Special Shuffle Course pode criar a sala com bot usando 1 ticket que vende no shop por PP.<br>
+            - No shop vende o ticket para criar bot, 5 por 10000PP.<br>
+            - Para criar a sala com o bot, crie uma sala com a senha 'bot', se você tiver o ticket ou for premium user o bot é criado junto com a sala.<br>
+            - O bot só está disponível para esses 3 modos de jogo. (Touney, Short Game e Special Shuffle Course).<br>
+        </span>
+        
+        <h4>Emoticon</h4>
+        <span>
+            - Todos os emoticons foram traduzidos de japonês para inglês.<br>
+        </span>
+
+	<h3>Site - Adição</h3>
+		<span>
+            - Suporte ao https.<br>
+            - Recuperação de senha e id.<br>
+            - Troca de nickname.<br>
+            - Troca de senha.<br>
+            - Verificação do comprimento do nickname com o emoticon.<br>
+        </span>
+
+        <h4>Download cliente</h4>
+        <span>
+            - Agora na página de <a href="pangya.php?link=2" style="text-decoration: underline; color: blue">download</a>    do cliente tem a opção para baixar o cliente em um único arquivo instalador.<br>
+        </span>";s:4:"date";i:1566259200;s:2:"id";i:17;}i:18;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 987.00";s:4:"body";s:0:"";s:4:"date";i:1566259200;s:2:"id";i:18;}i:19;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:13:"Update 987.02";s:4:"body";s:1880:"<h3>Game</h3>
+        <span>
+            - Corrigido efeito de alguns aneis que não estava funcionando.<br>
+            - Quando o jogador não tinha nenhum spinning cube aberto e ai abri o primeiro spining cube, o spining cube aberto só apareceria depois que o jogador reloga-se.<br>
+            - A mensagem no final de um jogo com o score do jogador o label descritivo do Score estava como CP e não como Score.<br>
+            - Artefato da sala depois que começava o jogo ele sumia da sala.<br>
+            - O artefato Frozen flame não estava funcionando.<br>
+        </span>
+        
+    <h3>Outros</h3>
+        <span>
+            - Bônus do servidor de experiência, pang, club mastery, treasure, drop item, e etc. Agora ele multiplica pelo do jogador, mas os bônus do jogador ainda é somado.<br>
+            - Login server não deixava escolher alguns emoticons, e no game server na verificação de nickname para enviar presente também estava com o mesmo problema.<br>
+            - Agora para mandar presente no shop ou criar personal shop no lounge o jogador tem que ser Beginner E ou maior.<br>
+        </span>
+
+	<h3>Sistema de Guild</h3>
+		<span>
+            - Nome "PangYa Club".<br>
+            - O jogador vai poder criar ou entrar em um clube.<br>
+            - Para criar um clube e escrever no Bulletin Board System(BBS) tem que ser Rookie E ou maior.<br>
+            - Para entrar em um clube não tem limite de level à não ser que o clube tenha.<br>
+            - Para criar um clube vai ser requerido 5000PP para a postagem da marca do clube e criação.<br>
+            - Depois que o clube for aprovado, o mestre do clube pode trocar a marca do clube a qualquer hora na página de configuração do clube.<br>
+            - Para mais detalhes veja o FAQ e o Termos de uso na página do "PangYa Club".<br>
+        </span>";s:4:"date";i:1571101200;s:2:"id";i:19;}i:20;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 987.02";s:4:"body";s:0:"";s:4:"date";i:1571101200;s:2:"id";i:20;}i:21;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 988.00";s:4:"body";s:0:"";s:4:"date";i:1571526000;s:2:"id";i:21;}i:22;O:8:"stdClass":5:{s:4:"type";s:1:"2";s:5:"title";s:15:"Halloween event";s:4:"body";s:1073:"<h3>Junte caixas pelos course e troque por itens no Caddie Cauldron</h3>
+ <h4>Que mapa dropa as caixas</h4>
+ <span>-Caixa Verde: (Blue Lagoon, Blue Water, Blue Moon, Silvia Cannon e Eastern Valley)</span><br>
+ <span>-Caixa Laranja: (Lost Seaway, Mystic Ruins, Shining Send, Abbot Mine e Pink Wind)</span><br>
+ <span>-Caixa Vermelha: (Deep Inferno, Ice Inferno, Wiz Wiz, Wind Hill e Sepia Wind)</span><br>
+ <span>-Caixa Roxa: (Ice Cannon, Ice Spa, West Wiz, Wiz City e White Wiz)</span><br>
+
+ <h4>Que frequência as caixas dropam no course</h4>
+ <span>-A cada 3 holes tem uma chance de 60% de dropar uma caixa.</span><br>
+ <span>-Se estiver com o item de animação do character equipado dropa 2 caixa.</span><br>
+ <span>-Se a sala tiver com o artefato cartola mágica dropa uma caixa a mais.</span><br>
+
+ <h4>Tracar por itens no Caddie Cauldron aba "Event"</h4>
+ <span>ClubSet Halloween: 50 Caixa Verde, 50 Caixa Vermelha, 50 Caixa Roxa e 50 Caixa Laranja.</span><br>
+ <span>Box Soren's: 5 Caixa Verde, 5 Caixa Vermelha, 5 Caixe Roxa e 5 Caixa Laranja.</span>";s:4:"date";i:1571526000;s:2:"id";s:2:"22";}i:23;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:31:"Update 988.00 - Halloween event";s:4:"body";s:368:"<h3>Game</h3>
+ <span>-O visual do jogo foi trocado para o tema de halloween</span>
+
+ <h4>Cadie Cauldron</h4>
+ <span>Aba "Event", foi adicionado ClubSet Halloween e Box Soren's</span>
+
+<h3>Evento</h3>
+ <span>-Halloween evento foi ativado.</span><br>
+ <span>-Veja mais informações na página de Halloween evento <a href="notice_view.php?id=22">aqui</a>.</span>";s:4:"date";i:1571526000;s:2:"id";s:2:"23";}i:24;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:13:"Update 989.00";s:4:"body";s:3774:"<h3>PangYa Shop</h3>
+ <span>- Clubset Voice Box(1), custa 60CP.</span><br><br>
+
+ <span>
+  - Obs(1) É uma caixa quando aberta tem 100% de chance de ganhar um clubset voice, se você já possuir todos os 28 clubset você vai ganhar um dos itens de CP.<br>
+  - Então confira direito a lista para não ganhar um item de CP caso você já possua todos os 28 clubset.<br>
+ </span>
+
+<h4>Clubset lista:</h4>
+ <span>- マジカルボイスクラブセット</span><br>
+ <span>- ミラクルボイスクラブセット</span><br>
+ <span>- イクシードボイスクラブセット</span><br>
+ <span>- ケミカルボイスクラブセット</span><br>
+ <span>- リリカルボイスクラブセット</span><br>
+ <span>- トゥインクルボイスクラブセット</span><br>
+ <span>- ネルにゃん☆ボイスクラブセット</span><br>
+ <span>- コラールボイスクラブセット</span><br>
+ <span>- 文房具ボイスクラブセットA</span><br>
+ <span>- 文房具ボイスクラブセットB</span><br>
+ <span>- イカ娘ボイスクラブセット</span><br>
+ <span>- スピカボイスクラブセット</span><br>
+ <span>- スピカボイスクラブセット（きらめきver.）</span><br>
+ <span>- Thailand ボイスクラブセット</span><br>
+ <span>- 超電磁砲Sボイスクラブセット</span><br>
+ <span>- 御坂妹ボイスクラブセット</span><br>
+ <span>- 大感謝祭ボイスクラブセット</span><br>
+ <span>- 大感謝祭ボイスクラブセット（light）</span><br>
+ <span>- エターナルボイスクラブセット</span><br>
+ <span>- パラドックスボイスクラブセット</span><br>
+ <span>- スペシャルボイスクラブセット</span><br>
+ <span>- 戦国ボイスクラブセット</span><br>
+ <span>- 宝具ボイスクラブセット</span><br>
+ <span>- プリュームボイスクラブセット</span><br>
+ <span>- プリュームボイスクラブセット（シャッフル）</span><br>
+ <span>- プリュームボイスクラブセット（ジョブ）</span><br>
+ <span>- ペーパーマンボイスクラブセット</span><br>
+ <span>- ネイキッドクラブセット</span><br>
+
+<h4>Item lista: </h4>
+ <table style="text-align: left">
+  <tr>
+   <th>
+    Item nome
+   </th>
+   <th>
+    Quantidade
+   </th>
+  </tr>
+  <tr>
+   <td>
+    Memorial coin(Premium)
+   </td>
+   <td>
+    5
+   </td>
+  </tr>
+  <tr>
+   <td>
+    Bonus Card Patcher
+   </td>
+   <td>
+    4
+   </td>
+  </tr>
+  <tr>
+   <td>
+    Abbot Coating Spray
+   </td>
+   <td>
+    15
+   </td>
+  </tr>
+  <tr>
+   <td>
+    UCIM Chip
+   </td>
+   <td>
+    15
+   </td>
+  </tr>
+  <tr>
+   <td>
+    Card Soren
+   </td>
+   <td>
+    3
+   </td>
+  </tr>
+  <tr>
+   <td>
+    Card Abbot Elemental Shard
+   </td>
+   <td>
+    10
+   </td>
+  </tr>
+  <tr>
+   <td>
+    Card Pack vol.1
+   </td>
+   <td>
+    3
+   </td>
+  </tr>
+  <tr>
+   <td>
+    Card Pack vol.2
+   </td>
+   <td>
+    3
+   </td>
+  </tr>
+  <tr>
+   <td>
+    Card Pack vol.3
+   </td>
+   <td>
+    3
+   </td>
+  </tr>
+  <tr>
+   <td>
+    Card Pack vol.4
+   </td>
+   <td>
+    3
+   </td>
+  </tr>
+  <tr>
+   <td>
+    Card Pack vol.5
+   </td>
+   <td>
+    3
+   </td>
+  </tr>
+ </table>
+
+<h3>Evento</h3>
+ <span>- Halloween evento encerrado.</span>
+
+<h3>Papel Shop</h3>
+ <span>
+  - Foi adicionado Dolfini Eye Mask (N,H, AZ, C, M, K, A, KZ, L).<br>
+  - Foi adicionado Kitty Whiskers (N, H, AZ, C, M, K, A, KZ).<br>
+  - Foi adicionado Mascot SD Stone Upgrade.<br>
+ </span>
+
+<h3>Outras alterações</h3>
+ <span>
+  - Tema do jogo voltou para o padrão.<br>
+  - As caixas do evento Halloween, agora estão trocando no Tiki's Shop por 1000 MP(milage points).<br>
+ <span>
+";s:4:"date";i:1572652028;s:2:"id";s:2:"24";}i:25;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 989.00";s:4:"body";s:0:"";s:4:"date";i:1572607302;s:2:"id";i:25;}i:26;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 990.00";s:4:"body";s:0:"";s:4:"date";i:1575775910;s:2:"id";i:26;}i:27;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:31:"Update 990.00 - Evento de Natal";s:4:"body";s:3517:"<h3>Game - Bug fix</h3>
+ <span>
+  - Ticket report quando usado o jogo voltava o jogador para o desktop do jogo, agora ele volta para o lobby como esperado.<br>
+  - Ticket report quando aberto no myroom ele mostrava um valor diferente dos pangs que foram ganho no jogo, agora ele mostra o valor certo.<br>
+  - Quando uma sala de tourney tem 28 jogadores o próximo jogador que entrar ia ver só ele na sala.<br>
+  - Os cutin's das roupas especiais não ativavam quando o jogador fazia uma tacada especial com 2 power shot.<br>
+  - Troca de Anéis no cadie cauldron com valor negativo.<br>
+  - Quando o jogador convida um outro jogador para entrar na sala e ele estiver sozinho e sair antes de o convite cancelar a sala não era excluída.<br>
+  - Quando o jogador convida um outro jogador e esse outro jogador cancela e tentar entrar em outra sala ou criar um sala ele não conseguia a ter o tempo do convite acabar.<br>
+  - Quando acaba o tempo do Ticket premium e o jogador renova o Premium ticket sem fazer log out e log-in os CPs são consumidos e o tempo do Premium ticket não atualiza.<br>
+  - Quando o jogador reseta o ClubSet com o item de reset Hard que recupera a metade dos pangs e masterys gasto no ClubSet, se os pangs gasto no final for zero, não consegue resetar o ClubSet.<br>
+ </span>
+
+<h3>Grand Prix</h3>
+ <span>
+  - Na aba evento tem as salas do evento de Natal Tiki's socks, elas abrem no intervalo de uma em uma hora.<br>
+  - Os scores dos bot estão mais consistentes, mas as salas com níveis altos ainda continuam difíceis.<br>
+  - Os Tiki's socks que ganham de recompensa pode ser trocadas por itens no cadie cauldron por outros itens por tempo limitado.<br>
+ </span>
+
+<h3>Evento</h3>
+ <span>- Evento de Natal, veja mais detalhes na página do evento <a href="notice_view.php?id=28">aqui</a>.</span>
+
+<h3>Papel Shop</h3>
+ <span>
+  - Item ぐるぐるメガネ (N,H,AZ,C,M,K,A,KZ,L,N,S).<br>
+  - Item レッドアンダーリムメガネ (N,H,AZ,C,M,K,A,KZ,L,N,S).<br>
+  - Item ホワイトアンダーリムメガネ (N,H,AZ,C,M,K,A,KZ,L,N,S).<br>
+  - Item 力を封印せし眼帯 (N,H,AZ,C,M,K,A,KZ,L,N,S).<br>
+  - Item 力を抑えし包帯 (N,H,AZ,C,M,K,A,KZ,L,N,S).<br>
+  - Item 開放されし血の盟約 (N,H,AZ,C,M,K,A,KZ,L,N,S,NR,HR,CR).<br>
+  - Item ブラックアンダーリムメガネ (N,H,AZ,C,M,K,A,KZ,L,N,S,NR,HR,CR).<br>
+  - Item コグウィールアイパッチ (N,H,AZ,C,M,K,A,KZ,L,N,S,NR,HR,CR).<br>
+  - Item ギアリングアイパッチ (N,H,AZ,C,M,K,A,KZ,L,N,S,NR,HR,CR).<br>
+ </span>
+
+<h3>Club System(Guild)</h3>
+ <span>
+  - Quando o club master aceita/chuta um jogador agora atualizar a lista de membros do club no Messager(*) de todos os membros do club e a mark do club vai ser mostrada para o novo membro ou removida para o membro que foi chutado.<br>
+  - Se o jogar sair do club vai atualizar a lista de membros do club no Messager(*) de todos os membros do club e o jogador não vai poder falar no chat club e a mark do club não vai mais ser mostrada.<br><br>
+  - (*) Se eles estiverem conectado com o Messager Server.
+ </span>
+
+<h3>Outras alterações</h3>
+ <span>
+  - Tema de Natal.<br>
+  - Quando o jogador perder a conexão com o server por falta de resposta do lado do cliente, se o jogador estiver jogando não conta quit.<br>
+  - Não conta mais quit quando o GM sai da sala de evento GM.<br>
+  - Todos courses estão dropando meia de natal, veja a página do evento para mais detalhes.<br>
+ <span>";s:4:"date";i:1575782354;s:2:"id";s:2:"27";}i:28;O:8:"stdClass":5:{s:4:"type";s:1:"2";s:5:"title";s:15:"Evento de Natal";s:4:"body";s:11356:"<h3>Evento de natal drop de meias em todos os course.</h3>
+<span>
+    - No ultimo hole do jogo pode dropar 2 meias (デコレーションソックス) do hole. Cada jogo dependendo da quantidade de holes tem
+    uma chance de dropar as meias(1).<br>
+    - A meia (デコレーションソックス) pode ser trocada pela box (プレゼントソックス)(2) no cadie cauldron na aba evento.<br>
+    - A meia (デコレーションソックス) pode ser trocada pela box (ビッグプレゼント) (3) no cadie cauldron na aba evento.<br>
+    - As box (プレゼントソックス) e (ビッグプレゼント) podem ser trocadas pela box (ハッピークリスマスパック) (4) no cadie cauldron na aba
+    evento.<br>
+</span>
+
+<span>
+    <br>
+    <img src="img/natal/meia_pequena.png"><br>
+    - Obs: (1): (3H 20%, 6H 40%, 9H 60% e 18H 100%) de chance de dropar as meias.<br>
+    <br>
+    <img src="img/natal/meia_media.png"><br>
+    - Obs: (2): 5 meias (デコレーションソックス) por uma box (プレゼントソックス).<br>
+    <br>
+    <img src="img/natal/meia_grande.png"><br>
+    - Obs: (3): 10 meias (デコレーションソックス) por uma box (ビッグプレゼント).<br>
+    <br>
+    <img src="img/natal/hana_natal_box.png"><br>
+    - Obs: (4): 2 box (プレゼントソックス) e 1 box (ビッグプレゼント) por uma box (ハッピークリスマスパック).<br>
+</span>
+
+<h4>Box (プレゼントソックス)</h4>
+<span>
+    <table>
+        <tr>
+            <th colspan="2">
+                Itens
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Nome
+            </th>
+            <th>
+                Quantidade
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Replay Type
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Comet Refil
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Bronze Card Ticket
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Silver Card Ticket
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Gold Card Ticket
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Christmas Comet
+            </td>
+            <td>
+                20
+            </td>
+        </tr>
+    </table>
+</span>
+
+<h4>Box (ビッグプレゼント)</h4>
+<span>
+    <table>
+        <tr>
+            <th colspan="2">
+                Itens
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Nome
+            </th>
+            <th>
+                Quantidade
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Rudolph Nose (H, AZ, C, M, K, A, KZ, L, NL)
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Santa Boo Hat (H, AZ, C, M, K, A, KZ, L, NL)
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Poinsettia Sweater (H, C, K, A, L)
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Black Sheer Stockings (H, C, K, A, L)
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                White Sheer Stockings (H, C, K, A, L)
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Brown Sheer Stockings (H, C, K, A, L)
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Christmas Headset (N, H, AZ, C, M, K, A, KZ, L, NL)
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Bronze Card Ticket
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+    </table>
+</span>
+
+<h4>Box (ハッピークリスマスパック)</h4>
+<span>
+    * Tem 100% de chance de ganhar o item raro, se o jogar possuir todos os itens raros da box ele vai ganhar o item comum.<br>
+    <table>
+        <tr>
+            <th colspan="2">
+                Itens
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Nome
+            </th>
+            <th>
+                Quantidade
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Side Tail Bangs Haircut (HR)
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Moulin Rouge Turtleneck Vest (HR)
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Moulin Rouge Velvet Skirt (HR)
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Moulin Rouge Boots (HR)
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Poster Tiki Xmas
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Poster Might Xmas
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Mascot (Santa Roi)
+            </td>
+            <td>
+                3 (Dias)
+            </td>
+        </tr>
+    </table>
+</span>
+
+<h3>Evento Grand Prix de natal</h3>
+<span>
+    - Na aba evento do Grand Prix tem as sala Tiki de natal que abre no intervalo de uma em uma hora.<br>
+    - Ganha 3 meias (ティッキーの靴下) (1) de prêmio de participação do Grand Prix evento da Tiki.<br>
+    - A meia (ティッキーの靴下) pode ser trocada pela box (クリスマスボックス2014) (2) no cadie cauldron na aba evento.<br>
+    - A meia (ティッキーの靴下) pode ser trocada pela box (ソレンの贈り物) (3) no cadie cauldron na aba evento.<br>
+    - A meia (ティッキーの靴下) pode ser trocada pelo item (クリスマスアップグレードツールキット) (4) no cadie cauldron na aba evento.<br>
+    - O item (クリスマスアップグレードツールキット) e o Santa's ClubSet podem ser trocados pelo Santa's[2] ClubSet no cadie cauldron na aba evento.<br>
+</span>
+
+<span>
+    <br>
+    <img src="img/natal/tiki_socks.png"><br>
+    - Obs: (1): 3 meias (ティッキーの靴下) por participar da sala do Grand Prix evento de natal.<br>
+    <br>
+    <img src="img/natal/box_clubset_natal.png"><br>
+    - Obs: (2): 10 meias (ティッキーの靴下) por uma box (クリスマスボックス2014).<br>
+    <br>
+    <img src="img/natal/soren_box.png"><br>
+    - Obs: (3): 3 meias (ティッキーの靴下) por uma box (ソレンの贈り物).<br>
+    <br>
+    <img src="img/natal/saco_de_natal.png"><br>
+    - Obs: (4): 75 meias (ティッキーの靴下) pelo item (クリスマスアップグレードツールキット).<br>
+    <br>
+    <img src="img/natal/clubset_natal_2.png"><br>
+    - Obs: (5): 1 item (クリスマスアップグレードツールキット) e o Santa's ClubSet pela Santa's[2] ClubSet.<br>
+</span>
+
+<h4>Box (クリスマスボックス2014)</h4>
+<span>
+    * Tem 100% de chance de ganhar o item raro, se o jogar possuir todos os itens raros da box ele vai ganhar o item comum.<br>
+    <table>
+        <tr>
+            <th colspan="2">
+                Itens
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Nome
+            </th>
+            <th>
+                Quantidade
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Santa's ClubSet
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Snowflake Tree Hairband (N, H, AZ, C, M, K, A, KZ, L, NL, S, NR, HR)
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Merry Christmas Comet
+            </td>
+            <td>
+                20
+            </td>
+        </tr>
+    </table>
+</span>
+
+<h4>Box (ソレンの贈り物)</h4>
+<span>
+    <table>
+        <tr>
+            <th colspan="2">
+                Itens
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Nome
+            </th>
+            <th>
+                Quantidade
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Auto Caliper
+            </td>
+            <td>
+                50
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Auto Commander
+            </td>
+            <td>
+                50
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Time Booster
+            </td>
+            <td>
+                50
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Chestnut
+            </td>
+            <td>
+                10
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Puff
+            </td>
+            <td>
+                3 (Dias)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Cocoa
+            </td>
+            <td>
+                3 (Dias)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Billy
+            </td>
+            <td>
+                3 (Dias)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Lemmy
+            </td>
+            <td>
+                3 (Dias)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Papel Shop Coupon (Event)
+            </td>
+            <td>
+                10
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Pang Pouch
+            </td>
+            <td>
+                1000
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Abbot Coating Spray
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                UCIM Chip
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Abbot Elemental Shard
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Soren
+            </td>
+            <td>
+                1
+            </td>
+        </tr>
+    </table>
+</span>";s:4:"date";i:1576290924;s:2:"id";s:2:"28";}i:29;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 991.00";s:4:"body";s:0:"";s:4:"date";i:1578076327;s:2:"id";i:29;}i:30;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:13:"Update 991.00";s:4:"body";s:1862:"<h3>Game - Bug fix</h3>
+<span>
+    - O bug de quando clica para entrar no tourney em andamento e o jogador não entrava no jogo e ficava na lobby travodo foi corrigido.<br>
+    - O SetItem da Nell no shop de 1CP agora pode ser presentiado, antes dava erro e não enviava o presente.<br>
+    - Agora o genero da conta mostra o icon correto no info do player e no message buddy.<br>
+</span>
+
+<h3>Special Shuffle Couse</h3>
+<span>
+    - Agora quando criado com a opção de short game o tempo da sala vai ser de 20 minutos.<br>
+    - Agora quando criado com a opção de short game o ultimo hole do Special Shuffle Course (Hole 1) tem o tee shot de short game.<br>
+</span>
+
+<h3>Guild Battle</h3>
+<span>
+    - Guild Battle foi concluído e está sendo liberado.<br>
+    - Para começar um jogo de Guild Battle necessário ter no mínimo 2 jogadores de cada club para começar o jogo.<br>
+</span>
+
+<h3>Club System</h3>
+<span>
+    - Agora as partidas que seu club jogar no Guild Battle vai ficar registrada na página do seu club no menu Club Match.<br>
+    - Agora tem o Club Ranking ele é atualizado uma vez por dia.<br>
+</span>
+
+<h4>Club System - Ranking regras de classificação </h4>
+<span>
+    - Para o club entrar no ranking precisar ter jogado ao menos um Guild Battle.<br>
+    - Quem tiver o maior número de vitórias, depois menos derrota, menos empates, maior número de pontos e depois maior número de pang.<br>
+</span>
+
+<h3>Shop Lounge</h3>
+<span>
+    - A venda de cards no Personal shop foi liberada.<br>
+</span>
+
+<h3>Outras altereções</h3>
+<span>
+    - Tema de Natal foi removido e o tema padrão foi inserido.<br>
+    - O drop de meia do evento de Natal foi removido.<br>
+    - O Grand Prix Event de Natal foi removido.<br>
+    - Os itens no cadie cauldron do evento de natal foram removidos.<br>
+</span>";s:4:"date";i:1578080408;s:2:"id";s:2:"30";}i:31;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:29:"Aniversário de 1 ano do beta";s:4:"body";s:337:"<h2>
+  Aniversário de 1 ano do beta em 20/02/2020
+</h2>
+
+<h4>
+  Todos os jogadores que tem 10 dias logados ou mais ganharam Cookie point.<br>
+</h4>
+
+<h3>
+ Evento de Experiência x8.<br>
+</h3>
+
+<h4>
+ <span>
+   Começa:  20/02/2020 00:00 (GMT-3) Brazil.<br>
+   Termina: 20/02/2020 23:59 (GMT-3) Brazil.<br>
+ </span>
+</h4>";s:4:"date";i:1582148169;s:2:"id";s:2:"31";}i:32;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 991.01";s:4:"body";s:0:"";s:4:"date";i:1583246192;s:2:"id";i:32;}i:33;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:13:"Update 991.01";s:4:"body";s:1242:"<h3>Doações</h3>
+<span>
+    - As doações à partir de hoje dia 03/03/2020 estão liberadas novamente, porém quem doar não vai receber nada em troca pela doação.<br>
+</span>
+
+<h3>Lucia Attendance System</h3>
+<span>
+    - Sistema de presença da lucia.<br>
+    - A cada sete dias que o jogador marcar presença ele pode escolher itens(*) e ganha 50CP.<br>
+    - O jogador tem que logar no jogo entra no link do menu do pangya ao lado do link do club system, clicar na chave para marcar presença todo o dia, no sétimo dia o jogador vai escolher um prêmio.<br>
+    - Para começar o sistema todos já vão começar escolhendo um prêmio, depois disso vai ter que ir marcando presença até completa novamente os setes dias para escolher o prêmio novamente.<br>
+</span> 
+
+<h4>* Itens: 2 Opções</h4>
+<span>
+    1). 1 item e 1 card a escolha da lista e 50CP.<br>
+    2). 11 Cards. Quantidade e tipos que vai pode escolher da lista: (1 Secret, 2 Super rare, 3 Rare, 5 Normal) e 50CP.<br>
+</span>
+
+<h3>Shop</h3>
+<span>
+    - Card Pack especiais liberados no shop por 5CP.<br>
+</span>
+
+<h3>Personal Shop</h3>
+<span>
+    - Os cards que estavam bloqueados foram liberados para vender no personal shop.<br>
+</span>";s:4:"date";i:1583276025;s:2:"id";s:2:"33";}i:34;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 992.00";s:4:"body";s:0:"";s:4:"date";i:1586197850;s:2:"id";i:34;}i:35;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:13:"Update 992.00";s:4:"body";s:514:"<h3>Game</h3>
+<span>
+    - Experiência do level Legend II foi corrigida.<br>
+    - Ticket Report com 0 de experiência corrigida.<br>
+    - Jogador agora não pode mais chutar o outro da sala em quanto o Tourney está em andamento.<br>
+    - Bug de quando acaba o tempo da roupa do caddie e o jogador comprava de novo no shop e para aparecer tinha que relogar. Corrigido.<br>
+</span>
+
+<h3>Outros</h3>
+<span>
+    - AntiHack implementado.<br>
+    - Antivírus erro falso positivo corrigido.<br> 
+</span>";s:4:"date";i:1586198406;s:2:"id";i:35;}i:36;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 993.00";s:4:"body";s:0:"";s:4:"date";i:1591809586;s:2:"id";i:36;}i:37;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:13:"Update 993.00";s:4:"body";s:1822:"<h3>Pang Battle sistema implementado</h3>
+<span>
+    - Agora o sistema de Pang Battle está implementado e liberado para jogar.<br>
+</span>
+
+<h3>Gacha Lottery sistema implementado</h3>
+<span>
+    - Agora pode acessar o Gacha Lottery sistema para ganhar itens exclusivos.<br>
+    - Para jogar precisa do Ticket ou Parcial Ticket Gacha.<br>
+    - O Ticket Gacha compra no pangya shop por CP e o Parcial Ticket Gacha troca no Cadie Cauldron.<br><br>
+    - Para ver os itens raros que está saindo no Gacha Lottery dentro do sistema tem um link para acessar, mas ele também pode ser acessado por esse link <a href="https://ss3.sytes.net:447/gachaJP/current/gacha_item.php">aqui</a>.<br>
+</span>
+
+<h3>Pangya Shop</h3>
+<span>
+    - Ticket Gacha adicionado.<br>
+    - 1 Ticket Gacha 6 CP.<br>
+    - Pack com 5 Ticket Gacha 25 CP.<br>
+    - Pack com 11 Ticket Gacha 50 CP.<br>
+</span>
+
+<h3>Personal Shop</h3>
+<span>
+    - Os cards agora tem limite de preço diferente pela sua raridade.<br>
+    - Card Normal o valor máximo que ele pode ser vendido é 200000 Pangs.<br>
+    - Card Raro o valor máximo que ele pode ser vendido é 400000 Pangs.<br>
+    - Card Super Raro o valor máximo que ele pode ser vendido é 1000000 Pangs.<br>
+    - Card Secreto o valor máximo que ele pode ser vendido é 2000000 Pangs.<br>
+    - Quando o jogador colocar um valor maior que o limite do card assim que clicar para abrir shop vai mostra uma mensagem em vermelho no chat.<br>
+</span>
+
+<h3>Outros</h3>
+<span>
+    - Guild Battle agora conta o achievement de Team Tournament para não ficar sem fazer esse achievement, já que no Fresh UP! não tem mais o Team Tournament.<br>
+    - Agora o pangya tem as resoluções que seu computador suporta e que seja compátivel com as diretrizes do pangya.<br>
+</span>";s:4:"date";i:1591810918;s:2:"id";s:2:"37";}i:38;O:8:"stdClass":5:{s:4:"type";s:1:"3";s:5:"title";s:14:"Versão 995.00";s:4:"body";s:0:"";s:4:"date";i:1608406805;s:2:"id";i:38;}i:39;O:8:"stdClass":5:{s:4:"type";s:1:"1";s:5:"title";s:13:"Update 995.00";s:4:"body";s:4261:"<h3>Coin & Cube Spawn implementado</h3>
+<span>
+    - Agora no Course Wiz City tem as coins e cubes spawnado aleatóriamente.<br>
+    - Todos os course exceto Wiz City as coin e cube são gerados todos os dias, com base onde os jogadores jogaram no Tourney, Special Shuffle Course, Grand Prix.<br>
+    - Agora os achievement de pegar coin e cube estão funcionando para todos os modos menos (Practice, Grand Zodiac, Approach, Chip-In Practice).<br>
+</span>
+
+<h3>Login Reward System implementado</h3>
+<span>
+    - A cada três dias logado 1 pergaminho de troca de card no cadie cauldron é enviado para o seu mailbox do jogo.<br>
+</span>
+
+<h3>Golden Time System implementado</h3>
+<span>
+    - Em tempos determinados prêmio vai ser enviado para um ou mais jogador sortudos, que estão jogando (Versus, Tourney[Short Game e SSC], Grand Prix ou no Lounge).<br>
+    - Premium user tem um pouco mais de chance de ganhar, e quem está no Lounge tem menas chance de quem está jogando.<br>
+    - Todos os dias vai ter prêmio nos horários. (GMT) 04:00, 10:00, 16:00 e 22:00.<br>
+    - Cada horário vai ter um prêmio aleatório e a quantidade de jogadores que vão ganhar depende de quantos jogadores estão participando.<br>
+    <h4>Prêmios</h4>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Quantidade</th>
+        </tr>
+        <tr>
+            <td>Auto calipers</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>Time boosters</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</span>
+
+<h3>Pangya Shop</h3>
+<span>
+    - Ticket Gacha adicionado.<br>
+    - 1 Ticket Gacha 6 CP.<br>
+    - Pack com 5 Ticket Gacha 25 CP.<br>
+    - Pack com 11 Ticket Gacha 50 CP.<br>
+</span>
+
+<h3>Personal Shop</h3>
+<span>
+    - Os cards agora tem limite de preço diferente pela sua raridade.<br>
+    - Card Normal o valor máximo que ele pode ser vendido é 200000 Pangs.<br>
+    - Card Raro o valor máximo que ele pode ser vendido é 400000 Pangs.<br>
+    - Card Super Raro o valor máximo que ele pode ser vendido é 1000000 Pangs.<br>
+    - Card Secreto o valor máximo que ele pode ser vendido é 2000000 Pangs.<br>
+    - Quando o jogador colocar um valor maior que o limite do card assim que clicar para abrir shop vai mostra uma mensagem em vermelho no chat.<br>
+</span>
+
+<h3>Outros</h3>
+<span>
+    - Guild Battle agora conta o achievement de Team Tournament para não ficar sem fazer esse achievement, já que no Fresh UP! não tem mais o Team Tournament.<br>
+    - Agora o pangya tem as resoluções que seu computador suporta e que seja compátivel com as diretrizes do pangya.<br>
+</span>";s:4:"date";i:1630631251;s:2:"id";s:2:"39";}}

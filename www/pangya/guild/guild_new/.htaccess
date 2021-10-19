@@ -1,0 +1,35 @@
+# <FilesMatch ".*">
+# 	require all denied
+# </FilesMatch>
+
+# <Files "Club_Agreement.php">
+#     require all granted
+# </Files>
+
+# <Files "Club_New_bbs_list.php">
+#     require all granted
+# </Files>
+
+# <Files "Club_New_FAQ.php">
+#     require all granted
+# </Files>
+
+# <Files "Club_New_list_all.php">
+#     require all granted
+# </Files>
+
+# <Files "Club_New_Ranking.php">
+#     require all granted
+# </Files>
+
+# <Files "guild_main.php">
+#     require all granted
+# </Files>
+
+# <Files "index.php">
+#     require all granted
+# </Files>
+
+# <FilesMatch "\.(html|htm|gif|png|jpe?g|js|css)$">
+# 	require all granted
+# </FilesMatch>

@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Visualizador de Ângulo - Acrisio SuperSS Dev</title>
+        <style>
+            button {
+                display: inline;
+            }
+            #myCanvas {
+                display: inline;
+            }
+            #span-ang {
+                border: 1px solid balck;
+            }
+            body {
+                margin:0;
+                padding:0;
+            }
+        </style>
+        <script src="config.js"></script>
+    </head>
+    <body style="background-color: gray;">
+        <table width="100%" border="0" padding="0" margin="0">
+            <tr>
+                <td align="center">
+                    <table border="0" padding="0" margin="0">
+                        <tr>
+                            <td width="690">
+                                <input id="myFile" type="file">
+                                <table>
+                                    <tr rowspan="2">
+                                        <td width="500" height="500">
+                                            <canvas id="myCanvas" width="500" height="500" style="position:relative; top: 0px; left: 2px"></canvas>
+                                        </td>
+                                        <td>
+                                            <span style="padding-left: 20px; padding-bottom: 50px; display:block">
+                                                Antialiasing <input id="checkAntialiasing" type="checkbox" checked>
+                                            </span>
+                                            <span style="padding-left: 20px; padding-bottom: 50px; display:block">
+                                                Copia (360°) <input id="check360cpy" type="checkbox" checked>
+                                            </span>
+                                            <span style="padding-left: 20px;">
+                                                Ângulo(360°): 
+                                                <span id="span-ang360"></span>
+                                            </span>
+                                            <span style="padding-left: 20px; padding-top: 20px; display: block;">
+                                                Ângulo(90°): 
+                                                <span id="span-ang90"></span>
+                                            </span>
+                                            <span style="padding-left: 20px; padding-top: 20px; display: block;">
+                                                Seno: 
+                                                <span id="span-sin"></span>
+                                            </span>
+                                            <span style="padding-left: 20px; padding-top: 20px; display: block;">
+                                                Cosseno: 
+                                                <span id="span-cos"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <input id="scale" value="0.2">
+                                <button id="btnUp" onclick="buttonAction('up')">Up</button>
+                                <button id="btnDwon" onclick="buttonAction('down')">Dwon</button>
+                                <button id="btnLeft" onclick="buttonAction('left')">Left</button>
+                                <button id="btnRight" onclick="buttonAction('right')">Rigth</button>
+                                <button id="btnPlus" onclick="buttonAction('+')">+</button>
+                                <button id="btnMinus" onclick="buttonAction('-')">-</button>
+                                <button id="btnSave" onclick="buttonAction('save')">save</button>
+                                <button id="btnPopup" onclick="window.open('#', 'Visualizador de Ângulo - Acrisio SuperSS Dev', 'width=690,height=567,scrollbars=no,resizable=no')">Pop-up</button>
+                                <script src="ang.js"></script>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

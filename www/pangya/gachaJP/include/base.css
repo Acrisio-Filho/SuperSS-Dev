@@ -1,0 +1,47 @@
+body, table, th, td, div, span, ul, li, input, select, textarea, button { 
+    font-family:"MS UI Gothic","ＭＳ Ｐゴシック", "ＭＳ ゴシック", Osaka; 
+    color:#333333; 
+    font-size:12px; 
+    line-height:120%; 
+}
+
+body { 
+    margin:0px; 
+    padding:0px; 
+    scrollbar-base-color:rgb(136,196,255); 
+    scrollbar-shadow-color:rgb(136,196,255); 
+}
+
+.StatusDIV1 
+{
+    padding:0px 10px 0px 20px; 
+    font-weight:bold;
+    color:#606060;
+}
+
+.StatusDIV2 
+{
+    color:rgb(2,158,140); 
+    font-weight:bold; 
+    border:solid 1px #CCCCCC; 
+    width:160px; 
+    padding-right:5px;
+}
+
+.StatusDIV3 
+{
+    color:rgb(0,120,255); 
+    font-weight:bold; 
+    border:solid 1px #CCCCCC; 
+    width:60px; 
+    padding-right:5px;
+}
+
+.StatusDIV4 
+{
+    color:rgb(0,120,255); 
+    font-weight:bold; 
+    border:solid 1px #CCCCCC; 
+    width:80px; 
+    padding-right:5px;
+}

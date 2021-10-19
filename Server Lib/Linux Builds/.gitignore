@@ -1,0 +1,11 @@
+*.o
+*.log
+*.d
+test.cpp
+test
+/Log
+/Auth Server/core
+/Game Server/core
+/Login Server/core
+/Message Server/core
+/Rank Server/core

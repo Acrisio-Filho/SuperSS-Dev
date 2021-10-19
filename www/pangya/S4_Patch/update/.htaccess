@@ -1,0 +1,7 @@
+# <FilesMatch ".*">
+# 	require all denied
+# </FilesMatch>
+
+# <FilesMatch "\.zip$">
+#     require all granted
+# </FilesMatch>

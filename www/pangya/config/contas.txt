@@ -1,0 +1,1 @@
+a:1:{i:0;a:6:{s:2:"id";s:5:"teste";s:4:"nome";s:10:"teste_nome";s:10:"sobre_nome";s:15:"teste_sobrenome";s:5:"email";s:15:"teste@teste.com";s:4:"pass";s:32:"E10ADC3949BA59ABBE56E057F20F883E";s:2:"ip";s:9:"127.0.0.1";}}
