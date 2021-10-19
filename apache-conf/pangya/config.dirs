@@ -1,0 +1,6 @@
+# Diretorio config
+<Directory "${DOCROOT}/config/">
+    
+    require all denied
+
+ </Directory>

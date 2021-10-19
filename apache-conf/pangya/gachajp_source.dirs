@@ -1,0 +1,6 @@
+# Diretorio gacha_source
+<Directory "${DOCROOT}/gachaJP/source/">
+    
+    require all denied
+
+ </Directory>

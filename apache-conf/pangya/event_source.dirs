@@ -1,0 +1,8 @@
+# Diretorio event_source
+<Directory "${DOCROOT}/event/source/">
+    
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+
+ </Directory>

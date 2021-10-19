@@ -1,0 +1,8 @@
+# Diretorio EntryPoint util
+<Directory "${DOCROOT}/EntryPoint/util/">
+    
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+
+</Directory>

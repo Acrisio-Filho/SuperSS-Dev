@@ -1,0 +1,6 @@
+# Diretorio guild_source
+<Directory "${DOCROOT}/guild/source/">
+    
+    require all denied
+
+ </Directory>

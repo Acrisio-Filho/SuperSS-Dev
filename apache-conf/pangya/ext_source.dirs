@@ -1,0 +1,6 @@
+# Diretorio ext_source
+<Directory "${DOCROOT}/ext/source/">
+    
+    require all denied
+
+ </Directory>

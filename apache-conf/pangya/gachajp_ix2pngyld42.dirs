@@ -1,0 +1,16 @@
+# Diretorio gacha iX2PnGylD42 - arquivos flash(SWF)
+<Directory "${DOCROOT}/gachaJP/iX2PnGylD42/">
+    
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+
+    <Files "GhQw25FiJJ.swf">
+        require all granted
+    </Files>
+
+    <Files "Hi33Tv6iK.swf">
+        require all granted
+    </Files>
+
+ </Directory>

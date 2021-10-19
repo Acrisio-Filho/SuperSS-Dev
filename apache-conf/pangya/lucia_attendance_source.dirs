@@ -1,0 +1,6 @@
+# Diretorio lucia_attendance_source
+<Directory "${DOCROOT}/ext/lucia_attendance/source/">
+    
+    require all denied
+
+ </Directory>
