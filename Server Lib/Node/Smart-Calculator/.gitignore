@@ -1,3 +1,6 @@
+.gitignore
+.gitattributes
+
 # Numerous always-ignore extensions
 *.diff
 *.err

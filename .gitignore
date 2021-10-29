@@ -1,7 +1,8 @@
 .gitignore
 .gitattributes
 
-.filters
+*.filters
+*.user
 
 .vscode
 ## Ignore Visual Studio temporary files, build results, and

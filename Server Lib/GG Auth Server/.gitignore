@@ -4,7 +4,8 @@
 .gitignore
 .gitattributes
 
-.filters
+*.filters
+*.user
 
 # User-specific files
 *.suo
