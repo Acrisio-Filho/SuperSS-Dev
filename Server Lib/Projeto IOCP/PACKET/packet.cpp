@@ -211,7 +211,7 @@ void packet::unMake(unsigned char _key) {
 	if (m_maked.m_buf == nullptr)
 		throw exception("Error buf is nullptr em packet::unMake()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PACKET, 15, 0));
 
-    memcpy(&phc, &m_maked.m_buf[index], sizeof(packet_head_client_beta));	index += sizeof(packet_head_client_beta);
+    memcpy(&phc, &m_maked.m_buf[index], sizeof(packet_head_client));	index += sizeof(packet_head_client);
 
     if (phc.getSize() > (m_maked.m_index_w - 4/*head of packet*/))
         throw exception("Erro: Unknown Packet. packet::unMake()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PACKET, 11, 0));
@@ -451,7 +451,7 @@ void packet::make(unsigned char _key) {
 	// Maked Reset
 	m_maked.reset();
 
-    add_maked(&phc, sizeof(packet_head_client_beta));
+    add_maked(&phc, sizeof(packet_head_client));
     add_maked(tmp, phc.getSize());
 
     if (tmp != nullptr)
