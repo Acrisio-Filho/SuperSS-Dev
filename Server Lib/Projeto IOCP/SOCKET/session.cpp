@@ -452,7 +452,7 @@ void session::setRecv() {
 
 		m_request_recv = 1ll;
 
-		m_threadpool.postIoOperation(this, &m_buff_r.buff, 0, STDA_OT_RECV_REQUEST);
+		m_threadpool.postIoOperation(this, &m_buff_r.buff, STDA_OT_RECV_REQUEST);
 		
 	}else
 		m_request_recv++;
@@ -465,7 +465,7 @@ void session::releaseRecv() {
 	m_buff_r.lock();
 
 #if defined(_WIN32)
-	m_threadpool.postIoOperation(this, &m_buff_r.buff, 0, STDA_OT_RECV_REQUEST);
+	m_threadpool.postIoOperation(this, &m_buff_r.buff, STDA_OT_RECV_REQUEST);
 #elif defined(__linux__)
 	if (--m_request_recv > 0ll)
 		m_threadpool.postIoOperation(this, &m_buff_r.buff, 0, STDA_OT_RECV_REQUEST);
