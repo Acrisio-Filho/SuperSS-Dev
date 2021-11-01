@@ -1,0 +1,109 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.backColor {
+    background-color: #282828;
+}
+
+.menu {
+    background-color: #282828;
+    margin-left: 5px;
+}
+
+.menuItem {
+    color: goldenrod;
+    text-decoration: none;
+}
+
+.menuItem:hover {
+    color: greenyellow;
+}
+
+.link {
+    text-decoration: none;
+    color: goldenrod;
+}
+
+.link:hover {
+    color: greenyellow;
+}
+
+.input-border {
+    border-width: 2px;
+    border-style: solid;
+    border-color: darkgray;
+}
+
+.input {
+    width: 250px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 16px;
+}
+
+.button {
+    height: 30px;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+.error {
+    color: red;
+    font-size: 18px;
+}
+
+.success {
+    color: green;
+    font-size: 18px;
+}
+
+.content {
+    color: darkgray;
+}
+
+.divContent {
+    height: 400px;
+    
+    font-size: 16px;
+    /*text-align: left;*/
+    line-height: 140%;
+    
+    overflow-y: auto;
+
+    scrollbar-arrow-color: goldenrod;
+    scrollbar-track-color: #282828;
+    scrollbar-base-color: darkgray;
+    scrollbar-shadow-color: rgb(128, 128, 128);
+}
+
+.buttonChoice {
+    text-decoration: none;
+    border-width: 2px;
+    border-style: solid;
+    color: white;
+    line-height: 100%;
+    display: inline-block;
+}
+
+.buttonPag {
+    background-color: #00BC99;
+    border-color: aquamarine;
+    margin-right: 10px;
+}
+
+.buttonPay {
+    background-color: white;
+    border-color: #00a2dc;
+    margin-left: 10px;
+}
+
+.choicePlataform {
+    display: block;
+    width: 100%
+}

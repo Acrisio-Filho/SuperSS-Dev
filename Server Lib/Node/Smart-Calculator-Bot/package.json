@@ -1,0 +1,15 @@
+{
+  "name": "smart-calculator-bot",
+  "version": "1.0.0",
+  "description": "Smart Calculator Bot to Discord",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js",
+    "start": "node index.js"
+  },
+  "author": "Acrisio SuperSS Dev",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "discord.js": "^12.5.3"
+  }
+}

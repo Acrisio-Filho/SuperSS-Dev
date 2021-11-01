@@ -1,0 +1,509 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{5B37B3A4-6967-4287-9F16-3BD3252EC98D}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>GameServer</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;SHOW_DEBUG_PACKET;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;SHOW_DEBUG_PACKET;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="game_server.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Projeto IOCP\COMPRESS\compress.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\COMPRESS\minilzo.c" />
+    <ClCompile Include="..\..\Projeto IOCP\CRYPT\crypt.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\database.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\exec_query.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\mssql.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\mysql_db.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\normal_db.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\normal_manager_db.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\postgresql.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\response.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\result_set.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\IOCP\iocp.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PACKET\packet.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PACKET\packet_func.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_add_character.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_add_item_base.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_auth_key_game.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_auth_key_login.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_auth_key_login_info.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_chat_macro_user.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_insert_block_ip.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_insert_block_mac.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_list_ip_ban.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_list_mac_ban.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_new_auth_server_key.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_rate_config_info.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_register_logon.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_register_server.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_server_list.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_update_auth_key_login.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_update_character_equiped.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_update_rate_config_info.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_verify_nick.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\pangya_db.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\Server\server.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\Smart Calculator\Smart Calculator.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\SOCKET\session.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\SOCKET\session_manager.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\SOCKET\socket.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\SOCKET\socketserver.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\SOCKET\wsa.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\THREAD POOL\job.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\THREAD POOL\job_pool.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\THREAD POOL\thread.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\THREAD POOL\threadpl_server.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\THREAD POOL\threadpool.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\TIMER\timer.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\TIMER\timer_manager.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UNIT\unit_auth_server_connect.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UNIT\unit_connect.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\buffer.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\exception.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\func_arr.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\hex_util.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\iff.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\md5.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\message.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\message_pool.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\random_gen.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\reader_ini.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\util_time.cpp" />
+    <ClCompile Include="..\CSAuth\GGAuth.cpp" />
+    <ClCompile Include="..\GAME\approach.cpp" />
+    <ClCompile Include="..\GAME\approach_mission_system.cpp" />
+    <ClCompile Include="..\GAME\attendance_reward_system.cpp" />
+    <ClCompile Include="..\GAME\bot_gm_event.cpp" />
+    <ClCompile Include="..\GAME\box_system.cpp" />
+    <ClCompile Include="..\GAME\card_system.cpp" />
+    <ClCompile Include="..\GAME\channel.cpp" />
+    <ClCompile Include="..\GAME\chip_in_practice.cpp" />
+    <ClCompile Include="..\GAME\coin_cube_location_update_system.cpp" />
+    <ClCompile Include="..\GAME\comet_refill_system.cpp" />
+    <ClCompile Include="..\GAME\course.cpp" />
+    <ClCompile Include="..\GAME\cube_coin_system.cpp" />
+    <ClCompile Include="..\GAME\drop_system.cpp" />
+    <ClCompile Include="..\GAME\dupla.cpp" />
+    <ClCompile Include="..\GAME\dupla_manager.cpp" />
+    <ClCompile Include="..\GAME\game.cpp" />
+    <ClCompile Include="..\GAME\golden_time_system.cpp" />
+    <ClCompile Include="..\GAME\grand_prix.cpp" />
+    <ClCompile Include="..\GAME\grand_zodiac.cpp" />
+    <ClCompile Include="..\GAME\grand_zodiac_base.cpp" />
+    <ClCompile Include="..\GAME\grand_zodiac_event.cpp" />
+    <ClCompile Include="..\GAME\guild.cpp" />
+    <ClCompile Include="..\GAME\guild_battle.cpp" />
+    <ClCompile Include="..\GAME\guild_room_manager.cpp" />
+    <ClCompile Include="..\GAME\hole.cpp" />
+    <ClCompile Include="..\GAME\item_manager.cpp" />
+    <ClCompile Include="..\GAME\login_manager.cpp" />
+    <ClCompile Include="..\GAME\login_reward_system.cpp" />
+    <ClCompile Include="..\GAME\login_task.cpp" />
+    <ClCompile Include="..\GAME\mail_box_manager.cpp" />
+    <ClCompile Include="..\GAME\match.cpp" />
+    <ClCompile Include="..\GAME\memorial_system.cpp" />
+    <ClCompile Include="..\GAME\pang_battle.cpp" />
+    <ClCompile Include="..\GAME\papel_shop_system.cpp" />
+    <ClCompile Include="..\GAME\personal_shop.cpp" />
+    <ClCompile Include="..\GAME\player_mail_box.cpp" />
+    <ClCompile Include="..\GAME\practice.cpp" />
+    <ClCompile Include="..\GAME\premium_system.cpp" />
+    <ClCompile Include="..\GAME\room.cpp" />
+    <ClCompile Include="..\GAME\room_bot_gm_event.cpp" />
+    <ClCompile Include="..\GAME\room_grand_prix.cpp" />
+    <ClCompile Include="..\GAME\room_grand_zodiac_event.cpp" />
+    <ClCompile Include="..\GAME\room_manager.cpp" />
+    <ClCompile Include="..\GAME\special_shuffle_course.cpp" />
+    <ClCompile Include="..\GAME\team.cpp" />
+    <ClCompile Include="..\GAME\tourney.cpp" />
+    <ClCompile Include="..\GAME\tourney_base.cpp" />
+    <ClCompile Include="..\GAME\treasure_hunter_system.cpp" />
+    <ClCompile Include="..\GAME\versus.cpp" />
+    <ClCompile Include="..\GAME\versus_base.cpp" />
+    <ClCompile Include="..\PACKET\packet_func_sv.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_achievement_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_ball.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_caddie.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_card.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_character_hair_style.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_clubset.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_counter_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_dolfini_locker_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_furniture.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_login_reward_player.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_mascot.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_msg_mail.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_part.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_skin.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_trofel_especial.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_approach_missions.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_attendance_reward_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_attendance_reward_item_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_bot_gm_event_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_box_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_caddie_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_card_equip_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_card_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_card_pack.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_character_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_check_achievement.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_coin_cube_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_coin_cube_location_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_comet_refill_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_cookie.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_coupon_gacha.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_create_achievement.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_create_quest.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_daily_quest_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_daily_quest_info_user.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_achievement.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_ball.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_caddie.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_card.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_counter_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_daily_quest.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_dolfini_locker_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_email.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_furniture.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_mascot.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_quest.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_delete_rental.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_dolfini_locker_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_drop_course_config.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_drop_course_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_email_info2.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_equip_card.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_extend_rental.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_find_caddie.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_find_card.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_find_character.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_find_dolfini_locker_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_find_furniture.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_find_mail_box_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_find_mascot.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_find_trofel_especial.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_find_ucc.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_find_warehouse_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_friend_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_gera_ucc_web_key.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_gera_web_key.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_get_gift_clubset.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_get_gift_part.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_gift_clubset.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_gift_part.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_golden_time_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_golden_time_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_golden_time_round.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_grand_prix_clear.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_grand_zodiac_event_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_grand_zodiac_pontos.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_guild_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_guild_update_activity_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_insert_box_rare_win_log.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_insert_command.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_insert_cp_log.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_insert_cp_log_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_insert_grand_prix_clear.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_insert_memorial_rare_win_log.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_insert_msg_off.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_insert_papel_shop_rare_win_log.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_insert_spinning_cube_super_rare_win_broadcast.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_insert_ticker.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_insert_ticket_report.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_insert_ticket_report_data.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_item_buff_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_item_left_from_email.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_last_player_game_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_legacy_tiki_shop_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_login_reward_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_login_reward_player_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_mail_box_info2.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_map_statistics.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_mascot_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_member_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_memorial_level_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_memorial_normal_item_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_msg_off_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_my_room_config.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_my_room_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_old_daily_quest_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_pang.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_papel_shop_config.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_papel_shop_coupon.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_papel_shop_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_pay_caddie_holy_day.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_personal_shop_log.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_player_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_premium_ticket_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_put_item_mail_box.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_register_guild_match.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_register_logon_server.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_remove_equiped_card.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_set_notice_caddie_holy_day.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_ticket_report_dados_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_transfer_part.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_treasure_hunter_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_treasure_hunter_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_trofel_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_trophy_special.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_tutorial_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_tuto_event_clear.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_achievement_user.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_attendance_reward.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_ball_equiped.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_ball_qntd.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_caddie_equiped.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_caddie_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_caddie_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_card_qntd.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_card_special_time.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_character_all_part_equiped.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_character_cutin_equiped.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_character_mastery.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_character_pcl.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_chat_macro_user.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_clubset_equiped.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_clubset_stats.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_clubset_time.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_clubset_workshop.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_coin_cube_location.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_cookie.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_counter_item.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_daily_quest.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_daily_quest_user.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_dolfini_locker_mode.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_dolfini_locker_pang.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_dolfini_locker_pass.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_email.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_golden_time.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_grand_prix_clear.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_guild_member_points.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_guild_points.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_guild_update_activity.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_item_buff.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_item_qntd.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_item_slot.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_last_player_game.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_legacy_tiki_shop_point.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_level_and_exp.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_login_reward.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_login_reward_player.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_map_statistics.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_mascot_equiped.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_mascot_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_mascot_time.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_normal_trofel.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_pang.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_papel_shop_config.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_papel_shop_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_player_location.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_poster_equiped.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_premium_ticket_time.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_quest_user.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_skin_equiped.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_treasure_hunter_course_point.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_trofel_especial_qntd.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_tutorial.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_ucc.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_update_user_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_user_equip.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_user_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_use_item_buff.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_warehouse_item.cpp" />
+    <ClCompile Include="..\SESSION\player.cpp" />
+    <ClCompile Include="..\SESSION\player_manager.cpp" />
+    <ClCompile Include="..\TYPE\gm_info.cpp" />
+    <ClCompile Include="..\TYPE\player_info.cpp" />
+    <ClCompile Include="..\TYPE\_3d_type.cpp" />
+    <ClCompile Include="..\UNIT\unit_gg_auth_server_connect.cpp" />
+    <ClCompile Include="..\UTIL\ball3d.cpp" />
+    <ClCompile Include="..\UTIL\block_exec_one_per_time.cpp" />
+    <ClCompile Include="..\UTIL\block_memory_manager.cpp" />
+    <ClCompile Include="..\UTIL\broadcast_list.cpp" />
+    <ClCompile Include="..\UTIL\club3d.cpp" />
+    <ClCompile Include="..\UTIL\club_info3d.cpp" />
+    <ClCompile Include="..\UTIL\extra_power.cpp" />
+    <ClCompile Include="..\UTIL\lottery.cpp" />
+    <ClCompile Include="..\UTIL\map.cpp" />
+    <ClCompile Include="..\UTIL\matrix3d.cpp" />
+    <ClCompile Include="..\UTIL\mgr_achievement.cpp" />
+    <ClCompile Include="..\UTIL\mgr_daily_quest.cpp" />
+    <ClCompile Include="..\UTIL\quad_tree3d.cpp" />
+    <ClCompile Include="..\UTIL\sys_achievement.cpp" />
+    <ClCompile Include="..\UTIL\vector3d.cpp" />
+    <ClCompile Include="Game Server.cpp" />
+    <ClCompile Include="game_server.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

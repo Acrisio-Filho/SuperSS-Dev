@@ -1,0 +1,8 @@
+# Diretorio gachajp_current_source
+<Directory "${DOCROOT}/gachaJP/current/source">
+
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+
+ </Directory>

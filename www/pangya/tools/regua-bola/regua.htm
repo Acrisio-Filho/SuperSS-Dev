@@ -1,0 +1,108 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Régua da Bola todas as resoluções - Acrisio SuperSS Dev</title>
+        <script>
+            function popUp() {
+
+                var width = document.getElementById("reWidth").value
+                var height = document.getElementById("reHeight").value;
+
+                var popup_height = (Math.round((height / 480) * 60) + Math.round(20 * (height / 480)) * 2) + 272;
+                var popup_width = Math.round(height / 480 * 200) + 300;
+
+                // 1440x900 - center hit bar 2560x1080
+                // off auto fit X: 924, Y: 699
+                // on auto fit X: 695, 648
+                var w = window.open('popup.htm?w=' + width + '&h=' + height, 'Régua da Bola todas as resoluçoes - Acrisio SuperSS Dev', 'width=' + popup_width + ',height=' + popup_height + ',scrollbars=no,resizable=no');
+            }
+        </script>
+        <style>
+            .img2 {
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <table border="0" padding="0" width="100%">
+            <tr>
+                <td align="center">
+                    <table>
+                        <tr>
+                            <td colspan="4">
+                                Resolução do PangYa
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <input id="reWidth" type="text" value="1366">
+                            </td>
+                            <td align="left" width="12">
+                                x
+                            </td>
+                            <td align="left" width="150">
+                                <input id="reHeight" type="text" value="768">
+                            </td>
+                            <td align="left">
+                                <button id="btnPopup" onclick="popUp()">Abrir Régua</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div style="margin-top: 50px; width: 750px">
+                                    <h3>Como usar</h3>
+                                    Régua da bola de navegador para todas as resoluções e Auto fit hit bar e Center hit bar, só colocar a resolução do PangYa e clicar em abrir régua, depois de aberta faça o alinhamento com pangya, 
+                                    para usar só passar o mouse em cima do circulo que mostra qual spin e curva vai ser, depois dá alt+tab e clica que vai ser o spin e curva que está mostrando
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div style="margin-top: 20px; width: 750px">
+                                    <h3>Auto Fit hit bar</h3>
+                                    Algumas resoluções o Auto fit hit bar o PangYa não tem o valor certo do zero na curva e no spin no pixel, 
+                                    então sempre vai pegar spin e curva quebrados, nunca vai pegar 7 de spin e curva zero, ou 7 de curva e spin zero.<br>
+                                    Quando você clicar no checkbox do Auto Fit ele vai mostrar uma mensagem no topo se a resolução não tem os pixels perfeitos.<br>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div style="margin-top: 20px; width: 750px">
+                                    <h3>Mover a janela com as setas do teclado</h3>
+                                    Pode mover a janela com as setas do teclado para fazer o alinhamento da janela,
+                                    mas primeiro tem que habilitar essa opção no checkbox "Edit Position Window" para poder mover com as setas do teclado.<br>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div style="margin-top: 50px; width: 750px">
+                                    <h3>Salvar a posição da régua e as configurações no seu computado</h3>
+                                    Salvar: Clique no botão "Save Position" para salvar a posição e configurações atual da janela da régua.<br>
+                                    Deletar: Clique no botão "Delete Position" para deletar a posição e configurações atual selecionado no combobox(caixa de seleção).<br>
+                                    Para selecionar uma posição e configurações salva é só clicar no combobox(caixa de seleção) e escolher uma opção das opções que tem na lista que vai aparecer.<br>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div style="margin-top: 50px;">
+                                    <h3>Alinhamento da régua com o PangYa</h3>
+                                    Alinhamento da régua vertical
+                                </div>
+                                <img src="img/align_ruler.png" width="400" height="400">
+                                <img src="img/align_ruler2.png" width="400" height="400">
+                                <div style="margin-top: 20px; bottom: 5px">
+                                    Alinhamento da régua horizontal, tem que ser no practice ou tourney que não tem tempo, <br> por que o alinhamento é feito no traço que fica quando não tem tempo.
+                                </div>
+                                <img class="img2" src="img/align_ruler3.png" width="800" height="280">
+                                <img class="img2" src="img/align_ruler4.png" width="800" height="280">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

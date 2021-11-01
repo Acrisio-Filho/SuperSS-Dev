@@ -1,0 +1,8 @@
+# Diretorio EntryPoint font
+<Directory "${DOCROOT}/EntryPoint/font/">
+    
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+
+</Directory>

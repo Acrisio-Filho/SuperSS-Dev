@@ -1,0 +1,14 @@
+# Diretorio s4_patch_extracontents
+<Directory "${DOCROOT_HTTP}/S4_Patch/extracontents/">
+
+    Options FollowSymLinks
+    
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+
+    <FilesMatch "\.(png|gif|jpe?g|tga|xml)$">
+        require all granted
+    </FilesMatch>
+
+ </Directory>

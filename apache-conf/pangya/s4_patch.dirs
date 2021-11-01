@@ -1,0 +1,19 @@
+# Diretorio s4_patch
+<Directory "${DOCROOT}/S4_Patch/">
+    
+    RewriteEngine On
+	RewriteCond %{HTTP_HOST} !-d
+	RewriteRule ^$ https://${VHNAME}:${VHPORT}/pangya.php [L,R=301]
+
+    ErrorDocument 404 "Erro arquivo nao existe"
+    ErrorDocument 403 "https://${VHNAME}:${VHPORT}/pangya.php"
+
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+
+    <Files "updatelist">
+        require all granted
+    </Files>
+
+ </Directory>

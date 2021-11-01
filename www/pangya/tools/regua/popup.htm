@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Régua para todas as resoluções - Acrisio SuperSS Dev</title>
+        <style>
+            #myCanvas {
+                display: inline;
+            }
+        </style>
+    </head>
+    <body style="background-color: gray;">
+        <table>
+            <tr>
+                <td colspan="3">
+                    <select id="SelectConfig" style="width:100%">
+                        <option id="Empty">Nenhuma configuração salva</option>
+                    </select>
+                </td>
+                <td>
+                    <button onClick="savePosition()">Save Position</button>
+                </td>
+                <td>
+                    <button onClick="deletePosition()">Delete Position</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        Input Type
+                    </div>
+                    <radiogroup>
+                        <div>
+                            <input id="InputPB" type="checkbox" name="it"> :PowerBar
+                        </div>
+                    </radiogroup>
+                </td>
+                <td style="padding-left: 30px;">
+                    <div id="InputTitle">
+                        Input (Yards)
+                    </div>
+                    <input id="InputValue" type="text" value="" style="width: 120px">
+                </td>
+                <td style="padding-left: 30px">
+                    <div>
+                        Result Type
+                    </div>
+                    <radiogroup>
+                        <div>
+                            <input id="ResultNormal" type="radio" name="rt" checked> :Normal
+                        </div>
+                        <div>
+                            <input id="ResultPBA" type="radio" name="rt"> :PowerBar Aéreo
+                        </div>
+                        <div>
+                            <input id="ResultPBAPlus" type="radio" name="rt"> :PowerBar Aéreo +
+                        </div>
+                    </radiogroup>
+                </td>
+                <td style="padding-left: 30px;">
+                    <div>
+                        Use Mouse (Invert)
+                    </div>
+                    <input id="UseMouse" type="checkbox" checked> :Mouse
+                </td>
+                <td style="padding-left: 30px;">
+                    <div id="ReferenceDiv" style="display:block">
+                        <div>
+                            <input id="CheckByReference" type="checkbox"> :Result by reference
+                        </div>
+                        <table border="0" margin="0" table-padding="0">
+                            <tr>
+                                <td>
+                                    Hole (Yards):
+                                </td>
+                                <td align="left">
+                                    <input id="HoleReference" type="text" style="width:120px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Reference (Yards):
+                                </td>
+                                <td align="left">
+                                    <input id="Reference" type="text" style="width:120px">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <canvas id="myCanvas" style="position:absolute; bottom: 0"></canvas>
+                </td>
+            </tr>
+        </table>
+        <script src="regua.js"></script>
+    </body>
+</html>

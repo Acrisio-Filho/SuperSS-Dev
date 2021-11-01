@@ -1,0 +1,6 @@
+# Diretorio gm_tools_source
+<Directory "${DOCROOT}/gm_tools/source/">
+    
+    require all denied
+
+ </Directory>

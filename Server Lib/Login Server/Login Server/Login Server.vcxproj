@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{B5FAA7B5-CF34-4BF0-8DDB-FED26075FA82}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>LoginServer</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;SHOW_SUCCESS_INFO_MSG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;SHOW_SUCCESS_INFO_MSG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="login_server.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Projeto IOCP\COMPRESS\compress.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\COMPRESS\minilzo.c" />
+    <ClCompile Include="..\..\Projeto IOCP\CRYPT\crypt.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\database.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\exec_query.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\mssql.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\mysql_db.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\normal_db.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\normal_manager_db.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\postgresql.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\response.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\DATABASE\result_set.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\IOCP\iocp.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PACKET\packet.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PACKET\packet_func.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_add_character.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_add_item_base.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_auth_key_game.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_auth_key_login.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_auth_key_login_info.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_chat_macro_user.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_insert_block_ip.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_insert_block_mac.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_list_ip_ban.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_list_mac_ban.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_logon_check.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_new_auth_server_key.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_register_logon.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_register_server.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_save_nick.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_server_list.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_update_character_equiped.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_verify_id.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_verify_nick.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\cmd_verify_pass.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\PANGYA_DB\pangya_db.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\Server\server.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\Smart Calculator\Smart Calculator.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\SOCKET\session.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\SOCKET\session_manager.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\SOCKET\socket.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\SOCKET\socketserver.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\SOCKET\wsa.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\THREAD POOL\job.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\THREAD POOL\job_pool.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\THREAD POOL\thread.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\THREAD POOL\threadpl_server.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\THREAD POOL\threadpool.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\TIMER\timer.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\TIMER\timer_manager.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UNIT\unit_auth_server_connect.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UNIT\unit_connect.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\buffer.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\exception.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\func_arr.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\hex_util.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\iff.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\md5.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\message.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\message_pool.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\reader_ini.cpp" />
+    <ClCompile Include="..\..\Projeto IOCP\UTIL\util_time.cpp" />
+    <ClCompile Include="..\PACKET\packet_func_ls.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_first_login.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_add_first_set.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_create_user.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_first_login_check.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_first_set_check.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_player_info.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_register_logon_server.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_register_player_login.cpp" />
+    <ClCompile Include="..\PANGYA_DB\cmd_verify_ip.cpp" />
+    <ClCompile Include="..\SESSION\player.cpp" />
+    <ClCompile Include="..\SESSION\player_manager.cpp" />
+    <ClCompile Include="..\TYPE\player_info.cpp" />
+    <ClCompile Include="Login Server.cpp" />
+    <ClCompile Include="login_server.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

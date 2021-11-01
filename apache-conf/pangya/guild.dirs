@@ -1,0 +1,28 @@
+# Diretorio guild
+<Directory "${DOCROOT}/guild/">
+    
+    RewriteEngine On
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^$ https://${VHNAME}:${VHPORT}/pangya.php [L,R=301]
+	#ReWriteRule ^(.*)\.aspx$ $1.php [L]
+
+    ErrorDocument 404 "Erro arquivo nao existe"
+    ErrorDocument 403 "https://${VHNAME}:${VHPORT}/pangya.php"
+
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+
+    <Files "login.php">
+        require all granted
+    </Files>
+
+    <Files "rss.php">
+        require all granted
+    </Files>
+
+    <FilesMatch "\.(html|htm|gif|png|jpe?g|js|css)$">
+        require all granted
+    </FilesMatch>
+
+ </Directory>

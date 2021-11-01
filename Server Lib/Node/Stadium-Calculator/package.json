@@ -1,0 +1,12 @@
+{
+  "name": "stadium-calculator",
+  "version": "1.0.0",
+  "description": "Stadium Calculator",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js",
+    "start": "node index.js"
+  },
+  "author": "Acrisio SuperSS Dev",
+  "license": "GPL-3.0"
+}

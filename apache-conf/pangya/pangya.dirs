@@ -1,0 +1,96 @@
+# Diretorio pangya principal block files
+<FilesMatch ".*">
+	require all denied
+</FilesMatch>
+
+<Files "favicon.ico">
+	require all granted
+</Files>
+
+<Files "update_nickname_emoticon.php">
+	require local
+</Files>
+
+<Files "adm_edit_player.php">
+	require all granted
+</Files>
+
+<Files "changeip.php">
+	require all granted
+</Files>
+
+<Files "change_nickname.php">
+	require all granted
+</Files>
+
+<Files "check_nickname.php">
+	require all granted
+</Files>
+
+<Files "change_password.php">
+	require all granted
+</Files>
+
+<Files "rescue_password.php">
+	require all granted
+</Files>
+
+<Files "disponibiliza.php">
+	require all granted
+</Files>
+
+<Files "event_to_post.php">
+	require all granted
+</Files>
+
+<Files "from_post_array_test.php">
+	require all granted
+</Files>
+
+<Files "notice.php">
+	require all granted
+</Files>
+
+<Files "notice_view.php">
+	require all granted
+</Files>
+
+<Files "pangya.php">
+	require all granted
+</Files>
+
+<Files "recharge.php">
+	require all granted
+</Files>
+
+<Files "test_smtp.php">
+	require all granted
+</Files>
+
+<Files "teste_array.php">
+	require all granted
+</Files>
+
+<Files "teste_img.php">
+	require all granted
+</Files>
+
+<Files "teste_mssql.php">
+	require all granted
+</Files>
+
+<Files "time.php">
+	require all granted
+</Files>
+
+<Files "item_list.php">
+	require all granted
+</Files>
+
+<FilesMatch "\.(html|htm)$">
+	require all granted
+</FilesMatch>
+
+<Files "item_list.html">
+	require all denied
+</Files>

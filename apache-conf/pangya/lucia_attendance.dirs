@@ -1,0 +1,28 @@
+# Diretorio Lucia Attendance
+<Directory "${DOCROOT}/ext/lucia_attendance/">
+
+    <FilesMatch ".*">
+        require all denied
+    </FilesMatch>
+
+    <Files "index.php">
+        require all granted
+    </Files>
+
+    <Files "reward.php">
+        require all granted
+    </Files>
+
+    <Files "login.php">
+        require all granted
+    </Files>
+
+    <Files "reward_notice.php">
+        require all granted
+    </Files>
+
+    <FilesMatch "\.(html|htm|gif|png|jpe?g|js|css)$">
+        require all granted
+    </FilesMatch>
+
+ </Directory>
