@@ -48,6 +48,9 @@
 #include "../UTIL/ConioPort.h"
 #endif
 
+#define CHECK_SESSION_BEGIN(method) if (!_session.getState()) \
+										throw exception("[server::" + std::string((method)) +"][Error] player nao esta connectado.", STDA_MAKE_ERROR(STDA_ERROR_TYPE::SERVER, 1, 0)); \
+
 using namespace stdA;
 
 server* ssv::sv = nullptr;
@@ -1554,6 +1557,8 @@ void server::accept_completed(SOCKET *_listener, DWORD dwIOsize, myOver *lpBuffe
 };
 
 inline void server::dispach_packet_same_thread(session& _session, packet *_packet) {
+	CHECK_SESSION_BEGIN("dispach_packet_same_thread");
+
 	//ParamWorker pw = { *this, m_iocp_io, m_job_pool, m_session_pool, m_pangya_db, _packet };
 	func_arr::func_arr_ex* func = nullptr;
 
@@ -1644,6 +1649,8 @@ inline void server::dispach_packet_same_thread(session& _session, packet *_packe
 };
 
 inline void server::dispach_packet_sv_same_thread(session& _session, packet *_packet) {
+	CHECK_SESSION_BEGIN("dispach_packet_sv_same_thread");
+	
 	//ParamWorker pw = { *this, m_iocp_io, m_job_pool, m_session_pool, m_pangya_db, _packet };
 	func_arr::func_arr_ex* func = nullptr;
 

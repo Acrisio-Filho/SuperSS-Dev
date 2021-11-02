@@ -19,6 +19,9 @@
 
 #include <DbgHelp.h>
 
+#define CHECK_SESSION_BEGIN(method) if (!_session.getState()) \
+										throw exception("[client::" + std::string((method)) +"][Error] player nao esta connectado.", STDA_MAKE_ERROR(STDA_ERROR_TYPE::CLIENT, 1, 0)); \
+
 using namespace stdA;
 
 client::client(session_manager& _session_manager) : m_session_manager(_session_manager), threadpl_client(16, 16), m_state(UNINITIALIZED) {
@@ -102,6 +105,8 @@ DWORD client::monitor() {
 };
 
 inline void client::dispach_packet_same_thread(session& _session, packet *_packet) {
+	CHECK_SESSION_BEGIN("dispach_packet_same_thread");
+
 	//ParamWorkerC pw = { *this, m_iocp_io, m_job_pool, m_session_pool, (cliente*)_packet->getSession()->m_client, _packet };
 	func_arr::func_arr_ex *func = nullptr;
 
@@ -129,6 +134,8 @@ inline void client::dispach_packet_same_thread(session& _session, packet *_packe
 };
 
 inline void client::dispach_packet_sv_same_thread(session& _session, packet *_packet) {
+	CHECK_SESSION_BEGIN("dispach_packet_sv_same_thread");
+	
 	//ParamWorkerC pw = { *this, m_iocp_io, m_job_pool, m_session_pool, (cliente*)_packet->getSession()->m_client, _packet };
 	func_arr::func_arr_ex *func = nullptr;
 

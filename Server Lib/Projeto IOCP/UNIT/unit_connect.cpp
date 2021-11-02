@@ -188,6 +188,9 @@
 								throw; \
 						 } \
 
+#define CHECK_SESSION_BEGIN(method) if (!_session.getState()) \
+										throw exception("[unit_connect_base::" + std::string((method)) +"][Error] player nao esta connectado.", STDA_MAKE_ERROR(STDA_ERROR_TYPE::UNIT_CONNECT, 1, 0)); \
+
 using namespace stdA;
 
 unit_connect_base::unit_connect_base(ServerInfoEx& _si) 
@@ -993,6 +996,8 @@ void* unit_connect_base::monitor() {
 }
 
 inline void unit_connect_base::dispach_packet_same_thread(session& _session, packet *_packet) {
+	CHECK_SESSION_BEGIN("dispach_packet_same_thread");
+
 	func_arr::func_arr_ex* func = nullptr;
 
 	try {
@@ -1053,6 +1058,8 @@ inline void unit_connect_base::dispach_packet_same_thread(session& _session, pac
 };
 
 inline void unit_connect_base::dispach_packet_sv_same_thread(session& _session, packet *_packet) {
+	CHECK_SESSION_BEGIN("dispach_packet_sv_same_thread");
+	
 	func_arr::func_arr_ex* func = nullptr;
 
 	try {

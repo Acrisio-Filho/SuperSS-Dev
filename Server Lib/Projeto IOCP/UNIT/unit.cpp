@@ -42,6 +42,9 @@
 #include <DbgHelp.h>
 #endif
 
+#define CHECK_SESSION_BEGIN(method) if (!_session.getState()) \
+										throw exception("[unit::" + std::string((method)) +"][Error] player nao esta connectado.", STDA_MAKE_ERROR(STDA_ERROR_TYPE::UNIT, 1, 0)); \
+
 using namespace stdA;
 
 unit::unit(session_manager& _session_manager, uint32_t _db_instance_num, uint32_t _job_thread_num)
@@ -870,6 +873,8 @@ void* unit::disconnect_session() {
 };
 
 inline void unit::dispach_packet_same_thread(session& _session, packet *_packet) {
+	CHECK_SESSION_BEGIN("dispach_packet_same_thread");
+
 	//ParamWorker pw = { *this, m_iocp_io, m_job_pool, m_session_pool, m_pangya_db, _packet };
 	func_arr::func_arr_ex* func = nullptr;
 
@@ -960,6 +965,8 @@ inline void unit::dispach_packet_same_thread(session& _session, packet *_packet)
 };
 
 inline void unit::dispach_packet_sv_same_thread(session& _session, packet *_packet) {
+	CHECK_SESSION_BEGIN("dispach_packet_sv_same_thread");
+	
 	//ParamWorker pw = { *this, m_iocp_io, m_job_pool, m_session_pool, m_pangya_db, _packet };
 	func_arr::func_arr_ex* func = nullptr;
 
