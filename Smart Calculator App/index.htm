@@ -1,0 +1,184 @@
+<html lang="pt_br">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Smart Calculator - Acrisio SuperSS Dev</title>
+	<style>
+		#display-container {
+			width: 100%;
+			height: 100%;
+		}
+
+		#status-display {
+			position: absolute;
+			bottom: 100px;
+			right: 20px;
+			color: cyan;
+		}
+
+		#status-display ul {
+			list-style-type: none;
+		}
+
+		#stats {
+			position: absolute;
+			top: 15px;
+			left: 15px;
+		}
+
+		div .dg {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+		}
+
+		.label {
+			grid-column: 1 / 2;
+		}
+
+		.input {
+			grid-column: 2 / 3;
+		}
+		
+		.container-grid {
+			display: grid;
+			grid-template-columns: auto auto auto;
+			grid-row-gap: 5px;
+			grid-column-gap: 3px;
+			margin-bottom: 30px;
+		}
+	</style>
+	<script>
+		function toggleView(el) {
+
+			let display = 'none';
+			let label = 'Show';
+			let top = el;
+
+			if (el.innerHTML.toUpperCase() == 'SHOW') {
+				display = 'grid';
+				label = 'Hidden';
+			}
+
+			// set label
+			el.innerHTML = label;
+
+			while ((top = top.nextElementSibling)) {
+
+				if (top.nodeName !== 'SCRIPT')
+					top.style.display = display;
+			}
+		}
+	</script>
+</head>
+
+<body style="background-color: gray;">
+	<div id="display-container" style="display: flex; align-items: center; flex-direction: column;">
+		<h1 style="margin-bottom: 50px;">Smart Calculator</h1>
+		<div style="display: flex; flex-direction: column; align-items: baseline;">
+			<div id="wedegt-config" style="display: flex; flex-direction: column; z-index: 10; padding: 10px">
+				<div>
+					<label style="color:blueviolet">Client config</label>
+					<button id="toggleView" onclick="toggleView(this)">Hidden</button>
+					<div class="container-grid">
+						<label class="label">Width:</label> 
+						<input class="input" id="rel-width" type="text">
+						<label class="label">Height:</label> 
+						<input class="input" id="rel-height" type="text">
+						<label class="label">Smart deviation limit:</label> 
+						<input class="input" id="smart-dev-limit" type="text">
+						<label class="label">Auto fit:</label> 
+						<input class="input" id="auto-fit" type="checkbox" checked>
+					</div>
+					<div class="container-grid">
+						<span style="color:blueviolet">Character stats</span>
+						<label class="label">Power:</label> 
+						<input class="input" id="power" type="text">
+						<label class="label">Ring Power:</label> 
+						<input class="input" id="auxpart_pwr" type="text">
+						<label class="label">Card Power:</label> 
+						<input class="input" id="card_pwr" type="text">
+						<label class="label">Mascot Power:</label> 
+						<input class="input" id="mascot_pwr" type="text">
+						<label class="label">Card Power Shot Power:</label> 
+						<input class="input" id="card_ps_pwr" type="text">
+					</div>
+				</div>
+				<div>
+					<label style="color:blueviolet">Mycella</label>
+					<button id="toggleView" onclick="toggleView(this)">Hidden</button>
+					<div id="mycella" class="container-grid" style="padding-top: 20px;">
+						<label class="label">Degree: 		</label>
+						<input class="input" id="shot-degree" type="text">
+						<label class="label">Align degree: 		</label>
+						<input class="input" id="align-degree" type="text">
+						<label class="label">Slope break: 		</label>
+						<input class="input" id="slope-break" type="text">
+					</div>
+					<div style="display: grid; grid-template-columns: auto auto auto;">
+						<button style="width: 400px; height: 45px" onClick="calcMycella(this)">Calcule Slope</button>
+					</div>
+				</div>
+			</div>
+			<div class="container-grid">
+				<label class="label">Club: </label><select class="input" id="club">
+					<option value="0">1W</option>
+					<option value="1">2W</option>
+					<option value="2">3W</option>
+					<option value="3">2I</option>
+					<option value="4">3I</option>
+					<option value="5">4I</option>
+					<option value="6">5I</option>
+					<option value="7">6I</option>
+					<option value="8">7I</option>
+					<option value="9">8I</option>
+					<option value="10">9I</option>
+					<option value="11">PW</option>
+					<option value="12">SW</option>
+				</select>
+				<label class="label">Shot: </label><select class="input" id="shot">
+					<option value="0">Dunk</option>
+					<option value="1">Tomahawk</option>
+					<option value="2">Spike</option>
+					<option value="3">Cobra</option>
+				</select>
+				<label class="label">Power Shot: </label><select class="input" id="power_shot">
+				<option value="0">No Power Shot</option>
+				<option value="1">1 Power Shot</option>
+				<option value="2">2 Power Shot</option>
+				<option value="3">15y Power Shot</option>
+				</select>
+			</div>
+			<div class="container-grid">
+				<label class="label">Distance: 	</label>
+				<input class="input" id="distance" type="text">
+				<label class="label">Height: 		</label>
+				<input class="input" id="height" type="text">
+				<label class="label">Wind: 		</label>
+				<input class="input" id="wind" type="text">
+				<label class="label">Degree: 		</label>
+				<input class="input" id="degree" type="text">
+				<label class="label">Ground: 		</label>
+				<input class="input" id="ground" type="text">
+				<label class="label">Spin: 		</label>
+				<input class="input" id="spin" type="text">
+				<label class="label">Curve: 		</label>
+				<input class="input" id="curve" type="text">
+				<label class="label">Slope break: </label>
+				<input class="input" id="slope_break" type="text">
+			</div>
+		</div>
+		<div style="display: grid; grid-template-columns: auto auto auto;">
+			<button style="width: 400px; height: 45px" onClick="calc(this)">Calcule</button>
+		</div>
+		<span style="margin-top: 30px;">
+			<font id="result" size="30" color="White">
+				
+			</font>
+		</span>
+		<rodape style="padding: 20px; font-size: 20px">Developped by Acrisio SuperSS Dev</rodape>
+	</div>
+	<script src="smart_calculator.js"></script>
+</body>
+
+</html>
