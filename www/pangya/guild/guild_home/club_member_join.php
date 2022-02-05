@@ -317,7 +317,7 @@
             $params->add('i', $page);       // Page
 
             if (DatabaseConfig::_MSSQL_ === $GLOBALS['DatabaseCurrentUsed'])
-                $query = 'exec '.$db->con_dados['DB_NAME'].'.ProcGetGuildMemberList(?, ?, 1, 14)';
+                $query = 'exec '.$db->con_dados['DB_NAME'].'.ProcGetGuildMemberList ?, ?, 1, 14';
             else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
                 $query = 'select "_LINHAS_" as "LINHAS", "_MEMBER_UID_" as "MEMBER_UID", "_MEMBER_STATE_FLAG_" as "MEMBER_STATE_FLAG", "_NICKNAME_" as "NICKNAME", "_REG_DATE_" as "REG_DATE" from '.$db->con_dados['DB_NAME'].'.ProcGetGuildMemberList(?, ?, 1, 14)';
             else
