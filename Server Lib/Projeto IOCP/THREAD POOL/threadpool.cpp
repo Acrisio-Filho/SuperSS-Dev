@@ -1444,14 +1444,9 @@ void threadpool::send_new(session *_session, Buffer *lpBuffer, DWORD operation) 
 			
 		}else {
 
-#ifdef _DEBUG
-			// !@
-			_smp::message_pool::getInstance().push(new message("[threadpool::send_new][WARNING] nao conseguiu enviar nesse momento. <---------------------->", CL_FILE_LOG_AND_CONSOLE));
-#endif
-
 			// Not have space in socket tcp stack, release send for send again to late
 			try {
-				_session->releaseSend();
+				_session->setSendPartial();
 			}catch (exception& e) {
 
 				_smp::message_pool::getInstance().push(new message("[threadpool::send_new][Error] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
@@ -1474,13 +1469,17 @@ void threadpool::send_new(session *_session, Buffer *lpBuffer, DWORD operation) 
 
 		pthread_mutex_unlock(&m_cs);
 		
-		// !@ send partial
-		if ((uint32_t)sendlen != lpBuffer->getWSABufToSend()->len)
+		// send partial
+		if ((uint32_t)sendlen != lpBuffer->getWSABufToSend()->len) {
+
 			_smp::message_pool::getInstance().push(new message("[threadpool::send_new][WARNING] Player[UID=" + std::to_string(_session->getUID()) 
 					+ "] enviou dados partial[SENDLEN=" + std::to_string(sendlen) + "].", CL_FILE_LOG_AND_CONSOLE));
 
+			_session->setSendPartial();
+		}
+		
 		// post to translate
-		postIoOperationS(_session, lpBuffer, sendlen, STDA_OT_SEND_COMPLETED);
+		postIoOperationS(_session, lpBuffer, sendlen, operation);
 	}
 #endif
 };

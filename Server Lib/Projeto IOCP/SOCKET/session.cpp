@@ -322,8 +322,8 @@ void session::requestSendBuffer(void* _buff, size_t _size, bool _raw) {
 
 	m_buff_s.lock();
 
-	// Verifica antes e depois se a session está conectada ainda
-	if (isConnectedToSend() && m_buff_s.isWritable() && isConnectedToSend()) {
+	if (isConnectedToSend() && m_buff_s.isWritable() && isConnectedToSend()) 
+	{
 			
 		m_buff_s.setWrite();
 
@@ -333,13 +333,23 @@ void session::requestSendBuffer(void* _buff, size_t _size, bool _raw) {
 			
 			if (isConnectedToSend() && m_buff_s.readyToWrite() && isConnectedToSend()) {
 
-				sz_write += m_buff_s.buff.write((void*)((unsigned char*)_buff + sz_write), _size - sz_write);
+				if (_raw && m_buff_s.buff.getUsed() > 0 
+					&& m_buff_s.buff.getOperation() != STDA_OT_SEND_RAW_REQUEST && m_buff_s.buff.getOperation() != STDA_OT_SEND_RAW_COMPLETED) {
 
-				m_threadpool.postIoOperation(this, &m_buff_s.buff, 0, (_raw ? STDA_OT_SEND_RAW_REQUEST : STDA_OT_SEND_REQUEST));
-
-				// Buffer já chegou ao seu limite, libera o parcial send, para o buffer ser esvaziado(Enviado)
-				if (sz_write < _size)
 					m_buff_s.setPartialSend();
+
+					m_threadpool.postIoOperation(this, &m_buff_s.buff, 0, STDA_OT_SEND_REQUEST);
+
+				}else {
+
+					sz_write += m_buff_s.buff.write((void*)((unsigned char*)_buff + sz_write), _size - sz_write);
+
+					// Buffer já chegou ao seu limite, libera o parcial send, para o buffer ser esvaziado(Enviado)
+					if (sz_write < _size)
+						m_buff_s.setPartialSend();
+
+					m_threadpool.postIoOperation(this, &m_buff_s.buff, 0, (_raw ? STDA_OT_SEND_RAW_REQUEST : STDA_OT_SEND_REQUEST));
+				}
 
 			}else { // Não conseguiu entrar para escrever ou a session não está mais conectada, libera o state write
 				
@@ -357,78 +367,6 @@ void session::requestSendBuffer(void* _buff, size_t _size, bool _raw) {
 	}
 
 	m_buff_s.unlock();
-
-//	EnterCriticalSection(&m_buff_s.cs);
-//
-//	if (!isConnected()) {
-//		m_buff_s.clear();
-//		LeaveCriticalSection(&m_buff_s.cs);
-//		throw exception("Error nao pode escrever no buffer por que o socket nao esta mais connectado. session::requestSendBuffer()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::SESSION, 2, 0));
-//	}
-//
-//	while (m_buff_s.state_write && isConnected())
-//		SleepConditionVariableCS(&m_buff_s.cv_write, &m_buff_s.cs, INFINITE);
-//
-//	if (!isConnected()) {
-//		m_buff_s.clear();
-//		LeaveCriticalSection(&m_buff_s.cs);
-//		throw exception("Error nao pode escrever no buffer por que o socket nao esta mais connectado. session::requestSendBuffer()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::SESSION, 2, 0));
-//	}
-//
-//	m_buff_s.state_write = 1;
-//
-//	size_t sz_write = 0l;
-//
-//	do {
-//		while ((m_buff_s.state_send || m_buff_s.state_wr_send) && isConnected())
-//			SleepConditionVariableCS(&m_buff_s.cv_send, &m_buff_s.cs, INFINITE);
-//
-//		if (!isConnected()) {
-//			m_buff_s.clear();
-//			LeaveCriticalSection(&m_buff_s.cs);
-//			throw exception("Error nao pode escrever no buffer por que o socket nao esta mais connectado. session::requestSendBuffer()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::SESSION, 2, 0));
-//		}
-//
-//		sz_write += m_buff_s.buff.write((void*)((unsigned char*)_buff + sz_write), _size - sz_write);
-//
-//#if defined(_WIN32)
-//		m_threadpool.postIoOperation(this, &m_buff_s.buff, (_raw ? STDA_OT_SEND_RAW_REQUEST : STDA_OT_SEND_REQUEST));
-//#elif defined(__linux__)
-//		m_threadpool.postIoOperation(this, &m_buff_s.buff, 0, (_raw ? STDA_OT_SEND_RAW_REQUEST : STDA_OT_SEND_REQUEST));
-//#endif
-//
-//		if (sz_write < _size) {
-//			m_buff_s.state_wr_send = 1;
-//
-//			//_smp::message_pool::getInstance().push(new message("Buffer write.\r\n" + hex_util::BufferToHexString((unsigned char*)_buff, _size), CL_FILE_LOG_AND_CONSOLE));
-//			//_smp::message_pool::getInstance().push(new message("Buffer writed.\r\n" + hex_util::BufferToHexString((unsigned char*)m_buff_s.buff.getBuffer(), m_buff_s.buff.getUsed()), CL_FILE_LOG_AND_CONSOLE));
-//
-//			//_smp::message_pool::getInstance().push(new message("Falta ainda dados para colocar no buffer mas ele esta cheio, espera ele ser enviado, Thread id: " + std::to_string(GetCurrentThreadId()), CL_FILE_LOG_AND_CONSOLE));
-//
-////#ifdef _DEBUG
-////			_smp::message_pool::getInstance().push(new message("Player uid : " + std::to_string(m_pi.uid) + ", requestSend(1).thread : 0x" + hex_util::ltoaToHex((DWORD)GetCurrentThreadId()), CL_FILE_LOG_AND_CONSOLE));
-////#endif
-//
-//			// Esse aqui quando tem muitos dados em um buffer so as vezes da deadlock
-//			// Tipo 1500 player mandando msg na lobby ao mesmo tempo da deadlock
-//			//SleepConditionVariableCS(&m_buff_s.cv_send, &m_buff_s.cs, INFINITE);
-//		}
-//
-//	} while (sz_write < _size /*&& SleepConditionVariableCS(&m_buff_s.cv_send, &m_buff_s.cs, INFINITE) != 0*/);
-//
-//	m_buff_s.state_write = 0;
-//
-////#ifdef _DEBUG
-////	_smp::message_pool::getInstance().push(new message("Player uid : " + std::to_string(m_pi.uid) + ", requestSend(2).thread : 0x" + hex_util::ltoaToHex((DWORD)GetCurrentThreadId()), CL_FILE_LOG_AND_CONSOLE));
-////#endif
-//
-//	//WakeAllConditionVariable(&m_buff_s.cv_write);
-//	WakeAllConditionVariable(&m_buff_s.cv_write);
-//	WakeAllConditionVariable(&m_buff_s.cv_send);
-//
-//	LeaveCriticalSection(&m_buff_s.cs);
-//
-//	//WakeConditionVariable(&m_buff_s.cv_write);
 };
 
 void session::requestRecvBuffer() {
@@ -481,11 +419,13 @@ void session::setSend() {
 			throw exception("[session::setSend][Error] nao tem nada no buffer para ser enviado[SIZE_BUFF=" + std::to_string(m_buff_s.buff.getUsed()) + "].", STDA_MAKE_ERROR(STDA_ERROR_TYPE::SESSION, 5, 0));
 		}
 
-		m_buff_s.setSend();
+		if (isConnectedToSend() && m_buff_s.readyToSend() && isConnectedToSend()) {
 
-		if (isConnectedToSend() && m_buff_s.readyToSend() && isConnectedToSend())
+			m_buff_s.setSend();
+
 			m_buff_s.increseRequestSendCount();
-		else {
+
+		}else {
 
 			m_buff_s.releaseSendAndPartialSend();
 
@@ -504,48 +444,22 @@ void session::setSend() {
 	}
 
 	m_buff_s.unlock();
+};
 
-//	EnterCriticalSection(&m_buff_s.cs);
-//	
-//	if (!isConnected()) {
-//		m_buff_s.clear();
-//		LeaveCriticalSection(&m_buff_s.cs);
-//		throw exception("Error nao pode enviar o buffer por que o socket nao esta mais connectado. session::setSend()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::SESSION, 2, 0));
-//	}
-//
-//	while (/*(!m_buff_s.state_wr_send && m_buff_s.state_write) || */(m_buff_s.state_send && isConnected()))
-//		SleepConditionVariableCS(&m_buff_s.cv_send, &m_buff_s.cs, INFINITE);
-//
-//	if (!isConnected()) {
-//		m_buff_s.clear();
-//		LeaveCriticalSection(&m_buff_s.cs);
-//		throw exception("Error nao pode enviar o buffer por que o socket nao esta mais connectado. session::setSend()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::SESSION, 2, 0));
-//	}
-//
-//	if (m_buff_s.buff.getUsed() <= 0) { // Aqui não vai mesmo por que aqui a session ainda esta conectado, so não tem dados para enviar
-//		LeaveCriticalSection(&m_buff_s.cs);
-//		throw exception("Error nao tem nada no buffer para ser enviado. session::setSend()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::SESSION, 5, 0));
-//	}
-//
-//	m_buff_s.state_send = 1;
-//
-//	while (!m_buff_s.state_wr_send && m_buff_s.state_write && isConnected())
-//		SleepConditionVariableCS(&m_buff_s.cv_write, &m_buff_s.cs, INFINITE);
-//
-//	if (!isConnected()) {
-//		m_buff_s.clear();
-//		LeaveCriticalSection(&m_buff_s.cs);
-//		/*m_buff_s.state_send = 0;
-//		m_buff_s.state_wr_send = 0;
-//		WakeAllConditionVariable(&m_buff_s.cv_send);*/
-//		throw exception("Error nao pode enviar o buffer por que o socket nao esta mais connectado. session::setSend()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::SESSION, 2, 0));
-//	}
-//
-////#ifdef _DEBUG
-////	_smp::message_pool::getInstance().push(new message("Player uid: " + std::to_string(m_pi.uid) + ", setSend(). thread: 0x" + hex_util::ltoaToHex((DWORD)GetCurrentThreadId()), CL_FILE_LOG_AND_CONSOLE));
-////#endif
-//
-//	LeaveCriticalSection(&m_buff_s.cs);
+void session::setSendPartial() {
+
+	m_buff_s.lock();
+
+	// Verifica antes e depois se a session ainda está conectada
+	if (m_buff_s.isSetedToSend() && m_buff_s.buff.getUsed() > 0) {
+		
+		m_buff_s.setPartialSend();
+	
+		// Post new request to send buff, to send rest of buff
+		m_threadpool.postIoOperation(this, &m_buff_s.buff, 0, m_buff_s.buff.getOperation());
+	}
+
+	m_buff_s.unlock();
 };
 
 void session::releaseSend() {
@@ -558,28 +472,6 @@ void session::releaseSend() {
 		_smp::message_pool::getInstance().push(new message("[session::releaseSend][WARNING] todos os request send ja foram liberados.", CL_FILE_LOG_AND_CONSOLE));
 
 	m_buff_s.unlock();
-
-//	EnterCriticalSection(&m_buff_s.cs);
-//
-//	if (!isConnected()) { // aqui tem que passa mesmo que esteja desconectado
-//		m_buff_s.clear();
-//		LeaveCriticalSection(&m_buff_s.cs);
-//		throw exception("[session::releaseSend][Error] nao pode liberar o buffer por que o socket nao esta mais connectado.", STDA_MAKE_ERROR(STDA_ERROR_TYPE::SESSION, 2, 0));
-//	}
-//
-//	m_buff_s.state_send = 0;
-//	m_buff_s.state_wr_send = 0;
-//
-////#ifdef _DEBUG
-////	_smp::message_pool::getInstance().push(new message("Player uid: " + std::to_string(m_pi.uid) + ", releaseSend(). thread: 0x" + hex_util::ltoaToHex((DWORD)GetCurrentThreadId()), CL_FILE_LOG_AND_CONSOLE));
-////#endif
-//
-//	WakeAllConditionVariable(&m_buff_s.cv_send);
-//	WakeAllConditionVariable(&m_buff_s.cv_write);
-//
-//	LeaveCriticalSection(&m_buff_s.cs);
-//
-//	//WakeAllConditionVariable(&m_buff_s.cv_send);
 };
 
 bool session::isConnected() {
@@ -999,12 +891,20 @@ bool session::buff_ctx::readyToSend() {
 	return true;
 }
 
-bool session::buff_ctx::isSetedToSendOrPartialSend() {
-	return state_send || state_wr_send;
+bool session::buff_ctx::isSetedToSend() {
+	return state_send;
 }
 
 bool session::buff_ctx::isSetedToWrite() {
 	return state_write;
+}
+
+bool session::buff_ctx::isSetedToPartial() {
+	return state_wr_send;
+}
+
+bool session::buff_ctx::isSetedToSendOrPartialSend() {
+	return state_send || state_wr_send;
 }
 
 void session::buff_ctx::setWrite() {
@@ -1030,10 +930,34 @@ void session::buff_ctx::releaseWrite() {
 #endif
 }
 
+void session::buff_ctx::releaseSend() {
+
+	state_send = 0u;
+
+#if defined(_WIN32)
+	WakeAllConditionVariable(&cv_send);
+#elif defined(__linux__)
+	pthread_cond_broadcast(&cv_send);
+#endif
+}
+
+void session::buff_ctx::releasePartial() {
+
+	state_wr_send = 0u;
+
+#if defined(_WIN32)
+	WakeAllConditionVariable(&cv_send);
+#elif defined(__linux__)
+	pthread_cond_broadcast(&cv_send);
+#endif
+}
+
 void session::buff_ctx::releaseSendAndPartialSend() {
 	
+	if (state_wr_send && buff.getUsed() <= 0)
+		state_wr_send = 0u;
+	
 	state_send = 0u;
-	state_wr_send = 0u;
 
 #if defined(_WIN32)
 	WakeAllConditionVariable(&cv_send);

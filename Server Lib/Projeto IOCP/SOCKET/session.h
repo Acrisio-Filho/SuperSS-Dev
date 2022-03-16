@@ -289,14 +289,18 @@ namespace stdA {
 					bool isSendable();
 					bool readyToSend();
 
-					bool isSetedToSendOrPartialSend();
+					bool isSetedToSend();
 					bool isSetedToWrite();
+					bool isSetedToPartial();
+					bool isSetedToSendOrPartialSend();
 					
 					void setWrite();
 					void setSend();
 					void setPartialSend();
 					
 					void releaseWrite();
+					void releaseSend();
+					void releasePartial();
 					void releaseSendAndPartialSend();
 					
 					int64_t increseRequestSendCount();
@@ -347,6 +351,7 @@ namespace stdA {
 			void releaseRecv();
 
 			void setSend();
+			void setSendPartial();
 			void releaseSend();
 
 			bool isConnected();

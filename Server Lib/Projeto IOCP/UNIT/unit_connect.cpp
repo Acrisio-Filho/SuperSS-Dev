@@ -1284,7 +1284,7 @@ void unit_connect_base::send_new(session* _session, Buffer* lpBuffer, DWORD oper
 
 			// Not have space in socket tcp stack, release send for send again to late
 			try {
-				_session->releaseSend();
+				_session->setSendPartial();
 			}catch (exception& e) {
 
 				_smp::message_pool::getInstance().push(new message("[unit_connect_base::send_new][Error] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
@@ -1307,13 +1307,17 @@ void unit_connect_base::send_new(session* _session, Buffer* lpBuffer, DWORD oper
 
 		pthread_mutex_unlock(&m_cs);
 
-		// !@ send partial
-		if((uint32_t)sendlen != lpBuffer->getWSABufToSend()->len)
+		// send partial
+		if((uint32_t)sendlen != lpBuffer->getWSABufToSend()->len) {
+
 			_smp::message_pool::getInstance().push(new message("[unit_connect_base::send_new][WARNING] Player[UID=" + std::to_string(_session->getUID()) 
 					+ "] enviou dados partial[SENDLEN=" + std::to_string(sendlen) + "].", CL_FILE_LOG_AND_CONSOLE));
 
+			_session->setSendPartial();
+		}
+
 		// post to translate
-		postIoOperation(_session, lpBuffer, sendlen, STDA_OT_SEND_COMPLETED);
+		postIoOperation(_session, lpBuffer, sendlen, operation);
 	}
 #endif
 }
