@@ -46,10 +46,10 @@ std::vector<ServerInfo> pangya_base_db::getServerList() {
 
 	si = { 0 };
 
-	if (_result->data[0] != nullptr)
+	if (is_valid_c_string(_result->data[0]))
 		strcpy_s(si.nome, _result->data[0]);
 	si.uid = IFNULL(atoi, _result->data[1]);
-	if (_result->data[2] != nullptr)
+	if (is_valid_c_string(_result->data[2]))
 		strcpy_s(si.ip, _result->data[2]);
 	si.port = IFNULL(atoi, _result->data[3]);
 	si.max_user = IFNULL(atoi, _result->data[4]);

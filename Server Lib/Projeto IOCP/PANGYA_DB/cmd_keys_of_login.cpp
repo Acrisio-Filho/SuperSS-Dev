@@ -23,9 +23,9 @@ void CmdKeysOfLogin::lineResult(result_set::ctx_res* _result, uint32_t /*_index_
 
     checkColumnNumber(3, _result->cols);
 
-    if (_result->data[0] != nullptr)
+    if (is_valid_c_string(_result->data[0]))
 		strcpy_s(m_keys_of_login.keys[0], _result->data[0]);
-	if (_result->data[1] != nullptr)
+	if (is_valid_c_string(_result->data[1]))
 		strcpy_s(m_keys_of_login.keys[1], _result->data[1]);
 	m_keys_of_login.valid = (unsigned char)IFNULL(atoi, _result->data[2]);
 

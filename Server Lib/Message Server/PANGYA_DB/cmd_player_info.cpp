@@ -26,27 +26,15 @@ void CmdPlayerInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_index_r
 	checkColumnNumber(11, (uint32_t)_result->cols);
 
 	m_pi.uid = (uint32_t)IFNULL(atoi, _result->data[0]);
-	if (_result->data[1] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(m_pi.id, sizeof(m_pi.id), _result->data[1], sizeof(m_pi.id));
-#elif defined(__linux__)
-		memcpy(m_pi.id, _result->data[1], sizeof(m_pi.id));
-#endif
-	if (_result->data[2] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(m_pi.nickname, sizeof(m_pi.nickname), _result->data[2], sizeof(m_pi.nickname));
-#elif defined(__linux__)
-		memcpy(m_pi.nickname, _result->data[2], sizeof(m_pi.nickname));
-#endif
+	if (is_valid_c_string(_result->data[1]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_pi.id, sizeof(m_pi.id), _result->data[1]);
+	if (is_valid_c_string(_result->data[2]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_pi.nickname, sizeof(m_pi.nickname), _result->data[2]);
 	m_pi.m_cap = (uint32_t)IFNULL(atoi, _result->data[3]);
 	m_pi.guild_uid = (uint32_t)IFNULL(atoi, _result->data[4]);
 	
-	if (_result->data[5] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(m_pi.guild_name, sizeof(m_pi.guild_name), _result->data[5], strlen(_result->data[5]));
-#elif defined(__linux__)
-		memcpy(m_pi.guild_name, _result->data[5], strlen(_result->data[5]));
-#endif
+	if (is_valid_c_string(_result->data[5]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_pi.guild_name, sizeof(m_pi.guild_name), _result->data[5]);
 
 	m_pi.sex = (unsigned char)IFNULL(atoi, _result->data[6]);
 	m_pi.level = (unsigned short)IFNULL(atoi, _result->data[7]);

@@ -29,19 +29,11 @@ void CmdFriendInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_index_r
 
 	FriendInfoEx fi{ 0 };
 
-	if (_result->data[0] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(fi.nickname, sizeof(fi.nickname), _result->data[0], sizeof(fi.nickname));
-#elif defined(__linux__)
-		memcpy(fi.nickname, _result->data[0], sizeof(fi.nickname));
-#endif
+	if (is_valid_c_string(_result->data[0]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(fi.nickname, sizeof(fi.nickname), _result->data[0]);
 	fi.uid = (uint32_t)IFNULL(atoi, _result->data[1]);
-	if (_result->data[2] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(fi.apelido, sizeof(fi.apelido), _result->data[2], sizeof(fi.apelido));
-#elif defined(__linux__)
-		memcpy(fi.apelido, _result->data[2], sizeof(fi.apelido));
-#endif
+	if (is_valid_c_string(_result->data[2]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(fi.apelido, sizeof(fi.apelido), _result->data[2]);
 	fi.lUnknown = IFNULL(atoi, _result->data[3]);
 	fi.lUnknown2 = IFNULL(atoi, _result->data[4]);
 	fi.lUnknown3 = IFNULL(atoi, _result->data[5]);

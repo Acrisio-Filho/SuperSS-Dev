@@ -63,6 +63,9 @@ namespace stdA {
             virtual std::string makeText(std::string _value) override;
             virtual std::wstring makeText(std::wstring _value) override;
 
+			virtual std::string makeEscapeKeyword(std::string _value) override;
+			virtual std::wstring makeEscapeKeyword(std::wstring _value) override;
+
 			virtual void clear_stmt(std::wstring _query);
 
         protected:

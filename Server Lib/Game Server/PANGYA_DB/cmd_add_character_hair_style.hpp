@@ -30,7 +30,7 @@ namespace stdA {
 		private:
 			CharacterInfo m_ci;
 
-			const char* m_szConsulta[3] = { "UPDATE pangya.pangya_character_information SET default_hair = ", "WHERE UID = ", "AND item_id = " };
+			const char* m_szConsulta[3] = { "UPDATE pangya.pangya_character_information SET default_hair = ", " WHERE UID = ", " AND item_id = " };
 	};
 }
 

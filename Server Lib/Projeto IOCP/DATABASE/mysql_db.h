@@ -62,6 +62,9 @@ namespace stdA {
 			virtual std::string makeText(std::string _value) override;
 			virtual std::wstring makeText(std::wstring _value) override;
 
+			virtual std::string makeEscapeKeyword(std::string _value) override;
+			virtual std::wstring makeEscapeKeyword(std::wstring _value) override;
+
         protected:
             MYSQL *m_mysql;
 

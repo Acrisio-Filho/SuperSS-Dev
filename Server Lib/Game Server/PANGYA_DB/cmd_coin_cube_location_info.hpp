@@ -40,7 +40,7 @@ namespace stdA {
 			unsigned char m_course;
 			MAP_HOLE_COIN_CUBE m_coin_cube;
 
-			const char* m_szConsulta = "SELECT [index], course, hole, tipo, tipo_location, rate, x, y, z FROM pangya.pangya.pangya_coin_cube_location WHERE course = ";
+			const char* m_szConsulta = "SELECT " DB_MAKE_ESCAPE_KEYWORD_A("index") ", course, hole, tipo, tipo_location, rate, x, y, z FROM pangya.pangya_coin_cube_location WHERE course = ";
 	};
 }
 

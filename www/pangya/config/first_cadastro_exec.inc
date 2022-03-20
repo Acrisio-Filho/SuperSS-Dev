@@ -46,7 +46,7 @@
         else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
             $query = 'SELECT index FROM '.$this->db->con_dados['DB_NAME'].'.contas_beta WHERE email = ?';
         else
-            $query = 'SELECT [index] FROM '.$this->db->con_dados['DB_NAME'].'.contas_beta WHERE email = ?';
+            $query = 'SELECT `index` FROM '.$this->db->con_dados['DB_NAME'].'.contas_beta WHERE email = ?';
 
         if ($this->msg == 0 && ($resutl = $this->db->db->execPreparedStmt($query, $this->params->get())) && $resutl->num_rows > 0)
             $this->msg = 9;	// email já existe
@@ -149,7 +149,7 @@
                                 else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
                                     $query = 'DELETE FROM '.$this->db->con_dados['DB_NAME'].'.contas_beta WHERE index = ?';
                                 else
-                                    $query = 'DELETE FROM '.$this->db->con_dados['DB_NAME'].'.contas_beta WHERE [index] = ?';
+                                    $query = 'DELETE FROM '.$this->db->con_dados['DB_NAME'].'.contas_beta WHERE `index` = ?';
 
                                 if (($result = $this->db->db->execPreparedStmt($query, $this->params->get())) && $this->db->db->getLastError() == 0 && $result->num_rows > 0)
                                     $this->msg = 107;   // Conseguiu excluir a conta de acaba de criar

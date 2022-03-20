@@ -49,7 +49,7 @@
 
         static private $validator = null;
 
-        static public function getInstance() {
+        static public function &getInstance() {
 
             if (self::$validator == null)
                 self::$validator = new XmlValidator();

@@ -25,19 +25,11 @@ void CmdGuildInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_index_re
 
 	m_gi.uid = IFNULL(atoi, _result->data[0]);
 	
-	if (_result->data[1] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(m_gi.name, sizeof(m_gi.name), _result->data[1], sizeof(m_gi.name));
-#elif defined(__linux__)
-		memcpy(m_gi.name, _result->data[1], sizeof(m_gi.name));
-#endif
+	if (is_valid_c_string(_result->data[1]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_gi.name, sizeof(m_gi.name), _result->data[1]);
 
-	if (_result->data[3] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(m_gi.mark_emblem, sizeof(m_gi.mark_emblem), _result->data[3], sizeof(m_gi.mark_emblem));
-#elif defined(__linux__)
-		memcpy(m_gi.mark_emblem, _result->data[3], sizeof(m_gi.mark_emblem));
-#endif
+	if (is_valid_c_string(_result->data[3]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_gi.mark_emblem, sizeof(m_gi.mark_emblem), _result->data[3]);
 	
 	m_gi.index_mark_emblem = (uint32_t)IFNULL(atoi, _result->data[4]); // Guild Mark index esse � usado no JP
 	

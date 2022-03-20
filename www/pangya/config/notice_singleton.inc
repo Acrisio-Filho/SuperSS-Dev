@@ -9,7 +9,7 @@
 
         static private $notices = null;
 
-        static public function getInstance() {
+        static public function &getInstance() {
 
             if (self::$notices == null) {
 

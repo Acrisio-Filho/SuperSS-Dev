@@ -63,25 +63,13 @@ void CmdFindWarehouseItem::lineResult(result_set::ctx_res* _result, uint32_t /*_
 		m_wi.clubset_workshop.recovery_pts = IFNULL(atoi, _result->data[34]);
 		m_wi.clubset_workshop.level = IFNULL(atoi, _result->data[35]);
 		m_wi.clubset_workshop.rank = IFNULL(atoi, _result->data[36]);
-		if (_result->data[37] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(m_wi.ucc.name, sizeof(m_wi.ucc.name), _result->data[37], sizeof(m_wi.ucc.name));
-#elif defined(__linux__)
-			memcpy(m_wi.ucc.name, _result->data[37], sizeof(m_wi.ucc.name));
-#endif
-		if (_result->data[38] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(m_wi.ucc.idx, sizeof(m_wi.ucc.idx), _result->data[38], sizeof(m_wi.ucc.idx));
-#elif defined(__linux__)
-			memcpy(m_wi.ucc.idx, _result->data[38], sizeof(m_wi.ucc.idx));
-#endif
+		if (is_valid_c_string(_result->data[37]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(m_wi.ucc.name, sizeof(m_wi.ucc.name), _result->data[37]);
+		if (is_valid_c_string(_result->data[38]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(m_wi.ucc.idx, sizeof(m_wi.ucc.idx), _result->data[38]);
 		m_wi.ucc.seq = (short)IFNULL(atoi, _result->data[39]);
-		if (_result->data[40] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(m_wi.ucc.copier_nick, sizeof(m_wi.ucc.copier_nick), _result->data[40], sizeof(m_wi.ucc.copier_nick));
-#elif defined(__linux__)
-			memcpy(m_wi.ucc.copier_nick, _result->data[40], sizeof(m_wi.ucc.copier_nick));
-#endif
+		if (is_valid_c_string(_result->data[40]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(m_wi.ucc.copier_nick, sizeof(m_wi.ucc.copier_nick), _result->data[40]);
 		m_wi.ucc.copier = IFNULL(atoi, _result->data[41]);
 		m_wi.ucc.trade = (unsigned char)IFNULL(atoi, _result->data[42]);
 		//m_wi.sd_flag = (unsigned char)IFNULL(atoi, _result->data[43]);

@@ -23,12 +23,8 @@ void CmdMyRoomConfig::lineResult(result_set::ctx_res* _result, uint32_t /*_index
 
 	checkColumnNumber(3, (uint32_t)_result->cols);
 
-	if (_result->data[0] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(m_mrc.pass, sizeof(m_mrc.pass), _result->data[0], sizeof(m_mrc.pass));
-#elif defined(__linux__)
-		memcpy(m_mrc.pass, _result->data[0], sizeof(m_mrc.pass));
-#endif
+	if (is_valid_c_string(_result->data[0]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_mrc.pass, sizeof(m_mrc.pass), _result->data[0]);
 	m_mrc.public_lock = (unsigned char)IFNULL(atoi, _result->data[1]);
 	m_mrc.allow_enter = (unsigned short)IFNULL(atoi, _result->data[2]);
 }

@@ -14,7 +14,7 @@
 
             if ($uid > 0) {
                 
-                $params = new paramsArr();  // Tem que usar novo Objeto de params para não da conflito com outros já que esse faz a consulta em qualquer lugar que o código chamar
+                $params = DBManagerSingleton::makeNewInstanceParamsArr($GLOBALS['DatabaseCurrentUsed']);  // Tem que usar novo Objeto de params para não da conflito com outros já que esse faz a consulta em qualquer lugar que o código chamar
                 $db = DBManagerSingleton::getInstanceDB($GLOBALS['DatabaseCurrentUsed']);
 
                 $params->clear();
@@ -69,7 +69,7 @@
 
             if ($uid > 0) {
 
-                $params = new paramsArr();  // Tem que usar novo Objeto de params para não da conflito com outros já que esse faz a consulta em qualquer lugar que o código chamar
+                $params = DBManagerSingleton::makeNewInstanceParamsArr($GLOBALS['DatabaseCurrentUsed']);  // Tem que usar novo Objeto de params para não da conflito com outros já que esse faz a consulta em qualquer lugar que o código chamar
                 $db = DBManagerSingleton::getInstanceDB($GLOBALS['DatabaseCurrentUsed']);
 
                 $params->clear();
@@ -137,7 +137,7 @@
 
         }
 
-        public static function getInstance() {
+        public static function &getInstance() {
 
             //print_r($_SESSION);
 
@@ -184,7 +184,7 @@
         }
 
         // Retorna a instância do guild info full
-        public static function getInstanceFullInfo() {
+        public static function &getInstanceFullInfo() {
 
             if (self::$guild_info == null) {
 

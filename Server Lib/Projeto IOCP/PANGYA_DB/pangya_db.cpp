@@ -324,7 +324,7 @@ inline response* pangya_db::consulta(database& _db, std::wstring _query) {
 
 	return query.getRes();*/
 
-	return _db.ExecQuery(_query);
+	return _db.ExecQuery(_db.parseEscapeKeyword(_query));
 };
 
 inline response* pangya_db::procedure(database& _db, std::string _name, std::string _params) {
@@ -339,7 +339,7 @@ inline response* pangya_db::procedure(database& _db, std::wstring _name, std::ws
 
 	return query.getRes();*/
 
-	return _db.ExecProc(_name, _params);
+	return _db.ExecProc(_db.parseEscapeKeyword(_name), _params);
 };
 
 inline void pangya_db::postAndWaitResponseQuery(exec_query& _query) {
@@ -395,16 +395,20 @@ inline void pangya_db::checkColumnNumber(uint32_t _number_cols1, uint32_t _numbe
 
 inline void pangya_db::checkResponse(response* r, std::string _exception_msg) {
 
-	if (r == nullptr || r->getNumResultSet() <= 0)
+	if (r == nullptr || (r->getNumResultSet() <= 0 && r->getRowsAffected() == -1))
 		throw exception("[pangya_db::" + _getName() + "::checkResponse][Error] " + _exception_msg, STDA_MAKE_ERROR(STDA_ERROR_TYPE::PANGYA_DB, 1, 0));
 };
 
 inline void pangya_db::checkResponse(response* r, std::wstring _exception_msg) {
 	
-	if (r == nullptr || r->getNumResultSet() <= 0)
+	if (r == nullptr || (r->getNumResultSet() <= 0 && r->getRowsAffected() == -1))
 		throw exception(L"[pangya_db::" + _wgetName() + L"::checkResponse][Error] " + _exception_msg, STDA_MAKE_ERROR(STDA_ERROR_TYPE::PANGYA_DB, 1, 0));
 };
 
 bool pangya_db::compare(exec_query* _query1, exec_query* _query2) {
 	return _query1->getQuery().compare(_query2->getQuery()) == 0;
+};
+
+bool pangya_db::is_valid_c_string(char* _ptr_c_string) {
+	return _ptr_c_string != nullptr && _ptr_c_string[0] != 0;
 };

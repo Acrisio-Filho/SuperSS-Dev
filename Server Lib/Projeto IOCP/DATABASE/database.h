@@ -9,6 +9,12 @@
 #include <string>
 #include "response.h"
 
+#define DB_ESCAPE_KEYWORD_A "-//"
+#define DB_ESCAPE_KEYWORD_W L"-//"
+
+#define DB_MAKE_ESCAPE_KEYWORD_A(_keyword) DB_ESCAPE_KEYWORD_A _keyword DB_ESCAPE_KEYWORD_A
+#define DB_MAKE_ESCAPE_KEYWORD_W(_keyword) DB_ESCAPE_KEYWORD_W _keyword DB_ESCAPE_KEYWORD_W
+
 namespace stdA {
     class database {
         public:
@@ -34,6 +40,12 @@ namespace stdA {
 
             virtual std::string makeText(std::string _value) = 0;
             virtual std::wstring makeText(std::wstring _value) = 0;
+
+			virtual std::string makeEscapeKeyword(std::string _value) = 0;
+			virtual std::wstring makeEscapeKeyword(std::wstring _value) = 0;
+
+			std::string parseEscapeKeyword(std::string _value);
+			std::wstring parseEscapeKeyword(std::wstring _value);
 
 		private:
 			bool members_empty();

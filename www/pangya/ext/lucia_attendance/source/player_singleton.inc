@@ -12,7 +12,7 @@
 
             if ($uid > 0) {
 
-                $params = new paramsArr();  // Tem que usar novo Objeto de params para não da conflito com outros já que esse faz a consulta em qualquer lugar que o código chamar
+                $params = DBManagerSingleton::makeNewInstanceParamsArr($GLOBALS['DatabaseCurrentUsed']);  // Tem que usar novo Objeto de params para não da conflito com outros já que esse faz a consulta em qualquer lugar que o código chamar
                 $db = DBManagerSingleton::getInstanceDB($GLOBALS['DatabaseCurrentUsed']);
 
                 // Pega as informações iniciais da Lucia Attendance do player
@@ -71,7 +71,7 @@
                 self::_updateInstance($_SESSION['player']['UID']);
         }
 
-        static public function getInstance() {
+        static public function &getInstance() {
 
             if (self::$player == null) {
 

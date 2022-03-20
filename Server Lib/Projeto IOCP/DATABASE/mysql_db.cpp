@@ -15,6 +15,8 @@
 
 #include <cstring>
 
+#include <regex>
+
 #define DB_HOST "localhost"
 #define DB_NAME "pangya"
 #define USER_NAME "pangya"
@@ -29,8 +31,6 @@ mysql_db::mysql_db(unsigned short _db_port) : database(DB_HOST, DB_NAME, USER_NA
     m_state = false;
     m_connected = false;
 
-	//InitializeCriticalSection(&m_cs);
-
     init();
 };
 
@@ -39,8 +39,6 @@ mysql_db::mysql_db(std::string _db_address, std::string _db_name, std::string _u
     
     m_state = false;
     m_connected = false;
-
-	//InitializeCriticalSection(&m_cs);
 
     init();
 };
@@ -51,22 +49,18 @@ mysql_db::mysql_db(std::wstring _db_address, std::wstring _db_name, std::wstring
 	m_state = false;
 	m_connected = false;
 
-	//InitializeCriticalSection(&m_cs);
-
 	init();
 };
 
 mysql_db::~mysql_db() {
 	destroy();
-	//disconnect();
-	//DeleteCriticalSection(&m_cs);
 };
 
 void mysql_db::init() {
     if ((m_mysql = mysql_init(nullptr)) == nullptr)
-        throw exception("Nao conseguiu inicializar os dados do mysql. mysql_db::init(). Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 1, mysql_errno(m_mysql)));
+        throw exception("[mysql_db::init][Error] Nao conseguiu inicializar os dados do mysql. Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 1, mysql_errno(m_mysql)));
 
-	_smp::message_pool::getInstance().push(new message("Inicializou o mysql com sucesso."));
+	_smp::message_pool::getInstance().push(new message("[mysql_db::init][Log] Inicializou o mysql com sucesso."));
 
     m_state = true;
 }
@@ -78,19 +72,19 @@ void mysql_db::connect() {
     if (!is_valid())
         init();
 
-	//if (members_empty())
-	//	throw exception("um dos dados de inicializacao esta vazio(nao foi fornecido, chame connect(com os membros) em vez de connect(). mysql_db::connect()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 2, 0));
-
 	if (is_connected())
-		throw exception("Ja esta connectado.", STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 2, 0));
+		throw exception("[mysql_db::connect][Log] Ja esta connectado.", STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 2, 0));
     
     if (!mysql_real_connect(m_mysql, std::string(m_db_address.begin(), m_db_address.end()).c_str(),
 									 std::string(m_user_name.begin(), m_user_name.end()).c_str(), 
 									 std::string(m_user_pass.begin(), m_user_pass.end()).c_str(), 
 									 std::string(m_db_name.begin(), m_db_name.end()).c_str(), m_db_port, nullptr, CLIENT_MULTI_STATEMENTS))
-        throw exception("Nao conseguiu connectar com o banco de dadas: '" + std::string(m_db_name.begin(), m_db_name.end()) + "'. mysql_db::connect(). Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 3, mysql_errno(m_mysql)));
+        throw exception("[mysql_db::connect][Error] Nao conseguiu connectar com o banco de dadas: '" + std::string(m_db_name.begin(), m_db_name.end()) + "'. Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 3, mysql_errno(m_mysql)));
 
-    _smp::message_pool::getInstance().push(new message(L"Connectou ao banco de dadaos: '" + m_db_name + L"'"));
+    _smp::message_pool::getInstance().push(new message(L"[mysql_db::connect][Log] Connectou ao banco de dadaos: '" + m_db_name + L"'"));
+
+	if (!mysql_set_character_set(m_mysql, "utf8mb4"))
+		_smp::message_pool::getInstance().push(new message(std::string("[mysql_db::connect][Log] New client character set: ") + mysql_character_set_name(m_mysql), CL_FILE_LOG_AND_CONSOLE));
 
     m_connected = true;
 };
@@ -112,7 +106,7 @@ void mysql_db::connect(std::wstring _db_address, std::wstring _db_name, std::wst
 void mysql_db::reconnect() {
 
 #ifdef _DEBUG
-	_smp::message_pool::getInstance().push(new message(L"Reconnectando com o banco de dadaos: '" + m_db_name + L"'"));
+	_smp::message_pool::getInstance().push(new message(L"[mysql_db::reconnect][Log] Reconnectando com o banco de dadaos: '" + m_db_name + L"'"));
 #endif
 
     disconnect();
@@ -124,7 +118,7 @@ void mysql_db::disconnect() {
         mysql_close(m_mysql);
 
 #ifdef _DEBUG
-	_smp::message_pool::getInstance().push(new message(L"Desconnectou do banco de dadaos: '" + m_db_name + L"'"));
+	_smp::message_pool::getInstance().push(new message(L"[mysql_db::disconnect][Log] Desconnectou do banco de dadaos: '" + m_db_name + L"'"));
 #endif
     
     m_mysql = nullptr;
@@ -135,9 +129,8 @@ void mysql_db::disconnect() {
 
 response * mysql_db::ExecQuery(std::string _query) {
 	if (!m_state || !m_connected || m_mysql == nullptr)
-		throw exception("Nao pode executar query, porque nao esta conectado com o banco de dados. mysql_db::exec_query()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 4, 0)); /*0x1040000 DB ERRO ou AVISO*/
+		throw exception("[mysql_db::ExecQuery][Error] Nao pode executar query, porque nao esta conectado com o banco de dados.", STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 4, 0)); /*0x1040000 DB ERRO ou AVISO*/
 
-	//std::vector< MYSQL_RES *> ret;
 	response *res = new response;
 	result_set *result = nullptr;
 	MYSQL_RES *r = nullptr;
@@ -159,17 +152,15 @@ response * mysql_db::ExecQuery(std::string _query) {
 	char **col = nullptr;
 	size_t i = 0;
 
-	//EnterCriticalSection(&m_cs);
-
-	if (mysql_query(m_mysql, _query.c_str()) != 0) {
-		//LeaveCriticalSection(&m_cs);
-		throw exception("Nao conseguiu executar a query: " + _query + ". mysql_db::exec_query(). Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 5, mysql_errno(m_mysql)));
-	}
+	if (mysql_query(m_mysql, _query.c_str()) != 0)
+		throw exception("[mysql_db::ExecQuery][Error] Nao conseguiu executar a query: " + _query + ". Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 5, mysql_errno(m_mysql)));
 
 	do {
 
 		numRows = mysql_affected_rows(m_mysql);
 		numResults = mysql_field_count(m_mysql);
+
+		res->setRowsAffected(numRows);
 
 		if (numResults > 0) {
 			if ((r = mysql_use_result(m_mysql)) != nullptr) { // Antes era mysql_store_result
@@ -192,6 +183,8 @@ response * mysql_db::ExecQuery(std::string _query) {
 #elif defined(__linux__)
 							strncpy(*col, row[i], lengths[i]);
 #endif
+
+							(*col)[lengths[i]] = '\0';
 						}
 
 						// Next Result
@@ -212,16 +205,13 @@ response * mysql_db::ExecQuery(std::string _query) {
 				if (res != nullptr)
 					delete res;
 
-				//LeaveCriticalSection(&m_cs);
-				throw exception("Nao conseguiu guarda o resultado que recebeu do banco de dados. mysql_db::exec_query(). Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 6, mysql_errno(m_mysql)));
+				throw exception("[mysql_db::ExecQuery][Error] Nao conseguiu guarda o resultado que recebeu do banco de dados. Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 6, mysql_errno(m_mysql)));
 			}
 		}
 	} while (mysql_more_results(m_mysql) && (error = mysql_next_result(m_mysql)) == 0);
 
-	//LeaveCriticalSection(&m_cs);
-
 	if (error > 0)
-		throw exception("Nao conseguiu executar mysql_nex_result. mysql_db::exec_query(). Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 7, mysql_errno(m_mysql)));
+		throw exception("[mysql_db::ExecQuery][Error] Nao conseguiu executar mysql_nex_result. Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 7, mysql_errno(m_mysql)));
 
 	return res;
 };
@@ -234,9 +224,8 @@ response* mysql_db::ExecQuery(std::wstring _query) {
 
 response* mysql_db::ExecProc(std::string _proc_name, std::string _proc_params) {
 	if (!m_state || !m_connected || m_mysql == nullptr)
-		throw exception("Nao pode executar query, porque nao esta conectado com o banco de dados. mysql_db::exec_query()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 4, 0)); /*0x1040000 DB ERRO ou AVISO*/
+		throw exception("[mysql_db::ExecProc][Error] Nao pode executar query, porque nao esta conectado com o banco de dados.", STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 4, 0)); /*0x1040000 DB ERRO ou AVISO*/
 
-	//std::vector< MYSQL_RES *> ret;
 	response *res = new response;
 	result_set *result = nullptr;
 	MYSQL_RES *r = nullptr;
@@ -258,18 +247,15 @@ response* mysql_db::ExecProc(std::string _proc_name, std::string _proc_params) {
 	char **col = nullptr;
 	size_t i = 0;
 
-	//EnterCriticalSection(&m_cs);
-
-	// EXEMPLO CALL ProcGetGuildInfo(4218, 1)
-	if (mysql_query(m_mysql, ("CALL " + _proc_name + "(" + _proc_params + ")").c_str()) != 0) {
-		//LeaveCriticalSection(&m_cs);
-		throw exception("Nao conseguiu executar a query: " + ("CALL " + _proc_name + "(" + _proc_params + ")") + ". mysql_db::exec_query(). Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 5, mysql_errno(m_mysql)));
-	}
+	if (mysql_query(m_mysql, ("CALL " + _proc_name + "(" + _proc_params + ")").c_str()) != 0)
+		throw exception("[mysql_db::ExecProc][Error] Nao conseguiu executar a query: " + ("CALL " + _proc_name + "(" + _proc_params + ")") + ". Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 5, mysql_errno(m_mysql)));
 
 	do {
 
 		numRows = mysql_affected_rows(m_mysql);
 		numResults = mysql_field_count(m_mysql);
+
+		res->setRowsAffected(numRows);
 
 		if (numResults > 0) {
 			if ((r = mysql_use_result(m_mysql)) != nullptr) { // Antes era mysql_store_result
@@ -292,6 +278,8 @@ response* mysql_db::ExecProc(std::string _proc_name, std::string _proc_params) {
 #elif defined(__linux__)
 							strncpy(*col, row[i], lengths[i]);
 #endif
+							
+							(*col)[lengths[i]] = '\0';
 						}
 
 						// Next Result
@@ -312,16 +300,13 @@ response* mysql_db::ExecProc(std::string _proc_name, std::string _proc_params) {
 				if (res != nullptr)
 					delete res;
 
-				//LeaveCriticalSection(&m_cs);
-				throw exception("Nao conseguiu guarda o resultado que recebeu do banco de dados. mysql_db::exec_query(). Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 6, mysql_errno(m_mysql)));
+				throw exception("[mysql_db::ExecProc][Error] Nao conseguiu guarda o resultado que recebeu do banco de dados. Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 6, mysql_errno(m_mysql)));
 			}
 		}
 	} while (mysql_more_results(m_mysql) && (error = mysql_next_result(m_mysql)) == 0);
 
-	//LeaveCriticalSection(&m_cs);
-
 	if (error > 0)
-		throw exception("Nao conseguiu executar mysql_nex_result. mysql_db::exec_query(). Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 7, mysql_errno(m_mysql)));
+		throw exception("[mysql_db::ExecProc][Error] Nao conseguiu executar mysql_nex_result. Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 7, mysql_errno(m_mysql)));
 
 	return res;
 };
@@ -335,48 +320,17 @@ response* mysql_db::ExecProc(std::wstring _proc_name, std::wstring _proc_params)
 };
 
 std::string mysql_db::makeText(std::string _value) {
-	return "'" + _value + "'";
+	return "'" + std::regex_replace(_value, std::regex("\\\\"), "\\\\\\") + "'";
 };
 
 std::wstring mysql_db::makeText(std::wstring _value) {
-	return L"'" + _value + L"'";
+	return L"'" + std::regex_replace(_value, std::wregex(L"\\\\"), L"\\\\\\") + L"'";
 };
 
-//std::vector< response *> mysql_db::try_exec_query(std::string query) {
-//	if (!m_state || !m_connected || m_mysql == nullptr)
-//		throw exception("Nao pode executar query, porque nao esta conectado com o banco de dados. mysql_db::try_exec_query()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 4, 0)); /*0x1080000 DB ERRO ou AVISO*/
-//
-//	std::vector< MYSQL_RES *> ret;
-//	MYSQL_RES *r = nullptr;
-//	errno_t error = 0;
-//
-//	if (!TryEnterCriticalSection(&m_cs))
-//		throw exception("Não conseguiu entrar no TryCriticalSection ou esgotou o tempo. mysql_db::try_exec_query()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 9, 0));
-//
-//	if (mysql_query(m_mysql, query.c_str()) != 0) {
-//		LeaveCriticalSection(&m_cs);
-//		throw exception("Nao conseguiu executar a query: " + query + ". mysql_db::try_exec_query(). Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 5, mysql_errno(m_mysql)));
-//	}
-//
-//	do {
-//		if ((r = mysql_store_result(m_mysql)) != nullptr)
-//			ret.push_back(r);
-//		else if (mysql_errno(m_mysql) != 0) {
-//			while (!ret.empty()) {
-//				mysql_free_result(ret.front());
-//				ret.erase(ret.begin());
-//				ret.shrink_to_fit();
-//			}
-//
-//			LeaveCriticalSection(&m_cs);
-//			throw exception("Nao conseguiu guarda o resultado que recebeu do banco de dados. mysql_db::try_exec_query(). Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 6, mysql_errno(m_mysql)));
-//		}
-//	} while (mysql_more_results(m_mysql) && (error = mysql_next_result(m_mysql)) == 0);
-//
-//	LeaveCriticalSection(&m_cs);
-//
-//	if (error > 0)
-//		throw exception("Nao conseguiu executar mysql_nex_result. mysql_db::try_exec_query(). Msg: " + std::string(mysql_error(m_mysql)), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_MYSQL, 7, mysql_errno(m_mysql)));
-//
-//	return ret;
-//};
+std::string mysql_db::makeEscapeKeyword(std::string _value) {
+	return "`" + _value + "`";
+};
+
+std::wstring mysql_db::makeEscapeKeyword(std::wstring _value) {
+	return L"`" + _value + L"`";
+};

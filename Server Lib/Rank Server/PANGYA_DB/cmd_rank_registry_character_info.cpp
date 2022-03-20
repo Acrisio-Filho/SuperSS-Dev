@@ -36,10 +36,10 @@ void CmdRankRegistryCharacterInfo::lineResult(result_set::ctx_res* _result, uint
 
 	rc.setUID(IFNULL(atoi, _result->data[0]));
 
-	if (_result->data[1] != nullptr)
+	if (is_valid_c_string(_result->data[1]))
 		rc.setId(_result->data[1]);
 
-	if (_result->data[2] != nullptr)
+	if (is_valid_c_string(_result->data[2]))
 		rc.setNickname(_result->data[2]);
 
 	rc.setLevel((unsigned short)IFNULL(atoi, _result->data[3]));

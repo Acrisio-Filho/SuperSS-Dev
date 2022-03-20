@@ -27,27 +27,11 @@ void CmdPlayerInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_index_r
 
 	size_t len = 0u;
 	
-	if (_result->data[1] != nullptr) {
-		
-		len = strlen(_result->data[1]);
+	if (is_valid_c_string(_result->data[1]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_pi.id, sizeof(m_pi.id), _result->data[1]);
 
-#if defined(_WIN32)
-		memcpy_s(m_pi.id, sizeof(m_pi.id), _result->data[1], (len > sizeof(m_pi.id) ? sizeof(m_pi.id) : len));
-#elif defined(__linux__)
-		memcpy(m_pi.id, _result->data[1], (len > sizeof(m_pi.id) ? sizeof(m_pi.id) : len));
-#endif
-	}
-
-	if (_result->data[2] != nullptr) {
-
-		len = strlen(_result->data[2]);
-
-#if defined(_WIN32)
-		memcpy_s(m_pi.nickname, sizeof(m_pi.nickname), _result->data[2], (len > sizeof(m_pi.nickname) ? sizeof(m_pi.nickname) : len));
-#elif defined(__linux__)
-		memcpy(m_pi.nickname, _result->data[2], (len > sizeof(m_pi.nickname) ? sizeof(m_pi.nickname) : len));
-#endif
-	}
+	if (is_valid_c_string(_result->data[2]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_pi.nickname, sizeof(m_pi.nickname), _result->data[2]);
 	
 	m_pi.m_cap = IFNULL(atoi, _result->data[3]);
 	m_pi.server_uid = IFNULL(atoi, _result->data[4]);

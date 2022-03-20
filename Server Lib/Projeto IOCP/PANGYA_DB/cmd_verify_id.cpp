@@ -25,7 +25,7 @@ void CmdVerifyID::lineResult(result_set::ctx_res* _result, uint32_t /*_index_res
 
 	// Aqui faz as coisas
 	m_uid = IFNULL(atoi, _result->data[0]);
-	std::string id_req((_result->data[1] != nullptr) ? _result->data[1] : "");
+	std::string id_req((is_valid_c_string(_result->data[1])) ? _result->data[1] : "");
 	// Fim
 
 	if (m_id.compare(id_req) != 0)

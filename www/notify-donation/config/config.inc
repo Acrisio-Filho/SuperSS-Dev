@@ -10,7 +10,7 @@
 	$GLOBALS['DatabaseConfigInstance'] = new DatabaseConfig();
 
 	// MySQL
-	$GLOBALS['DatabaseConfigInstance']->addConfig(DatabaseConfig::_MYSQL_, "127.0.0.1", "pangya", "pangya", "pangya");
+	$GLOBALS['DatabaseConfigInstance']->addConfig(DatabaseConfig::_MYSQL_, "127.0.0.1:3308", "pangya", "pangya", "pangya");
 
 	// MSSQL
 	$GLOBALS['DatabaseConfigInstance']->addConfig(DatabaseConfig::_MSSQL_, "pangyaPHP", "pangya", "pangyaPHP", "pangya");
@@ -19,7 +19,7 @@
 	$GLOBALS['DatabaseConfigInstance']->addConfig(DatabaseConfig::_PSQL_, "pangyaPHP_pg", "pangya", "pangyaPHP", "pangya");
 
 	// Server Database current in use
-	$GLOBALS['DatabaseCurrentUsed'] = DatabaseConfig::_PSQL_;
+	$GLOBALS['DatabaseCurrentUsed'] = DatabaseConfig::_MYSQL_;
 
 	// log types
 	define('eTYPE_PLATAFORM_LOG', [

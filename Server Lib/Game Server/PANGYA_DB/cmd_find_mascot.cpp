@@ -32,12 +32,8 @@ void CmdFindMascot::lineResult(result_set::ctx_res* _result, uint32_t /*_index_r
 		m_mi.level = (unsigned char)IFNULL(atoi, _result->data[3]);
 		m_mi.exp = IFNULL(atoi, _result->data[4]);
 		m_mi.flag = (unsigned char)IFNULL(atoi, _result->data[5]);
-		if (_result->data[6] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(m_mi.message, sizeof(m_mi.message), _result->data[6], sizeof(m_mi.message));
-#elif defined(__linux__)
-			memcpy(m_mi.message, _result->data[6], sizeof(m_mi.message));
-#endif
+		if (is_valid_c_string(_result->data[6]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(m_mi.message, sizeof(m_mi.message), _result->data[6]);
 		m_mi.tipo = (short)IFNULL(atoi, _result->data[7]);
 		m_mi.is_cash = (unsigned char)IFNULL(atoi, _result->data[8]);
 		_translateDate(_result->data[9], &m_mi.data);

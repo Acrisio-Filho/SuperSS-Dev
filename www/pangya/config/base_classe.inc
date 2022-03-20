@@ -918,7 +918,7 @@ class base_c {
 					else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
 						$query = 'UPDATE '.$this->db->con_dados['DB_NAME'].'.account SET capability = ? WHERE UID = ?';
 					else
-						$query = 'UPDATE '.$this->db->con_dados['DB_NAME'].'.account SET capability = ? WHERE [UID] = ?';
+						$query = 'UPDATE '.$this->db->con_dados['DB_NAME'].'.account SET capability = ? WHERE `UID` = ?';
 
 					$this->params->clear();
 					$this->params->add('i', $cap);
@@ -1760,7 +1760,7 @@ class base_c {
 			else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
 				$query = 'SELECT a.nick, a.capability as cap, b.level, b.cookie, b.pang FROM '.$this->db->con_dados['DB_NAME'].'.account a, '.$this->db->con_dados['DB_NAME'].'.user_info b WHERE a.UID = b.UID AND a.UID = ?';
 			else
-				$query = 'SELECT a.nick, a.capability as cap, b.´level´, b.cookie, b.pang FROM account a, user_info b WHERE a.´UID´ = b.´UID´ AND ´UID´ = ?';
+				$query = 'SELECT a.nick, a.capability as cap, b.`level`, b.cookie, b.pang FROM account a, user_info b WHERE a.UID = b.UID AND a.UID = ?';
 
 			if (($result = $this->db->db->execPreparedStmt($query, $this->params->get())) != null && $this->db->db->getLastError() == 0
 				&& ($row = $result->fetch_assoc()) && isset($row['cookie']) && isset($row['pang']) 
@@ -2531,7 +2531,7 @@ class base_c {
 						else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
 							$query = 'SELECT a.uid, a.nome, a.sobre_nome, a.email, a.key_uniq, a.finish_reg, a.ip_register, a.date_reg FROM '.$this->db->con_dados['DB_NAME'].'.contas_beta a';
 						else
-							$query = 'call ProcGetInfoPlayerToWeb(3)';
+							$query = 'SELECT a.uid, a.nome, a.sobre_nome, a.email, a.key_uniq, a.finish_reg, a.ip_register, a.date_reg FROM '.$this->db->con_dados['DB_NAME'].'.contas_beta a';
 
 					}else if (isset($_GET['players_unfirst_login'])) {
 						
@@ -2540,7 +2540,7 @@ class base_c {
 						else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
 							$query = 'select "_uid_" as "uid", "_id_" as "id", "_nick_" as "nick", "_level_" as "level", "_idstate_" as "idstate", "_cap_" as "cap", "_pang_" as "pang", "_cookie_" as "cookie", "_channel_" as "channel", "_lobby_" as "lobby", "_room_" as "room", "_place_" as "place", "_logonCount_" as "logonCount", "_counter_" as "counter", "_userip_" as "userip", "_LastLogonTime_" as "LastLogonTime", "_logon_" as "logon", "_game_server_id_" as "game_server_id", "_name_" as "name" from '.$this->db->con_dados['DB_NAME'].'.ProcGetInfoPlayerToWeb(1)';
 						else
-							$query = 'call ProcGetInfoToWeb(1)';
+							$query = 'call ProcGetInfoPlayerToWeb(1)';
 					
 					}else if (isset($_GET['players_ban'])) {
 					
@@ -2549,7 +2549,7 @@ class base_c {
 						else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
 							$query = 'select "_uid_" as "uid", "_id_" as "id", "_nick_" as "nick", "_level_" as "level", "_idstate_" as "idstate", "_cap_" as "cap", "_pang_" as "pang", "_cookie_" as "cookie", "_channel_" as "channel", "_lobby_" as "lobby", "_room_" as "room", "_place_" as "place", "_logonCount_" as "logonCount", "_counter_" as "counter", "_userip_" as "userip", "_LastLogonTime_" as "LastLogonTime", "_logon_" as "logon", "_game_server_id_" as "game_server_id", "_name_" as "name" from '.$this->db->con_dados['DB_NAME'].'.ProcGetInfoPlayerToWeb(4)';
 						else
-							$query = 'call ProcGetInfoToWeb(4)';
+							$query = 'call ProcGetInfoPlayerToWeb(4)';
 							
 					}else {
 						
@@ -2713,7 +2713,7 @@ class base_c {
 				else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
 					$query = "SELECT a.uid, a.type, a.name, CASE WHEN a.UpdateTime > (now() + '-12 second'::interval) THEN 1 ELSE 0 END as status, a.currUser, COALESCE(b.pangrate, a.pangrate) as PangRate, COALESCE(b.exprate, a.exprate) as ExpRate, COALESCE(b.clubmasteryrate, a.masteryrate) as ClubMastery, COALESCE(b.treasurerate, a.treasurerate) as TreasureRate, COALESCE(b.chuvarate, a.chuvarate) as ChuvaRate, COALESCE(b.scratchyporpointrate, a.scratchrate) as ScratchyRate, COALESCE(b.papelshoprareitemrate, a.rareitemrate) as PapelShopRareItemRate, COALESCE(b.papelshopcookieitemrate, a.cookieitemrate) as PapelShopCookieItemRate, COALESCE(b.memorialshoprate, 0) as MemorialShopRate, COALESCE(b.grandzodiaceventtime, 0) as GrandZodiacEventTime, COALESCE(b.AngelEvent, 0) as AngelEvent, COALESCE(b.GrandPrixEvent, 0) as GrandPrixEvent, COALESCE(b.GoldenTimeEvent, 0) as GoldenTimeEvent, COALESCE(b.LoginRewardEvent, 0) as LoginRewardEvent, COALESCE(b.BotGMEvent, 0) as BotGMEvent, COALESCE(b.SmartCalculator, 0) as SmartCalculator FROM ".$this->db->con_dados['DB_NAME'].'.pangya_server_list a LEFT OUTER JOIN '.$this->db->con_dados['DB_NAME'].'.pangya_config b ON a.uid = b.uid ORDER BY type';
 				else
-					$query = 'SELECT uid, type, name, IF(UpdateTime > TIMESTAMPADD(SECOND, -12, NOW()), 1, 0) as status, currUser, pangrate, exprate, masteryrate, treasurerate, chuvarate, scratchrate, rareitemrate, cookieitemrate FROM pangya_server_list ORDER BY `type`';
+					$query = 'SELECT a.uid, a.type, a.name, IF(a.UpdateTime > TIMESTAMPADD(SECOND, -12, NOW()), 1, 0) as status, a.currUser, IFNULL(b.pangrate, a.pangrate) as PangRate, IFNULL(b.exprate, a.exprate) as ExpRate, IFNULL(b.clubmasteryrate, a.masteryrate) as ClubMastery, IFNULL(b.treasurerate, a.treasurerate) as TreasureRate, IFNULL(b.chuvarate, a.chuvarate) as ChuvaRate, IFNULL(b.scratchyporpointrate, a.scratchrate) as ScratchyRate, IFNULL(b.papelshoprareitemrate, a.rareitemrate) as PapelShopRareItemRate, IFNULL(b.papelshopcookieitemrate, a.cookieitemrate) as PapelShopCookieItemRate, IFNULL(b.memorialshoprate, 0) as MemorialShopRate, IFNULL(b.grandzodiaceventtime, 0) as GrandZodiacEventTime, IFNULL(b.AngelEvent, 0) as AngelEvent, IFNULL(b.GrandPrixEvent, 0) as GrandPrixEvent, IFNULL(b.GoldenTimeEvent, 0) as GoldenTimeEvent, IFNULL(b.LoginRewardEvent, 0) as LoginRewardEvent, IFNULL(b.BotGMEvent, 0) as BotGMEvent, IFNULL(b.SmartCalculator, 0) as SmartCalculator FROM pangya_server_list a LEFT OUTER JOIN pangya_config b ON a.uid = b.uid ORDER BY `type`';
 
 				if ($result =$this->db->db->execPreparedStmt($query, NULL, 1)) {
 					if ($result->num_rows > 0) {
@@ -5380,7 +5380,7 @@ Data de funcionamento. Tempo inderterminado.
 				else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
 					$query = 'SELECT id, nick FROM '.$this->db->con_dados['DB_NAME'].'.account WHERE UID = ?';
 				else
-					$query = 'SELECT id, nick FROM account WHERE ´UID´ = ?';
+					$query = 'SELECT id, nick FROM account WHERE `UID` = ?';
 
 				if (($result = $this->db->db->execPreparedStmt($query, $this->params->get())) != null && $this->db->db->getLastError() == 0) {
 

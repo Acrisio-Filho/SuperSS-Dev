@@ -21,6 +21,36 @@
 #define IFNULL(_func, _data) ((_data == nullptr) ? 0 : _func((_data))) 
 #endif
 
+#if defined(_WIN32)
+#define STRCPY_TO_MEMORY_FIXED_SIZE(_memory, _size, _str) \
+{ \
+	if ((_size) > 0 && (_str) != nullptr) { \
+\
+		if ((_str)[0] == '\0') { \
+			(_memory)[0] = '\0'; \
+		}else { \
+			int32_t len = (int32_t)strlen((_str)); \
+			len = (len > (_size) ? _size : len); \
+			memcpy_s((_memory), (_size), (_str), len); \
+		} \
+	} \
+}
+#elif defined(__linux__)
+#define STRCPY_TO_MEMORY_FIXED_SIZE(_memory, _size, _str) \
+{ \
+	if ((_size) > 0 && (_str) != nullptr) { \
+\
+		if ((_str)[0] == '\0') { \
+			(_memory)[0] = '\0'; \
+		}else { \
+			int32_t len = (int32_t)strlen((_str)); \
+			len = (len > (_size) ? _size : len); \
+			memcpy((_memory), (_str), len); \
+		} \
+	} \
+}
+#endif
+
 namespace stdA {
     class pangya_db {
         public:
@@ -63,6 +93,9 @@ namespace stdA {
 			// get Class name
 			virtual std::string _getName() = 0;
 			virtual std::wstring _wgetName() = 0;
+
+		protected:
+			static bool is_valid_c_string(char* _ptr_c_string);
 
 		protected:
 			exception m_exception;

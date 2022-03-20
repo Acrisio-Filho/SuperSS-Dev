@@ -32,7 +32,7 @@ namespace stdA {
             uint32_t m_server_uid;
             AuthServerKey m_ask;
 
-            const char* m_szConsulta = "SELECT server_uid, [key], VALID FROM pangya.pangya_auth_key WHERE server_uid = ";
+            const char* m_szConsulta = "SELECT server_uid, " DB_MAKE_ESCAPE_KEYWORD_A("key") ", VALID FROM pangya.pangya_auth_key WHERE server_uid = ";
     };
 }
 

@@ -30,14 +30,10 @@ void CmdMsgOffInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_index_r
 
 	moi.id = (short)IFNULL(atoi, _result->data[0]);
 	moi.from_uid = IFNULL(atoi, _result->data[1]);
-	if (_result->data[2] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(moi.nick, sizeof(moi.nick), _result->data[2], sizeof(moi.nick));
-#elif defined(__linux__)
-		memcpy(moi.nick, _result->data[2], sizeof(moi.nick));
-#endif
+	if (is_valid_c_string(_result->data[2]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(moi.nick, sizeof(moi.nick), _result->data[2]);
 
-	if (_result->data[3] != nullptr) {
+	if (is_valid_c_string(_result->data[3])) {
 
 		try {
 
@@ -64,12 +60,8 @@ void CmdMsgOffInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_index_r
 		}
 	}
 	
-	if (_result->data[4] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(moi.date, sizeof(moi.date), _result->data[4], sizeof(moi.date) - 1);
-#elif defined(__linux__)
-		memcpy(moi.date, _result->data[4], sizeof(moi.date) - 1);
-#endif
+	if (is_valid_c_string(_result->data[4]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(moi.date, sizeof(moi.date), _result->data[4]);
 
 	v_moi.push_back(moi);
 }

@@ -26,12 +26,8 @@ void CmdAuthKeyGameInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_in
 
     checkColumnNumber(3, (uint32_t)_result->cols);
 
-    if (_result->data[0] != nullptr)
-#if defined(_WIN32)
-        memcpy_s(m_akgi.key, sizeof(m_akgi.key), _result->data[0], sizeof(m_akgi.key));
-#elif defined(__linux__)
-        memcpy(m_akgi.key, _result->data[0], sizeof(m_akgi.key));
-#endif
+    if (is_valid_c_string(_result->data[0]))
+        STRCPY_TO_MEMORY_FIXED_SIZE(m_akgi.key, sizeof(m_akgi.key), _result->data[0]);
     m_akgi.server_uid = IFNULL(atoi, _result->data[1]);
     m_akgi.valid = (unsigned char)IFNULL(atoi, _result->data[2]);
 

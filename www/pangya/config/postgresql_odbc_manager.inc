@@ -61,11 +61,16 @@
 			}
 		}
 
-		public function execPreparedStmt($query, $params, $option = 0) {
+		public function execPreparedStmt($query, $obj_params, $option = 0) {
 			if ($this->is_connected) {
 				$this->clear_consulta();
                 $this->close_stmt();
                 $this->last_error = 0;
+
+				if ($obj_params != null)
+					$params = $obj_params->getValues();
+				else
+					$params = null;
 
 				if (!empty($query) && ((!empty($params) && is_array($params)) || ($params == null && $option == 1))) {
 					if (($this->stmt_current = $this->db->prepare($query))) {

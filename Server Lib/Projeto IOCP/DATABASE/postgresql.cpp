@@ -244,9 +244,6 @@ response* postgresql::ExecQuery(std::wstring _query) {
     response *res = new response;
     result_set *result = nullptr;
 
-	// Teste, tirando [nome] do mssql, que no postgresql é "nome"
-	_query = std::regex_replace(_query, std::wregex(L"\\[([\\w\\.\\-_\\s]+)\\]"), L"\"$1\"");
-
 	try {
 
 		HandleDiagnosticRecord(m_ctx.hStmt, SQL_HANDLE_STMT, EXEC_QUERY_FAIL, ret = SQLExecDirect(m_ctx.hStmt, 
@@ -270,6 +267,8 @@ response* postgresql::ExecQuery(std::wstring _query) {
 
 			HandleDiagnosticRecord(m_ctx.hStmt, SQL_HANDLE_STMT, GERAL_ERROR, SQLNumResultCols(m_ctx.hStmt, &numResults), _query);
 			HandleDiagnosticRecord(m_ctx.hStmt, SQL_HANDLE_STMT, GERAL_ERROR, SQLRowCount(m_ctx.hStmt, &numRows), _query);           // Linha afetadas, não é a quantidade de linha retornada não
+
+			res->setRowsAffected(numRows);
 
 			if (numResults > 0) {
 				ret = SQLFetch(m_ctx.hStmt);
@@ -391,6 +390,8 @@ response* postgresql::ExecProc(std::wstring _proc_name, std::wstring _proc_param
 			HandleDiagnosticRecord(m_ctx.hStmt, SQL_HANDLE_STMT, GERAL_ERROR, SQLNumResultCols(m_ctx.hStmt, &numResults), _query);
 			HandleDiagnosticRecord(m_ctx.hStmt, SQL_HANDLE_STMT, GERAL_ERROR, SQLRowCount(m_ctx.hStmt, &numRows), _query);           // Linha afetadas, não é a quantidade de linha retornada não
 
+			res->setRowsAffected(numRows);
+
 			if (numResults > 0) {
 				ret = SQLFetch(m_ctx.hStmt);	// Fetch Line
 
@@ -479,6 +480,14 @@ std::string postgresql::makeText(std::string _value) {
 
 std::wstring postgresql::makeText(std::wstring _value) {
 	return L"'" + _value + L"'::text";
+};
+
+std::string postgresql::makeEscapeKeyword(std::string _value) {
+	return "\"" + _value + "\"";
+};
+
+std::wstring postgresql::makeEscapeKeyword(std::wstring _value) {
+	return L"\"" + _value + L"\"";
 };
 
 void postgresql::clear_stmt(std::wstring _query) {

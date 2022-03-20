@@ -12,7 +12,7 @@
 
 using namespace stdA;
 
-response::response() {};
+response::response() : m_rows_affected(0ll) {};
 
 response::~response() {
     clear();
@@ -45,4 +45,12 @@ result_set*& response::getResultSetAt(size_t _index) {
         throw exception("Index out of range.", STDA_MAKE_ERROR(STDA_ERROR_TYPE::_RESPONSE, 1, 0));
 
     return m_result_set[_index];
+};
+
+void response::setRowsAffected(int64_t _rows_affected) {
+	m_rows_affected = _rows_affected;
+};
+
+int64_t response::getRowsAffected() {
+	return m_rows_affected;
 };

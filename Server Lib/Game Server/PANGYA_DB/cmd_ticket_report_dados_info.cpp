@@ -51,25 +51,13 @@ void CmdTicketReportDadosInfo::lineResult(result_set::ctx_res* _result, uint32_t
 	pd.item_boost = (unsigned char)IFNULL(atoi, _result->data[13]);
 	pd.premium_user = (unsigned char)IFNULL(atoi, _result->data[14]);
 	pd.level = (uint32_t)IFNULL(atoi, _result->data[15]);
-	if (_result->data[16] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(pd.id, sizeof(pd.id), _result->data[16], sizeof(pd.id));
-#elif defined(__linux__)
-		memcpy(pd.id, _result->data[16], sizeof(pd.id));
-#endif
-	if (_result->data[17] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(pd.nickname, sizeof(pd.nickname), _result->data[17], sizeof(pd.nickname));
-#elif defined(__linux__)
-		memcpy(pd.nickname, _result->data[17], sizeof(pd.nickname));
-#endif
+	if (is_valid_c_string(_result->data[16]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(pd.id, sizeof(pd.id), _result->data[16]);
+	if (is_valid_c_string(_result->data[17]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(pd.nickname, sizeof(pd.nickname), _result->data[17]);
 	pd.guild_uid = (uint32_t)IFNULL(atoi, _result->data[18]);
-	if (_result->data[19] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(pd.guild_mark_img, sizeof(pd.guild_mark_img), _result->data[19], sizeof(pd.guild_mark_img));
-#elif defined(__linux__)
-		memcpy(pd.guild_mark_img, _result->data[19], sizeof(pd.guild_mark_img));
-#endif
+	if (is_valid_c_string(_result->data[19]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(pd.guild_mark_img, sizeof(pd.guild_mark_img), _result->data[19]);
 	
 	pd.mark_index = (uint32_t)IFNULL(atoi, _result->data[20]); // Guild Emblem Index � usado no JP
 

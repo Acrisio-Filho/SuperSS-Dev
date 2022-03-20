@@ -1262,8 +1262,8 @@
             else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
                 $query = 'SELECT index, inicio_time, fim_time, channel_id, valid, reg_date FROM '
                     .$db->con_dados['DB_NAME'].'.pangya_bot_gm_event_time ORDER BY index DESC OFFSET ? ROWS FETCH NEXT '.self::$LIMIT_EVENTS_PER_PAGE.' ROWS ONLY';
-            //else
-            //    $query = ''; // MYSQL
+            else
+                $query = 'SELECT `index`, inicio_time, fim_time, channel_id, valid, reg_date FROM '.$db->con_dados['DB_NAME'].'.pangya_bot_gm_event_time ORDER BY `index` DESC LIMIT ?, '.self::$LIMIT_EVENTS_PER_PAGE; // MYSQL
 
             $params->clear();
             $params->add('i', $num_events);
@@ -1271,7 +1271,7 @@
             if (($result = $db->db->execPreparedStmt($query, $params->get())) && $db->db->getLastError() == 0) {
 
                 while ($row = $result->fetch_assoc()) {
-                    
+
                     if (isset($row['index']) && isset($row['inicio_time']) && isset($row['fim_time']) 
                         && isset($row['channel_id']) && isset($row['valid']) && isset($row['reg_date'])) {
                         
@@ -1298,8 +1298,8 @@
             else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
                 $query = 'SELECT index, typeid, qntd, qntd_time, rate, valid, reg_date FROM '
                     .$db->con_dados['DB_NAME'].'.pangya_bot_gm_event_reward ORDER BY index DESC OFFSET ? ROWS FETCH NEXT '.self::$LIMIT_EVENTS_PER_PAGE.' ROWS ONLY';
-            //else
-            //    $query = ''; // MYSQL
+            else
+                $query = 'SELECT `index`, typeid, qntd, qntd_time, rate, valid, reg_date FROM '.$db->con_dados['DB_NAME'].'.pangya_bot_gm_event_reward ORDER BY `index` DESC LIMIT ?, '.self::$LIMIT_EVENTS_PER_PAGE; // MYSQL
 
             $params->clear();
             $params->add('i', $num_events);

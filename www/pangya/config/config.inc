@@ -15,6 +15,6 @@
 	//$GLOBALS['DatabaseConfigInstance']->addConfig(DatabaseConfig::_PSQL_, "pangyaPHP_pgpi", "pangya", "pangyaPHP", "pangya");
 
 	// Server Database current in use
-	$GLOBALS['DatabaseCurrentUsed'] = DatabaseConfig::_PSQL_;
+	$GLOBALS['DatabaseCurrentUsed'] = DatabaseConfig::_MYSQL_;
 
 ?>

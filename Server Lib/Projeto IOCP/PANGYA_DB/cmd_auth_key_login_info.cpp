@@ -25,12 +25,8 @@ void CmdAuthKeyLoginInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_i
 
     checkColumnNumber(2, (uint32_t)_result->cols);
 
-    if (_result->data[0] != nullptr)
-#if defined(_WIN32)
-        memcpy_s(m_akli.key, sizeof(m_akli.key), _result->data[0], sizeof(m_akli.key));
-#elif defined(__linux__)
-        memcpy(m_akli.key, _result->data[0], sizeof(m_akli.key));
-#endif
+    if (is_valid_c_string(_result->data[0]))
+        STRCPY_TO_MEMORY_FIXED_SIZE(m_akli.key, sizeof(m_akli.key), _result->data[0]);
     m_akli.valid = (unsigned char)IFNULL(atoi, _result->data[1]);
 
     if (m_akli.key[0] == '\0')

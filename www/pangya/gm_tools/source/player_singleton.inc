@@ -11,7 +11,7 @@
     class PlayerSingleton {
         static private $player = null;
 
-        static public function getInstance() {
+        static public function &getInstance() {
 
             if (self::$player == null) {
 

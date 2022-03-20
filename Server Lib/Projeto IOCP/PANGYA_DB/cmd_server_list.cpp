@@ -25,19 +25,11 @@ void CmdServerList::lineResult(result_set::ctx_res* _result, uint32_t /*_index_r
     
     ServerInfo si = { 0 };
 
-	if (_result->data[0] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(si.nome, sizeof(si.nome), _result->data[0], sizeof(si.nome));
-#elif defined(__linux__)
-		memcpy(si.nome, _result->data[0], sizeof(si.nome));
-#endif
+	if (is_valid_c_string(_result->data[0]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(si.nome, sizeof(si.nome), _result->data[0]);
 	si.uid = IFNULL(atoi, _result->data[1]);
-	if (_result->data[2] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(si.ip, sizeof(si.ip), _result->data[2], sizeof(si.ip));
-#elif defined(__linux__)
-		memcpy(si.ip, _result->data[2], sizeof(si.ip));
-#endif
+	if (is_valid_c_string(_result->data[2]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(si.ip, sizeof(si.ip), _result->data[2]);
 	si.port = IFNULL(atoi, _result->data[3]);
 	si.max_user = IFNULL(atoi, _result->data[4]);
 	si.curr_user = IFNULL(atoi, _result->data[5]);

@@ -53,6 +53,25 @@
             return self::$db_ctx[$type];
         }
 
+        public static function makeNewInstanceParamsArr($type) {
+            
+            if (!DatabaseConfig::isKnownType($type)) {
+
+                error_log("[DBManagerSingleton::makeNewInstanceParamsArr][Error] Type Database Engine($type) is invalid.", 0);
+
+                exit();
+            }
+               
+            switch ($type) {
+                case DatabaseConfig::_MYSQL_:
+                    return new paramsArr(0);
+                case DatabaseConfig::_MSSQL_:
+                    return new paramsArr(1);
+                case DatabaseConfig::_PSQL_:
+                    return new paramsArr(1);
+            }
+        }
+
         private static function makeMySQLDatabaseContext() {
             global $DatabaseConfigInstance;
 
@@ -67,7 +86,7 @@
                 exit();
             }
 
-            $ctx->params = new paramsArr();
+            $ctx->params = new paramsArr(0);
             $ctx->db = new MysqlManager($ctx->con_dados);
 
             return $ctx;
@@ -87,7 +106,7 @@
                 exit();
             }
 
-            $ctx->params = new paramsArr();
+            $ctx->params = new paramsArr(1);
             $ctx->db = new MSSqlODBCManager($ctx->con_dados);
 
             return $ctx;
@@ -107,7 +126,7 @@
                 exit();
             }
 
-            $ctx->params = new paramsArr();
+            $ctx->params = new paramsArr(1);
             $ctx->db = new PostgreSQLODBCManager($ctx->con_dados);
 
             return $ctx;

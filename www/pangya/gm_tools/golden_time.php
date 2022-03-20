@@ -1705,8 +1705,8 @@
                 $query = 'SELECT [index], [type], [begin], [end], [rate], [is_end], [reg_date] FROM '.$db->con_dados['DB_NAME'].'.pangya_golden_time_info ORDER BY [index] DESC OFFSET ? ROWS FETCH NEXT '.self::$LIMIT_EVENTS_PER_PAGE.' ROWS ONLY';
             else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
                 $query = 'SELECT index, type, begin, "end", rate, is_end, reg_date FROM '.$db->con_dados['DB_NAME'].'.pangya_golden_time_info ORDER BY index DESC OFFSET ? ROWS FETCH NEXT '.self::$LIMIT_EVENTS_PER_PAGE.' ROWS ONLY';
-            //else
-            //    $query = ''; // MYSQL
+            else
+                $query = 'SELECT `index`, `type`, `begin`, `end`, rate, is_end, reg_date FROM '.$db->con_dados['DB_NAME'].'.pangya_golden_time_info ORDER BY `index` DESC LIMIT ?, '.self::$LIMIT_EVENTS_PER_PAGE; // MYSQL
 
             $params->clear();
             $params->add('i', $num_events);

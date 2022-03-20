@@ -27,11 +27,11 @@ PlayerInfo pangya_db::getPlayerInfo(uint32_t uid) {
     BEGIN_RESULT_READ(6, 1)
 
 	pi.uid = IFNULL(atoi, _result->data[0]);
-	if (_result->data[1] != nullptr)
+	if (is_valid_c_string(_result->data[1]))
 		strcpy_s(pi.id, _result->data[1]);
-	if (_result->data[2] != nullptr)
+	if (is_valid_c_string(_result->data[2]))
 		strcpy_s(pi.nickname, _result->data[2]);
-	if (_result->data[3] != nullptr)
+	if (is_valid_c_string(_result->data[3]))
 		strcpy_s(pi.pass, _result->data[3]);
 	pi.m_cap = IFNULL(atoi, _result->data[4]);
 	pi.level = (unsigned short)IFNULL(atoi, _result->data[5]);
@@ -83,7 +83,7 @@ std::string pangya_db::getAuthKey(uint32_t uid) {
 
 	BEGIN_RESULT_READ(1, 5);
 
-	if (_result->data[0] != nullptr)
+	if (is_valid_c_string(_result->data[0]))
 		s = std::string(_result->data[0]);
 
 	END_RESULT_READ("a AuthKey. player uid: " + std::to_string(uid) + ".", 5)
@@ -100,7 +100,7 @@ std::string pangya_db::getAuthKeyLogin(uint32_t uid) {
 
 	BEGIN_RESULT_READ(1, 6)
 
-	if (_result->data[0] != nullptr)
+	if (is_valid_c_string(_result->data[0]))
 		s = std::string(_result->data[0]);
 
 	END_RESULT_READ("a AuthKeyLogin. player uid: " + std::to_string(uid) + ".", 6)
@@ -120,10 +120,10 @@ std::string pangya_db::getAuthKeyLogin(uint32_t uid) {
 //
 //	si = { 0 };
 //
-//	if (_result->data[0] != nullptr)
+//	if (is_valid_c_string(_result->data[0]))
 //		strcpy_s(si.nome, _result->data[0]);
 //	si.uid = IFNULL(atoi, _result->data[1]);
-//	if (_result->data[2] != nullptr)
+//	if (is_valid_c_string(_result->data[2]))
 //		strcpy_s(si.ip, _result->data[2]);
 //	si.port = IFNULL(atoi, _result->data[3]);
 //	si.max_user = IFNULL(atoi, _result->data[4]);
@@ -155,10 +155,10 @@ std::vector< ServerInfo > pangya_db::getMsn() {
 	
 	si = { 0 };
 
-	if (_result->data[0] != nullptr)
+	if (is_valid_c_string(_result->data[0]))
 		strcpy_s(si.nome, _result->data[0]);
 	si.uid = IFNULL(atoi, _result->data[1]);
-	if (_result->data[2] != nullptr)
+	if (is_valid_c_string(_result->data[2]))
 		strcpy_s(si.ip, _result->data[2]);
 	si.port = IFNULL(atoi, _result->data[3]);
 	si.max_user = IFNULL(atoi, _result->data[4]);

@@ -49,12 +49,8 @@ void CmdBoxInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_index_resu
 		ctx_b.tipo = BOX_TYPE((unsigned char)IFNULL(atoi, _result->data[4]));
 		ctx_b.opened_typeid = (uint32_t)IFNULL(atoi, _result->data[5]);
 
-		if (_result->data[6] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(ctx_b.msg, sizeof(ctx_b.msg), _result->data[6], sizeof(ctx_b.msg));
-#elif defined(__linux__)
-			memcpy(ctx_b.msg, _result->data[6], sizeof(ctx_b.msg));
-#endif
+		if (is_valid_c_string(_result->data[6]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(ctx_b.msg, sizeof(ctx_b.msg), _result->data[6]);
 
 		// Add o Item a Box
 		ctx_b.item.push_back(ctx_bi);

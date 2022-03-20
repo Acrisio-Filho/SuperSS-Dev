@@ -33,9 +33,9 @@ void CmdListIPBan::lineResult(result_set::ctx_res* _result, uint32_t /*_index_re
 
 	int error = 1;
 
-	if (_result->data[0] != nullptr)
+	if (is_valid_c_string(_result->data[0]))
 		ip = _result->data[0];
-	if (_result->data[1] != nullptr)
+	if (is_valid_c_string(_result->data[1]))
 		mask = _result->data[1];
 
 	// Verifica se � um IP RANGE

@@ -26,19 +26,11 @@ void CmdLastPlayerGameInfo::lineResult(result_set::ctx_res* _result, uint32_t /*
 	for (auto i = 0; i < 5; i++) {
 		m_l5pg.players[i].sex = IFNULL(atoi, _result->data[i * 4]);
 		
-		if (_result->data[i * 4 + 1] != nullptr) // Aqui de vez em quando da erro, deve ser aquele l� depois que loga os 2000 bot no release quando sai ele da erro(@ACHO QUE J� AJEITEI)
-#if defined(_WIN32)
-			memcpy_s(m_l5pg.players[i].nick, sizeof(m_l5pg.players[i].nick), _result->data[i * 4 + 1], sizeof(m_l5pg.players[i].nick));
-#elif defined(__linux__)
-			memcpy(m_l5pg.players[i].nick, _result->data[i * 4 + 1], sizeof(m_l5pg.players[i].nick));
-#endif
+		if (is_valid_c_string(_result->data[i * 4 + 1]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(m_l5pg.players[i].nick, sizeof(m_l5pg.players[i].nick), _result->data[i * 4 + 1]);
 		
-		if (_result->data[i * 4 + 2] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(m_l5pg.players[i].id, sizeof(m_l5pg.players[i].id), _result->data[i * 4 + 2], sizeof(m_l5pg.players[i].id));
-#elif defined(__linux__)
-			memcpy(m_l5pg.players[i].id, _result->data[i * 4 + 2], sizeof(m_l5pg.players[i].id));
-#endif
+		if (is_valid_c_string(_result->data[i * 4 + 2]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(m_l5pg.players[i].id, sizeof(m_l5pg.players[i].id), _result->data[i * 4 + 2]);
 		
 		m_l5pg.players[i].uid = IFNULL(atoi, _result->data[i * 4 + 3]);
 	}

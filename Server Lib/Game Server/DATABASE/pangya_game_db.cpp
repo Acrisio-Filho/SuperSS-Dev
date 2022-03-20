@@ -31,11 +31,11 @@ player_info pangya_db::getPlayerInfo(int32_t uid) {
 	BEGIN_RESULT_READ(7, 1)
 
 	pi.uid = IFNULL(atoi, _result->data[0]);
-	if (_result->data[1] != nullptr)
+	if (is_valid_c_string(_result->data[1]))
 		strcpy_s(pi.id, _result->data[1]);
-	if (_result->data[2] != nullptr)
+	if (is_valid_c_string(_result->data[2]))
 		strcpy_s(pi.nickname, _result->data[2]);
-	if (_result->data[3] != nullptr)
+	if (is_valid_c_string(_result->data[3]))
 		strcpy_s(pi.pass, _result->data[3]);
 	//pi.cap = IFNULL(atoi, _result->data[4]);
 	pi.block_flag.setIDState(IFNULL(atoi, _result->data[5]));
@@ -90,17 +90,17 @@ MemberInfoEx pangya_db::getMemberInfo(int32_t uid) {
 
 	BEGIN_RESULT_READ(26, 3);
 
-	if (_result->data[0] != nullptr)
+	if (is_valid_c_string(_result->data[0]))
 		strcpy_s(mi.id, _result->data[0]);
 	mi.uid = IFNULL(atoi, _result->data[1]);
 	mi.sexo = (unsigned char)IFNULL(atoi, _result->data[2]);
 	mi.do_tutorial = (unsigned char)IFNULL(atoi, _result->data[3]);
-	if (_result->data[4] != nullptr)
+	if (is_valid_c_string(_result->data[4]))
 		strcpy_s(mi.nick_name, _result->data[4]);
 	mi.school = IFNULL(atoi, _result->data[5]);
 	mi.capability = IFNULL(atoi, _result->data[6]);
 	mi.manner_flag = IFNULL(atoi, _result->data[9]);
-	if (_result->data[11] != nullptr)
+	if (is_valid_c_string(_result->data[11]))
 		strcpy_s(mi.guild_name, _result->data[11]);
 	mi.guild_uid = IFNULL(atoi, _result->data[12]);
 	mi.guild_pang = IFNULL(atoll, _result->data[13]);
@@ -110,7 +110,7 @@ MemberInfoEx pangya_db::getMemberInfo(int32_t uid) {
 	mi.event_2 = (unsigned char)IFNULL(atoi, _result->data[16]);
 	mi.limit_papel_shop = (unsigned char)IFNULL(atoi, _result->data[17]);
 	mi.level = (unsigned char)IFNULL(atoi, _result->data[23]);
-	if (_result->data[24] != nullptr)
+	if (is_valid_c_string(_result->data[24]))
 		strcpy_s(mi.guild_mark_img, _result->data[24]);
 
 	END_RESULT_READ("erro ao pegar o info do player: " + std::to_string(uid) + ".", 3)
@@ -496,7 +496,7 @@ std::vector< MascotInfoEx > pangya_db::getMascotInfo(int32_t uid) {
 	mi.level = (unsigned char)IFNULL(atoi, _result->data[3]);
 	mi.exp = IFNULL(atoi, _result->data[4]);
 	mi.flag = (unsigned char)IFNULL(atoi, _result->data[5]);
-	if (_result->data[6] != nullptr)
+	if (is_valid_c_string(_result->data[6]))
 		strcpy_s(mi.message, _result->data[6]);
 	mi.tipo = (short)IFNULL(atoi, _result->data[7]);
 	mi.is_cash = (unsigned char)IFNULL(atoi, _result->data[8]);
@@ -545,12 +545,12 @@ std::vector< WarehouseItem > pangya_db::getWarehouseItem(int32_t uid) {
 	wi.clubset_workshop.recovery_pts = IFNULL(atoi, _result->data[34]);
 	wi.clubset_workshop.level = IFNULL(atoi, _result->data[35]);
 	wi.clubset_workshop.rank = IFNULL(atoi, _result->data[36]);
-	if (_result->data[37] != nullptr)
+	if (is_valid_c_string(_result->data[37]))
 		strcpy_s(wi.ucc.name, _result->data[37]);
-	if (_result->data[38] != nullptr)
+	if (is_valid_c_string(_result->data[38]))
 		strcpy_s(wi.ucc.idx, _result->data[38]);
 	wi.ucc.seq = (short)IFNULL(atoi, _result->data[39]);
-	if (_result->data[40] != nullptr)
+	if (is_valid_c_string(_result->data[40]))
 		strcpy_s(wi.ucc.copier_nick, _result->data[40]);
 	wi.ucc.copier = IFNULL(atoi, _result->data[41]);
 	wi.ucc.trade = (unsigned char)IFNULL(atoi, _result->data[42]);
@@ -687,7 +687,7 @@ int32_t pangya_db::addItem(int32_t _uid, WarehouseItem& _item, unsigned short _f
 		_item.id = id = IFNULL(atoi, _result->data[0]);
 	else if (num_result == 0 && (_flag_iff == IFF::Part::UCC_BLANK || _flag_iff == IFF::Part::UCC_COPY)) {
 		_item.id = IFNULL(atoi, _result->data[0]);
-		if (_result->data[1] != nullptr)
+		if (is_valid_c_string(_result->data[1]))
 			strcpy_s(_item.ucc.idx, _result->data[1]);
 		_item.ucc.seq = (unsigned short)IFNULL(atoi, _result->data[2]);
 	}
@@ -1032,7 +1032,7 @@ MyRoomConfig pangya_db::getMyRoomConfig(int32_t uid) {
 
 	BEGIN_RESULT_READ(3, 51);
 
-	if (_result->data[0] != nullptr)
+	if (is_valid_c_string(_result->data[0]))
 		strcpy_s(mrc.pass, _result->data[0]);
 	mrc.public_lock = (unsigned char)IFNULL(atoi, _result->data[1]);
 	mrc.allow_enter = (unsigned short)IFNULL(atoi, _result->data[2]);
@@ -1099,9 +1099,9 @@ std::vector< MailBox > pangya_db::getEmailNaoLido(int32_t uid) {
 	mb.clear();
 
 	mb.id = IFNULL(atoi, _result->data[0]);
-	if (_result->data[1] != nullptr)
+	if (is_valid_c_string(_result->data[1]))
 		strcpy_s(mb.from_id, _result->data[1]);
-	if (_result->data[2] != nullptr)
+	if (is_valid_c_string(_result->data[2]))
 		strcpy_s(mb.msg, _result->data[2]);
 	mb.visit_count = IFNULL(atoi, _result->data[4]);
 	mb.lida_yn = (unsigned char)IFNULL(atoi, _result->data[5]);
@@ -1115,7 +1115,7 @@ std::vector< MailBox > pangya_db::getEmailNaoLido(int32_t uid) {
 	mb.item.cookie = IFNULL(atoll, _result->data[13]);
 	mb.item.gm_id = IFNULL(atoi, _result->data[14]);
 	mb.item.flag_gift = IFNULL(atoi, _result->data[15]);
-	if (_result->data[16] != nullptr)
+	if (is_valid_c_string(_result->data[16]))
 		strcpy_s(mb.item.ucc_img_mark, _result->data[16]);
 	mb.item.type = (short)IFNULL(atoi, _result->data[17]);
 
@@ -1139,9 +1139,9 @@ std::vector< MailBox > pangya_db::getEmailBox(int32_t uid) {
 	mb.clear();
 
 	mb.id = IFNULL(atoi, _result->data[0]);
-	if (_result->data[1] != nullptr)
+	if (is_valid_c_string(_result->data[1]))
 		strcpy_s(mb.from_id, _result->data[1]);
-	if (_result->data[2] != nullptr)
+	if (is_valid_c_string(_result->data[2]))
 		strcpy_s(mb.msg, _result->data[2]);
 	mb.visit_count = IFNULL(atoi, _result->data[4]);
 	mb.lida_yn = (unsigned char)IFNULL(atoi, _result->data[5]);
@@ -1155,7 +1155,7 @@ std::vector< MailBox > pangya_db::getEmailBox(int32_t uid) {
 	mb.item.cookie = IFNULL(atoll, _result->data[13]);
 	mb.item.gm_id = IFNULL(atoi, _result->data[14]);
 	mb.item.flag_gift = IFNULL(atoi, _result->data[15]);
-	if (_result->data[16] != nullptr)
+	if (is_valid_c_string(_result->data[16]))
 		strcpy_s(mb.item.ucc_img_mark, _result->data[16]);
 	mb.item.type = (short)IFNULL(atoi, _result->data[17]);
 
@@ -1179,11 +1179,11 @@ EmailInfo pangya_db::getEmailInfo(int32_t uid, int32_t email_id) {
 
 	if (ei.id == 0) {
 		ei.id = IFNULL(atoi, _result->data[0]);
-		if (_result->data[1] != nullptr)
+		if (is_valid_c_string(_result->data[1]))
 			strcpy_s(ei.from_id, _result->data[1]);
-		if (_result->data[2] != nullptr)
+		if (is_valid_c_string(_result->data[2]))
 			strcpy_s(ei.gift_date, _result->data[2]);
-		if (_result->data[3] != nullptr)
+		if (is_valid_c_string(_result->data[3]))
 			strcpy_s(ei.msg, _result->data[3]);
 		ei.lida_yn = (unsigned char)IFNULL(atoi, _result->data[4]);
 	}
@@ -1202,7 +1202,7 @@ EmailInfo pangya_db::getEmailInfo(int32_t uid, int32_t email_id) {
 		item.cookie = IFNULL(atoll, _result->data[11]);
 		item.gm_id = IFNULL(atoi, _result->data[12]);
 		item.flag_gift = IFNULL(atoi, _result->data[13]);
-		if (_result->data[14] != nullptr)
+		if (is_valid_c_string(_result->data[14]))
 			strcpy_s(item.ucc_img_mark, _result->data[14]);
 		item.type = (short)IFNULL(atoi, _result->data[15]);
 
@@ -1306,9 +1306,9 @@ std::vector< MsgOffInfo > pangya_db::getMsgOffInfo(int32_t uid) {
 
 	moi.id = (short)IFNULL(atoi, _result->data[0]);
 	moi.from_uid = IFNULL(atoi, _result->data[1]);
-	if (_result->data[2] != nullptr)
+	if (is_valid_c_string(_result->data[2]))
 		strcpy_s(moi.nick, _result->data[2]);
-	if (_result->data[3] != nullptr)
+	if (is_valid_c_string(_result->data[3]))
 		strcpy_s(moi.msg, _result->data[3]);
 	strncpy_s(moi.date, _result->data[4], sizeof(moi.date));
 
@@ -1395,9 +1395,9 @@ KeysOfLogin pangya_db::getKeysOfLogin(int32_t uid) {
 
 	BEGIN_RESULT_READ(3, 31)
 
-		if (_result->data[0] != nullptr)
+		if (is_valid_c_string(_result->data[0]))
 			strcpy_s(kol.keys[0], _result->data[0]);
-	if (_result->data[1] != nullptr)
+	if (is_valid_c_string(_result->data[1]))
 		strcpy_s(kol.keys[1], _result->data[1]);
 	kol.valid = (unsigned char)IFNULL(atoi, _result->data[2]);
 
@@ -1456,7 +1456,7 @@ GuildInfo pangya_db::getGuildInfo(int32_t uid, int option) {
 	BEGIN_RESULT_READ(12, 35)
 
 	gi.uid = IFNULL(atoi, _result->data[0]);
-	if (_result->data[1] != nullptr)
+	if (is_valid_c_string(_result->data[1]))
 		strcpy_s(gi.name, _result->data[1]);
 	gi.index_mark_emblem = 1;		// AQUI ESTÁ ESTÁTICO, MAS DEPOIS VOU AJEITAR ISSO NO BANCO DE DADOS
 	gi.pang = IFNULL(atoi, _result->data[7]);
@@ -1479,10 +1479,10 @@ std::vector< ServerInfo > pangya_db::getMSNServer() {
 
 	si = { 0 };
 
-	if (_result->data[0] != nullptr)
+	if (is_valid_c_string(_result->data[0]))
 		strcpy_s(si.nome, _result->data[0]);
 	si.uid = IFNULL(atoi, _result->data[1]);
-	if (_result->data[2] != nullptr)
+	if (is_valid_c_string(_result->data[2]))
 		strcpy_s(si.ip, _result->data[2]);
 	si.port = atoi(_result->data[3]);
 	si.max_user = atoi(_result->data[4]);
@@ -1760,7 +1760,7 @@ void pangya_db::updateCharacterAllPartEquiped(int32_t _uid, CharacterInfo& _ci) 
 //		_item.id = id = IFNULL(atoi, _result->data[0]);
 //	else if (num_result == 0 && (_item.type_iff == IFF::Part::UCC_BLANK || _item.type_iff == IFF::Part::UCC_COPY)) {
 //		_item.id = IFNULL(atoi, _result->data[0]);
-//		if (_result->data[1] != nullptr)
+//		if (is_valid_c_string(_result->data[1]))
 //			strcpy_s(_item.ucc.IDX, _result->data[1]);
 //		_item.ucc.seq = IFNULL(atoi, _result->data[2]);
 //	}

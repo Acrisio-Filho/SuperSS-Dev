@@ -1477,7 +1477,7 @@ void threadpool::send_new(session *_session, Buffer *lpBuffer, DWORD operation) 
 
 			_session->setSendPartial();
 		}
-		
+
 		// post to translate
 		postIoOperationS(_session, lpBuffer, sendlen, operation);
 	}

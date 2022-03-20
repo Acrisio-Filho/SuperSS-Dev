@@ -32,14 +32,10 @@ void CmdMailBoxInfo::lineResult(result_set::ctx_res* _result, uint32_t _index_re
 		MailBox mb{ 0 };
 
 		mb.id = IFNULL(atoi, _result->data[0]);
-		if (_result->data[1] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(mb.from_id, sizeof(mb.from_id), _result->data[1], sizeof(mb.from_id));
-#elif defined(__linux__)
-			memcpy(mb.from_id, _result->data[1], sizeof(mb.from_id));
-#endif
+		if (is_valid_c_string(_result->data[1]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(mb.from_id, sizeof(mb.from_id), _result->data[1]);
 	
-		if (_result->data[2] != nullptr) {
+		if (is_valid_c_string(_result->data[2])) {
 
 			try {
 
@@ -78,12 +74,8 @@ void CmdMailBoxInfo::lineResult(result_set::ctx_res* _result, uint32_t _index_re
 		mb.item.cookie = IFNULL(atoll, _result->data[13]);
 		mb.item.gm_id = IFNULL(atoi, _result->data[14]);
 		mb.item.flag_gift = IFNULL(atoi, _result->data[15]);
-		if (_result->data[16] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(mb.item.ucc_img_mark, sizeof(mb.item.ucc_img_mark), _result->data[16], sizeof(mb.item.ucc_img_mark));
-#elif defined(__linux__)
-			memcpy(mb.item.ucc_img_mark, _result->data[16], sizeof(mb.item.ucc_img_mark));
-#endif
+		if (is_valid_c_string(_result->data[16]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(mb.item.ucc_img_mark, sizeof(mb.item.ucc_img_mark), _result->data[16]);
 		mb.item.type = (short)IFNULL(atoi, _result->data[17]);
 
 		v_mb.push_back(mb);

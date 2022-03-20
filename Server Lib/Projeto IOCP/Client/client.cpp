@@ -135,7 +135,7 @@ inline void client::dispach_packet_same_thread(session& _session, packet *_packe
 
 inline void client::dispach_packet_sv_same_thread(session& _session, packet *_packet) {
 	CHECK_SESSION_BEGIN("dispach_packet_sv_same_thread");
-	
+
 	//ParamWorkerC pw = { *this, m_iocp_io, m_job_pool, m_session_pool, (cliente*)_packet->getSession()->m_client, _packet };
 	func_arr::func_arr_ex *func = nullptr;
 

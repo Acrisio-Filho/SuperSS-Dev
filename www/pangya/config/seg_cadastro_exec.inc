@@ -109,7 +109,7 @@
                     else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
                         $query = 'SELECT "_UID_" as "UID" FROM '.$this->db->con_dados['DB_NAME'].'.ProcMakeUserBetaWithMD5(?, ?, ?, ?, ?)';
                     else
-                        $query = 'CALL ProcMakeUserBeta(?, ?, ?, ?, ?)';
+                        $query = 'CALL ProcMakeUserBetaWithMD5(?, ?, ?, ?, ?)';
 
                     if (($result = $this->db->db->execPreparedStmt($query, $this->params->get())) && $this->db->db->getLastError() == 0) {
                         

@@ -26,12 +26,8 @@ void CmdAddWarehouseItem::lineResult(result_set::ctx_res* _result, uint32_t _ind
 	if ((m_flag_iff == IFF::Part::UCC_BLANK || m_flag_iff == IFF::Part::UCC_COPY) && _result->cols == 3) {	// UCC(Self Design)
 
 		m_wi.id = IFNULL(atoi, _result->data[0]);
-		if (_result->data[1] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(m_wi.ucc.idx, sizeof(m_wi.ucc.idx), _result->data[1], sizeof(m_wi.ucc.idx));
-#elif defined(__linux__)
-			memcpy(m_wi.ucc.idx, _result->data[1], sizeof(m_wi.ucc.idx));
-#endif
+		if (is_valid_c_string(_result->data[1]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(m_wi.ucc.idx, sizeof(m_wi.ucc.idx), _result->data[1]);
 		m_wi.ucc.seq = (short)IFNULL(atoi, _result->data[2]);
 
 	}else if (!(m_flag_iff == IFF::Part::UCC_BLANK || m_flag_iff == IFF::Part::UCC_COPY) && (_index_result == 1 || _index_result == 0)) {		// Normal Item

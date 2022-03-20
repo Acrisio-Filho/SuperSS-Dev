@@ -26,34 +26,22 @@ void CmdMemberInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_index_r
 
     checkColumnNumber(28, (uint32_t)_result->cols);
 
-	if (_result->data[0] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(m_mi.id, sizeof(m_mi.id), _result->data[0], sizeof(m_mi.id));
-#elif defined(__linux__)
-		memcpy(m_mi.id, _result->data[0], sizeof(m_mi.id));
-#endif
+	if (is_valid_c_string(_result->data[0]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_mi.id, sizeof(m_mi.id), _result->data[0]);
 	
 	m_mi.uid = IFNULL(atoi, _result->data[1]);
 	m_mi.sexo = (unsigned char)IFNULL(atoi, _result->data[2]);
 	m_mi.do_tutorial = (unsigned char)IFNULL(atoi, _result->data[3]);
 	
-	if (_result->data[4] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(m_mi.nick_name, sizeof(m_mi.nick_name), _result->data[4], sizeof(m_mi.nick_name));
-#elif defined(__linux__)
-		memcpy(m_mi.nick_name, _result->data[4], sizeof(m_mi.nick_name));
-#endif
+	if (is_valid_c_string(_result->data[4]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_mi.nick_name, sizeof(m_mi.nick_name), _result->data[4]);
 	
 	m_mi.school = IFNULL(atoi, _result->data[5]);
 	m_mi.capability.ulCapability = (uint32_t)IFNULL(atoi, _result->data[6]);
 	m_mi.manner_flag = IFNULL(atoi, _result->data[9]);
 
-	if (_result->data[11] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(m_mi.guild_name, sizeof(m_mi.guild_name), _result->data[11], sizeof(m_mi.guild_name));
-#elif defined(__linux__)
-		memcpy(m_mi.guild_name, _result->data[11], sizeof(m_mi.guild_name));
-#endif
+	if (is_valid_c_string(_result->data[11]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_mi.guild_name, sizeof(m_mi.guild_name), _result->data[11]);
 	
 	m_mi.guild_uid = IFNULL(atoi, _result->data[12]);
 	m_mi.guild_pang = IFNULL(atoll, _result->data[13]);
@@ -77,12 +65,8 @@ void CmdMemberInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_index_r
 	
 	m_mi.level = (unsigned char)IFNULL(atoi, _result->data[25]);
 
-	if (_result->data[26] != nullptr)
-#if defined(_WIN32)
-		memcpy_s(m_mi.guild_mark_img, sizeof(m_mi.guild_mark_img), _result->data[26], sizeof(m_mi.guild_mark_img));
-#elif defined(__linux__)
-		memcpy(m_mi.guild_mark_img, _result->data[26], sizeof(m_mi.guild_mark_img));
-#endif
+	if (is_valid_c_string(_result->data[26]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_mi.guild_mark_img, sizeof(m_mi.guild_mark_img), _result->data[26]);
 
     if (m_mi.uid != m_uid)
         throw exception("[CmdMemberInfo::lineResult][Error] UID do member info do player nao e igual ao requisitado. UID Req: " + std::to_string(m_uid) + " != " + std::to_string(m_mi.uid), STDA_MAKE_ERROR(STDA_ERROR_TYPE::PANGYA_DB, 3, 0));

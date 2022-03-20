@@ -6,24 +6,40 @@
     class paramsArr {
 		private $arr = [];
 		private $tipo = '';
+        private $ModelType = 1;
+
+        public function __construct($model_type) {
+            $this->ModelType = $model_type;
+        }
 
 		public function __destruct() {
 			$this->clear();
 		}
 
 		public function add($tipo, &$valor) {
-            if ($valor === null)    // True Null Value
-                $this->arr[] = null;
-            else
-			    $this->arr[] = &$valor;
+
+            if ($this->ModelType == 1) {
+
+                if ($valor === null)    // True Null Value
+                    $this->arr[] = null;
+                else
+                    $this->arr[] = &$valor;
+                
+            }else
+                $this->arr[] = &$valor;
+
 			$this->tipo .= $tipo;
 		}
+
+        public function get() {
+            return $this;
+        }
 
 		public function getAll() {
 			return array_merge([$this->tipo], $this->arr);
         }
         
-        public function get() {
+        public function getValues() {
             return $this->arr;
         }
 
@@ -109,7 +125,7 @@
 
             if (!$this->is_good) {
                 $this->errno = 3;
-                $this->error = '[Statment][Error] O statment já está inicializado.';
+                $this->error = '[Statment][Error] O statment não está inicializado.';
                 return false;
             }
 

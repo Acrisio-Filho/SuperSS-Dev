@@ -36,11 +36,11 @@
             $db = DBManagerSingleton::getInstanceDB($GLOBALS['DatabaseCurrentUsed']);
 
             if (DatabaseConfig::_MSSQL_ === $GLOBALS['DatabaseCurrentUsed'])
-                $query = 'EXEC .'.$db->con_dados['DB_NAME'].'.ProcGetGuildNewsCreate';
+                $query = 'EXEC '.$db->con_dados['DB_NAME'].'.ProcGetGuildNewsCreate';
             else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
                 $query = 'select "_GUILD_UID_" as "GUILD_UID", "_GUILD_NAME_" as "GUILD_NAME", "_GUILD_INFO_" as "GUILD_INFO", "_GUILD_MARK_IMG_IDX_" as "GUILD_MARK_IMG_IDX", "_GUILD_REG_DATE_" as "GUILD_REG_DATE" from '.$db->con_dados['DB_NAME'].'.ProcGetGuildNewsCreate()';
             else
-                $query = 'CALL .'.$db->con_dados['DB_NAME'].'.ProcGetGuildNewsCreate()';
+                $query = 'CALL '.$db->con_dados['DB_NAME'].'.ProcGetGuildNewsCreate()';
 
             if (($result = $db->db->execPreparedStmt($query, null, 1)) != null && $db->db->getLastError() == 0) {
 

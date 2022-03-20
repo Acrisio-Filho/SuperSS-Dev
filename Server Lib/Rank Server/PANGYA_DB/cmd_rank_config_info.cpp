@@ -22,7 +22,7 @@ void CmdRankConfigInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_ind
 
 	m_rft.setIntervalRefresh((uint32_t)IFNULL(atoi, _result->data[0]));
 
-	if (_result->data[1] != nullptr)
+	if (is_valid_c_string(_result->data[1]))
 		m_rft.setLastRefreshDate(_result->data[1]);
 }
 

@@ -69,7 +69,7 @@
 
         static private $log = null;
 
-        static public function getInstance() {
+        static public function &getInstance() {
 
             if (self::$log == null)
                 self::$log = new Logger();

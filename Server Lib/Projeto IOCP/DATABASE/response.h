@@ -23,8 +23,13 @@ namespace stdA {
 
             result_set*& getResultSetAt(size_t _index);
 
+			void setRowsAffected(int64_t _rows_affected);
+			int64_t getRowsAffected();
+
         protected:
             std::vector< result_set* > m_result_set;      // result_set
+
+			int64_t m_rows_affected;
     };
 }
 

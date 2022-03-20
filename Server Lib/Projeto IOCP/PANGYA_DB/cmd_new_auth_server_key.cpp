@@ -25,7 +25,7 @@ void CmdNewAuthServerKey::lineResult(result_set::ctx_res* _result, uint32_t /* _
 
     checkColumnNumber(1, (uint32_t)_result->cols);
 
-    if (_result->data[0] != nullptr)
+    if (is_valid_c_string(_result->data[0]))
         m_key.assign(_result->data[0], _result->data[0] + strlen(_result->data[0]));
 }
 

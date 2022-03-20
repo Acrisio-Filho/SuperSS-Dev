@@ -319,7 +319,7 @@ void session::requestSendBuffer(void* _buff, size_t _size, bool _raw) {
 
 	if (_size <= 0)
 		throw exception("Error _size is less or equal the zero. session::requestSendBuffer()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::SESSION, 4, 0));
-
+	
 	m_buff_s.lock();
 
 	if (isConnectedToSend() && m_buff_s.isWritable() && isConnectedToSend()) 
@@ -420,11 +420,11 @@ void session::setSend() {
 		}
 
 		if (isConnectedToSend() && m_buff_s.readyToSend() && isConnectedToSend()) {
-
+			
 			m_buff_s.setSend();
 
 			m_buff_s.increseRequestSendCount();
-
+		
 		}else {
 
 			m_buff_s.releaseSendAndPartialSend();
@@ -788,7 +788,7 @@ bool session::buff_ctx::readyToWrite() {
 #elif defined(__linux__)
 
 		int32_t error = 0;
-
+		
 		if ((error = pthread_cond_wait(&cv_send, &cs)) != 0) {
 
 			_smp::message_pool::getInstance().push(new message("[session::buff_ctx::readyToWrite][Error] problema para pegar o sinal do pthread_cond_wait. Error code: "
@@ -956,7 +956,7 @@ void session::buff_ctx::releaseSendAndPartialSend() {
 	
 	if (state_wr_send && buff.getUsed() <= 0)
 		state_wr_send = 0u;
-	
+
 	state_send = 0u;
 
 #if defined(_WIN32)

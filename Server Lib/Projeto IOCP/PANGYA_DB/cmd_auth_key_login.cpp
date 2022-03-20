@@ -23,7 +23,7 @@ void CmdAuthKeyLogin::lineResult(result_set::ctx_res* _result, uint32_t /*_index
 
     checkColumnNumber(1, (uint32_t)_result->cols);
 
-    if (_result->data[0] != nullptr)
+    if (is_valid_c_string(_result->data[0]))
         m_auth_key_login = std::string(_result->data[0]);
 
     if (m_auth_key_login.empty())

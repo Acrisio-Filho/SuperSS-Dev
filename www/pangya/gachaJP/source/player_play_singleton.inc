@@ -6,7 +6,7 @@
     class PlayerPlaySingleton {
         static private $player_play = null;
 
-        static public function getInstance() {
+        static public function &getInstance() {
 
             if (self::$player_play == null) {
 

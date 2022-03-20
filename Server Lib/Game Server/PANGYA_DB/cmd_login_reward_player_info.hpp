@@ -42,13 +42,13 @@ namespace stdA {
 			stPlayerState m_player;
 
 			const char* m_szConsulta[2] = { 
-				R"1(SELECT [index]
-					,uid
-					,count_days
-					,count_seq
-					,is_clear
-					,update_date
-				FROM pangya.pangya_login_reward_player WHERE login_reward_id = )1",
+				"SELECT " DB_MAKE_ESCAPE_KEYWORD_A("index") "\
+					,uid\
+					,count_days\
+					,count_seq\
+					,is_clear\
+					,update_date\
+				FROM pangya.pangya_login_reward_player WHERE login_reward_id = ",
 				" AND uid = "
 			};
 	};

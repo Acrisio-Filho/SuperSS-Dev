@@ -51,12 +51,8 @@ void CmdMailBoxInfo2::lineResult(result_set::ctx_res* _result, uint32_t /*_index
 			item.cookie = IFNULL(atoll, _result->data[12]);
 			item.gm_id = IFNULL(atoi, _result->data[13]);
 			item.flag_gift = IFNULL(atoi, _result->data[14]);
-			if (_result->data[15] != nullptr)
-#if defined(_WIN32)
-				memcpy_s(item.ucc_img_mark, sizeof(item.ucc_img_mark), _result->data[15], sizeof(item.ucc_img_mark));
-#elif defined(__linux__)
-				memcpy(item.ucc_img_mark, _result->data[15], sizeof(item.ucc_img_mark));
-#endif
+			if (is_valid_c_string(_result->data[15]))
+				STRCPY_TO_MEMORY_FIXED_SIZE(item.ucc_img_mark, sizeof(item.ucc_img_mark), _result->data[15]);
 			item.type = (short)IFNULL(atoi, _result->data[16]);
 
 			// Add Item
@@ -70,20 +66,12 @@ void CmdMailBoxInfo2::lineResult(result_set::ctx_res* _result, uint32_t /*_index
 
 		email.id = id;
 
-		if (_result->data[1] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(email.from_id, sizeof(email.from_id), _result->data[1], sizeof(email.from_id));
-#elif defined(__linux__)
-			memcpy(email.from_id, _result->data[1], sizeof(email.from_id));
-#endif
-		if (_result->data[2] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(email.gift_date, sizeof(email.gift_date), _result->data[2], sizeof(email.gift_date));
-#elif defined(__linux__)
-			memcpy(email.gift_date, _result->data[2], sizeof(email.gift_date));
-#endif
+		if (is_valid_c_string(_result->data[1]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(email.from_id, sizeof(email.from_id), _result->data[1]);
+		if (is_valid_c_string(_result->data[2]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(email.gift_date, sizeof(email.gift_date), _result->data[2]);
 		
-		if (_result->data[3] != nullptr) {
+		if (is_valid_c_string(_result->data[3])) {
 			
 			try {
 
@@ -130,12 +118,8 @@ void CmdMailBoxInfo2::lineResult(result_set::ctx_res* _result, uint32_t /*_index
 			item.cookie = IFNULL(atoll, _result->data[12]);
 			item.gm_id = IFNULL(atoi, _result->data[13]);
 			item.flag_gift = IFNULL(atoi, _result->data[14]);
-			if (_result->data[15] != nullptr)
-#if defined(_WIN32)
-				memcpy_s(item.ucc_img_mark, sizeof(item.ucc_img_mark), _result->data[15], sizeof(item.ucc_img_mark));
-#elif defined(__linux__)
-				memcpy(item.ucc_img_mark, _result->data[15], sizeof(item.ucc_img_mark));
-#endif
+			if (is_valid_c_string(_result->data[15]))
+				STRCPY_TO_MEMORY_FIXED_SIZE(item.ucc_img_mark, sizeof(item.ucc_img_mark), _result->data[15]);
 			item.type = (short)IFNULL(atoi, _result->data[16]);
 
 			// Add Item

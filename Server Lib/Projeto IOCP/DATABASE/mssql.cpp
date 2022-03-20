@@ -266,6 +266,8 @@ response* mssql::ExecQuery(std::wstring _query) {
 			HandleDiagnosticRecord(m_ctx.hStmt, SQL_HANDLE_STMT, GERAL_ERROR, SQLNumResultCols(m_ctx.hStmt, &numResults), _query);
 			HandleDiagnosticRecord(m_ctx.hStmt, SQL_HANDLE_STMT, GERAL_ERROR, SQLRowCount(m_ctx.hStmt, &numRows), _query);           // Linha afetadas, não é a quantidade de linha retornada não
 
+			res->setRowsAffected(numRows);
+
 			if (numResults > 0) {
 				ret = SQLFetch(m_ctx.hStmt);
 
@@ -388,6 +390,8 @@ response* mssql::ExecProc(std::wstring _proc_name, std::wstring _proc_params) {
 			HandleDiagnosticRecord(m_ctx.hStmt, SQL_HANDLE_STMT, GERAL_ERROR, SQLNumResultCols(m_ctx.hStmt, &numResults), _query);
 			HandleDiagnosticRecord(m_ctx.hStmt, SQL_HANDLE_STMT, GERAL_ERROR, SQLRowCount(m_ctx.hStmt, &numRows), _query);           // Linha afetadas, não é a quantidade de linha retornada não
 
+			res->setRowsAffected(numRows);
+
 			if (numResults > 0) {
 				ret = SQLFetch(m_ctx.hStmt);	// Fetch Line
 
@@ -476,6 +480,14 @@ std::string mssql::makeText(std::string _value) {
 
 std::wstring mssql::makeText(std::wstring _value) {
 	return L"N'" + _value + L"'";
+};
+
+std::string mssql::makeEscapeKeyword(std::string _value) {
+	return "[" + _value + "]";
+};
+
+std::wstring mssql::makeEscapeKeyword(std::wstring _value) {
+	return L"[" + _value + L"]";
 };
 
 void mssql::clear_stmt(std::wstring _query) {

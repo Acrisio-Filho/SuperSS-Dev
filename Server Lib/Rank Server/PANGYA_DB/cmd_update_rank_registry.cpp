@@ -24,7 +24,7 @@ void CmdUpdateRankRegistry::lineResult(result_set::ctx_res* _result, uint32_t /*
 
 		m_ret_state = (uint32_t)IFNULL(atoi, _result->data[0]);
 		
-		if (_result->data[1] != nullptr)
+		if (is_valid_c_string(_result->data[1]))
 			m_date = _result->data[1];
 
 	}else

@@ -30,17 +30,17 @@ namespace stdA {
 		private:
 			std::vector< stLoginReward > m_lr;
 
-			const char* m_szConsulta = R"1(SELECT [index]
-												, [name]
-												, [type]
-												, days_to_gift
-												, n_times_gift
-												, item_typeid
-												, item_qntd
-												, item_qntd_time
-												, is_end
-												, end_date
-										FROM pangya.pangya_login_reward WHERE is_end = 0)1";
+			const char* m_szConsulta = "(SELECT " DB_MAKE_ESCAPE_KEYWORD_A("index") "\
+												, " DB_MAKE_ESCAPE_KEYWORD_A("name") "\
+												, " DB_MAKE_ESCAPE_KEYWORD_A("type") "\
+												, days_to_gift\
+												, n_times_gift\
+												, item_typeid\
+												, item_qntd\
+												, item_qntd_time\
+												, is_end\
+												, end_date\
+										FROM pangya.pangya_login_reward WHERE is_end = 0)";
 	};
 }
 

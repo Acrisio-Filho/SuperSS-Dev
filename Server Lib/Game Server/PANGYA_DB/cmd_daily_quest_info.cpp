@@ -24,8 +24,8 @@ void CmdDailyQuestInfo::lineResult(result_set::ctx_res* _result, uint32_t /*_ind
 	for (auto i = 0u; i < 3; ++i)
 		m_dqi._typeid[i] = IFNULL(atoi, _result->data[0 + i]);		// 0 + 3 = 3
 	
-	/*if (_result->data[3] != nullptr)
-		memcpy_s(m_dqi.date, sizeof(m_dqi.date), _result->data[3], sizeof(m_dqi.date));*/
+	/*if (is_valid_c_string(_result->data[3]))
+		STRCPY_TO_MEMORY_FIXED_SIZE(m_dqi.date, sizeof(m_dqi.date), _result->data[3]);*/
 
 	if (_result->data[3] != nullptr)
 		_translateDate(_result->data[3], &m_dqi.date);

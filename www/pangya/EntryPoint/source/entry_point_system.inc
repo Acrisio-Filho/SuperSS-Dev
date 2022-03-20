@@ -73,7 +73,7 @@
             else if (DatabaseConfig::_PSQL_ === $GLOBALS['DatabaseCurrentUsed'])
                 $query = 'select _returnvalue as uid from '.$db->con_dados['DB_NAME'].'.CheckWeblink_Key$IMPL(?, ?)';
             else
-                $query = 'SELECT CheckWeblink_Key(?, ?) as UID';
+                $query = 'CALL CheckWeblink_Key(?, ?)';
 
             if (($result = $db->db->execPreparedStmt($query, $params->get())) == null && $db->db->getLastError() != 0) {
 

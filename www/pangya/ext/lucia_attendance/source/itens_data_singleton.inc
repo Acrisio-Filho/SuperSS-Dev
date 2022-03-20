@@ -68,7 +68,7 @@
 
         private static $item = null;
 
-        public static function getInstance() {
+        public static function &getInstance() {
 
             if (self::$item == null)
                 self::$item = new Itens();

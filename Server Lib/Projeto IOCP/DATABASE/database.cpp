@@ -9,6 +9,8 @@
 #include "database.h"
 #include "../../Projeto IOCP/UTIL/string_util.hpp"
 
+#include <regex>
+
 using namespace stdA;
 
 database::database(std::wstring _db_address, std::wstring _db_name, std::wstring _user_name, std::wstring _user_pass, unsigned short _db_port) :
@@ -31,6 +33,14 @@ bool database::is_connected() {
 
 bool database::is_valid() {
     return m_state;
+};
+
+std::string database::parseEscapeKeyword(std::string _value) {
+	return std::regex_replace(_value, std::regex(std::string(DB_ESCAPE_KEYWORD_A) + "([\\w\\.\\-_\\s]+)" + DB_ESCAPE_KEYWORD_A), this->makeEscapeKeyword("$1"));
+};
+
+std::wstring database::parseEscapeKeyword(std::wstring _value) {
+	return std::regex_replace(_value, std::wregex(std::wstring(DB_ESCAPE_KEYWORD_W) + L"([\\w\\.\\-_\\s]+)" + DB_ESCAPE_KEYWORD_W), this->makeEscapeKeyword(L"$1"));
 };
 
 bool database::members_empty() {

@@ -1059,7 +1059,7 @@ inline void unit_connect_base::dispach_packet_same_thread(session& _session, pac
 
 inline void unit_connect_base::dispach_packet_sv_same_thread(session& _session, packet *_packet) {
 	CHECK_SESSION_BEGIN("dispach_packet_sv_same_thread");
-	
+
 	func_arr::func_arr_ex* func = nullptr;
 
 	try {

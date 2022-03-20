@@ -28,12 +28,8 @@ void CmdDolfiniLockerInfo::lineResult(result_set::ctx_res* _result, uint32_t _in
 		checkColumnNumber(4, (uint32_t)_result->cols);
 
 		uid_req = IFNULL(atoi, _result->data[0]);
-		if (_result->data[1] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(m_df.pass, sizeof(m_df.pass), _result->data[1], sizeof(m_df.pass));
-#elif defined(__linux__)
-			memcpy(m_df.pass, _result->data[1], sizeof(m_df.pass));
-#endif
+		if (is_valid_c_string(_result->data[1]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(m_df.pass, sizeof(m_df.pass), _result->data[1]);
 		m_df.pang = IFNULL(atoll, _result->data[2]);
 		m_df.locker = (unsigned char)IFNULL(atoi, _result->data[3]);
 
@@ -46,27 +42,15 @@ void CmdDolfiniLockerInfo::lineResult(result_set::ctx_res* _result, uint32_t _in
 		dli.item.id = IFNULL(atoi, _result->data[0]);
 		uid_req = IFNULL(atoi, _result->data[1]);
 		dli.item._typeid = IFNULL(atoi, _result->data[2]);
-		if (_result->data[3] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(dli.item.sd_name, sizeof(dli.item.sd_name), _result->data[3], sizeof(dli.item.sd_name));
-#elif defined(__linux__)
-			memcpy(dli.item.sd_name, _result->data[3], sizeof(dli.item.sd_name));
-#endif
+		if (is_valid_c_string(_result->data[3]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(dli.item.sd_name, sizeof(dli.item.sd_name), _result->data[3]);
 			//strcpy_s(dli.item.sd_name, _result->data[3]);
-		if (_result->data[4] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(dli.item.sd_idx, sizeof(dli.item.sd_idx), _result->data[4], sizeof(dli.item.sd_idx));
-#elif defined(__linux__)
-			memcpy(dli.item.sd_idx, _result->data[4], sizeof(dli.item.sd_idx));
-#endif
+		if (is_valid_c_string(_result->data[4]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(dli.item.sd_idx, sizeof(dli.item.sd_idx), _result->data[4]);
 			//strcpy_s(dli.item.sd_idx, _result->data[4]);
 		dli.item.sd_seq = (short)IFNULL(atoi, _result->data[5]);
-		if (_result->data[6] != nullptr)
-#if defined(_WIN32)
-			memcpy_s(dli.item.sd_copier_nick, sizeof(dli.item.sd_copier_nick), _result->data[6], sizeof(dli.item.sd_copier_nick));
-#elif defined(__linux__)
-			memcpy(dli.item.sd_copier_nick, _result->data[6], sizeof(dli.item.sd_copier_nick));
-#endif
+		if (is_valid_c_string(_result->data[6]))
+			STRCPY_TO_MEMORY_FIXED_SIZE(dli.item.sd_copier_nick, sizeof(dli.item.sd_copier_nick), _result->data[6]);
 			//strcpy_s(dli.item.sd_copier_nick, _result->data[6]);
 		dli.item.sd_status = (unsigned char)IFNULL(atoi, _result->data[7]);
 		dli.index = IFNULL(atoll, _result->data[8]);
