@@ -6456,7 +6456,7 @@ BEGIN
 		IF (SELECT FIRST_LOGIN FROM pangya.account WHERE UID = _UID) = 1 THEN
 		BEGIN
 
-			IF (SELECT (CASE WHEN change_nick IS NULL THEN 1 ELSE DATEDIFF('MONTH', now()::timestamp, change_nick) END) as diff FROM pangya.account WHERE UID = _UID) > 0 THEN
+			IF (SELECT (CASE WHEN change_nick IS NULL THEN 1 ELSE DATEDIFF('MONTH', change_nick, now()::timestamp) END) as diff FROM pangya.account WHERE UID = _UID) > 0 THEN
 			BEGIN
 		
 				IF (SELECT cookie FROM pangya.user_info WHERE uid = _UID) >= 60 THEN
