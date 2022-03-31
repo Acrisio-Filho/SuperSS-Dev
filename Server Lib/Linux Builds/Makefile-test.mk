@@ -2,7 +2,7 @@ CC := g++-10
 
 PRGNAME := Linux\ IOCP
 
-CFLAGS := -c -Wall -std=c++20 `pkg-config --cflags glib-2.0` 
+CFLAGS := -c -Wall -fpermissive -fsigned-char -std=c++20 `pkg-config --cflags glib-2.0` 
 #-fpermissive
 CLIBS := -pthread -lg
 
@@ -93,11 +93,10 @@ tmd5: testmd5.cpp
 
 # -Wall -Wextra
 teste: test.cpp
-	g++-10 -ggdb -pthread -lg -std=c++20 test.cpp \
+	g++-10 -ggdb -pthread -lg -std=c++20 `pkg-config --cflags glib-2.0` test.cpp \
 	../Projeto\ IOCP/UTIL/exception.cpp ../Projeto\ IOCP/UTIL/message_pool.cpp \
 	../Projeto\ IOCP/UTIL/message.cpp ../Projeto\ IOCP/TIMER/queue_timer.cpp ../Projeto\ IOCP/UTIL/event.cpp \
 	../Projeto\ IOCP/THREAD\ POOL/thread.cpp ../Projeto\ IOCP/UTIL/WinPort.cpp ../Projeto\ IOCP/UTIL/reader_ini.cpp \
-	/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.6 `pkg-config --cflags glib-2.0` \
 	../Projeto\ IOCP/UTIL/util_time.cpp ../Projeto\ IOCP/THREAD\ POOL/job_pool.cpp \
 	../Projeto\ IOCP/THREAD\ POOL/job.cpp ../Projeto\ IOCP/TIMER/timer.cpp \
 	../Projeto\ IOCP/TIMER/timer_manager.cpp ../Projeto\ IOCP/UTIL/hex_util.cpp \
@@ -115,4 +114,4 @@ teste: test.cpp
 	../Projeto\ IOCP/Smart\ Calculator/Smart\ Calculator.cpp ../Projeto\ IOCP/DATABASE/exec_query.cpp \
 	../Projeto\ IOCP/DATABASE/database.cpp ../Projeto\ IOCP/UNIT/unit_auth_server_connect.cpp \
 	../Projeto\ IOCP/UNIT/unit_connect.cpp ../Projeto\ IOCP/PANGYA_DB/cmd_new_auth_server_key.cpp \
-	../Projeto\ IOCP/DATABASE/mssql.cpp ../Projeto\ IOCP/DATABASE/postgresql.cpp -ldl -lodbc -o test
+	../Projeto\ IOCP/DATABASE/mssql.cpp ../Projeto\ IOCP/DATABASE/postgresql.cpp -ldl -lodbc `pkg-config --libs glib-2.0` -o test

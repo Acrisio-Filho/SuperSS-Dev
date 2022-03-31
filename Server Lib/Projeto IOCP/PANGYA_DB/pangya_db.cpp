@@ -23,10 +23,10 @@ using namespace stdA;
 
 // Teste call db cmd log
 #ifdef _DEBUG
-#define _TESTCMD_LOG 1
+#define _TESTCMD_LOG 0
 #endif
 
-#if defined(_WIN32) && defined(_TESTCMD_LOG)
+#if defined(_WIN32) && (_TESTCMD_LOG == 1)
 // !@ Teste
 #include <fstream>
 #include <map>
@@ -229,7 +229,7 @@ inline void pangya_db::exec(database& _db) {
 		_smp::message_pool::getInstance().push(new message("[pangya_db::" + _getName() + "::exec][Error] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
     }
 
-#if defined(_WIN32) && defined(_TESTCMD_LOG)
+#if defined(_WIN32) && (_TESTCMD_LOG == 1)
 	// !@ Teste
 	if (logExecuteCmds(_getName()))
 		_smp::message_pool::getInstance().push(new message("[pangya_db::" + _getName() + "::exec][Log] Executado. ------------------->>", CL_FILE_LOG_AND_CONSOLE));

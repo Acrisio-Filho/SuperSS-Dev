@@ -30,6 +30,9 @@ CXXFLAGS := $(CURRENT_CXXFLAGS) -fpermissive -fsigned-char -std=c++20 -fvisibili
 # /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.6 /usr/lib/libmsodbcsql-17.so
 CXXLINK := -Wl,--export-dynamic -pthread -lg -ldl `pkg-config --libs libzip` `pkg-config --libs mysqlclient` -lodbc -lcrypto `pkg-config --libs glib-2.0`
 
+# set library static owner to check modify and recompile program
+#LIBSTATIC := testlib.a
+
 # Program name
 PROGRAM := msn
 
@@ -187,12 +190,12 @@ ${obj.cpp} ${obj.c}: %.o :
 	@$(CXX) $(CFLAGS) $(DEPFLAGS) -c $(call scape_WS,$<) -o $(call scape_WS,$@)
 
 # Make Objects to link
-OUT_OBJECTS = $(subst .o\,.o,$(addsuffix \,$^))
+OUT_OBJECTS = $(subst .a\,.a, $(subst .o\,.o,$(addsuffix \,$^)))
 
 # The rule for building the executable "example", using OBJ_FILES as
 # prerequisites. Since we're not relying on an implicit rule, we need to
 # explicity list CFLAGS, LDFLAGS, LDLIBS
-$(BUILD_FOLDER)/$(PROGRAM): $(OBJ_FILES)
+$(BUILD_FOLDER)/$(PROGRAM): $(OBJ_FILES) $(LIBSTATIC)
 	@echo Linking $(notdir $@)
 	$(CXX) $(CFLAGS) $(LDFLAGS) $(OUT_OBJECTS) $(LDLIBS) -o $@
 	cp $(BUILD_FOLDER)/$(PROGRAM) $(DIRSAVEPRROGRAM)/$(PROGRAM)

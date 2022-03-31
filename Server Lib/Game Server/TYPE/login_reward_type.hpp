@@ -125,7 +125,7 @@ namespace stdA {
 					memcpy(name, _name, (len > sizeof(name) ? sizeof(name) : len));
 #endif
 
-					name[(len > sizeof(name)) ? sizeof(name) -1 : len] = '\0';
+					name[(len >= sizeof(name)) ? sizeof(name) -1 : len] = '\0';
 				}
 			};
 

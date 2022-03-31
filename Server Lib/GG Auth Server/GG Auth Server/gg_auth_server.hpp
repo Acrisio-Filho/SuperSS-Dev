@@ -1,6 +1,6 @@
 // Arquivo gg_auth_server.hpp
 // Criado em 02/02/2021 as 16:47 por Acrisio
-// Defini��o da classe gg_auth_server
+// Definição da classe gg_auth_server
 
 #pragma once
 #ifndef _STDA_GG_AUTH_SERVER_HPP
@@ -73,7 +73,7 @@ namespace stdA {
 			virtual void authCmdInfoPlayerOnline(uint32_t _req_server_uid, uint32_t _player_uid);
 			virtual void authCmdConfirmSendInfoPlayerOnline(uint32_t _req_server_uid, AuthServerPlayerInfo _aspi);
 
-			// requests Comandos e respostas din�micas
+			// requests Comandos e respostas dinâmicas
 			virtual void authCmdSendCommandToOtherServer(packet& _packet);
 			virtual void authCmdSendReplyToOtherServer(packet& _packet);
 

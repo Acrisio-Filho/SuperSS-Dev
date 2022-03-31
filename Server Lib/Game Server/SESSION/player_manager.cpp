@@ -633,7 +633,7 @@ bool player_manager::checkGameGuard(player& _session) {
 
 	if (_session.getState()) {
 
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 		auto now = std::time(nullptr);
 
 		if (!_session.m_gg.m_auth_reply)
@@ -653,7 +653,7 @@ bool player_manager::checkGameGuard(player& _session) {
 				return true;
 			}
 		}
-#elif INTPTR_MAX == INT32_MAX
+#elif INTPTR_MAX == INT32_MAX || MY_GG_SRV_LIB == 1
 		auto now = time(nullptr);
 
 		if (!_session.m_gg.m_auth_reply)

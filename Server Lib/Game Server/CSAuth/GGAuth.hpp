@@ -10,14 +10,24 @@
 #elif defined(__linux__)
 #include "../../Projeto IOCP/UTIL/WinPort.h"
 #include "../../Projeto IOCP/UTIL/event.hpp"
+#include "../../Projeto IOCP/THREAD POOL/thread.h"
 #endif
 
 #include <cstdint>
 
+// 1 - Usa minha GG Server Lib
+#define MY_GG_SRV_LIB 1
+
 #if INTPTR_MAX == INT64_MAX
-//#incldue "new_gameguard"
+	#if MY_GG_SRV_LIB == 1
+		#include "../../GGSrvLib26-1/GGSrvLib26-1/GGSrvLib26-1.h"
+	#endif
 #elif INTPTR_MAX == INT32_MAX
-#include "ggsrv26.h"
+	#if MY_GG_SRV_LIB == 1
+		#include "../../GGSrvLib26-1/GGSrvLib26-1/GGSrvLib26-1.h"
+	#else
+		#include "ggsrv26.h"
+	#endif
 #else
 #error Unknown pointer size or missing size macros!
 #endif
@@ -61,7 +71,7 @@ namespace stdA {
 #endif
 
 // Disable GG, por enquanto, por que ele � x86
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 #define GGAUTHS_API
 #define	NPLOG_DEBUG	0x00000001 
 #define	NPLOG_ERROR	0x00000002
@@ -135,7 +145,11 @@ namespace stdA {
 			~GGAuth();
 
 		protected:
+#if defined(_WIN32)
 			static DWORD WINAPI updateTimerProc(LPVOID lpParameter);
+#elif defined(__linux__)
+			static void* updateTimerProc(void* lpParameter);
+#endif
 
 		private:
 			bool m_state;
@@ -146,7 +160,7 @@ namespace stdA {
 			HANDLE m_thread_update_timer;
 #elif defined(__linux__)
 			Event *m_quit_update_timer;	// Finish;
-			Event *m_thread_update_timer;
+			thread *m_thread_update_timer;
 #endif
 
 			const uint32_t m_time_sleep = (5000 * 60); // 5min

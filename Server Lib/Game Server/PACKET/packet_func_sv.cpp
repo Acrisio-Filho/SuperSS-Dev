@@ -4560,9 +4560,9 @@ int packet_func::packet_as001(void* _arg1, void* _arg2) {
 
 	try {
 
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 		sgs::gs::getInstance().authCmdKeyLoginGGAuthServer(_packet);
-#elif INTPTR_MAX == INT32_MAX
+#elif INTPTR_MAX == INT32_MAX || MY_GG_SRV_LIB == 1
 		// !@ Teste
 		_smp::message_pool::getInstance().push(new message("[packet_func::packet_as001][Log] Teste, ver se esta funcionando.", CL_FILE_LOG_AND_CONSOLE));
 #else

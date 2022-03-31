@@ -5,7 +5,7 @@
 CXX := g++-10
 
 # Debug
-DEBUG_CXXFLAGS := -Og -D _DEBUG -D SHOW_DEBUG_PACKET -ggdb
+DEBUG_CXXFLAGS := -Og -D _DEBUG -ggdb
 DEBUG_OBJDIR_PREFIX := debug
 
 # Release
@@ -25,28 +25,32 @@ ifdef __build_type
 endif
 
 # -fpermissive -Wall -Wextra
-CXXFLAGS := $(CURRENT_CXXFLAGS) -fpermissive -fsigned-char -std=c++20 `pkg-config --cflags glib-2.0`
+CXXFLAGS := $(CURRENT_CXXFLAGS) -fpermissive -fsigned-char -D GGAUTH701_EXPORTS -fPIC -std=c++20 -fvisibility=hidden
 
 # /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.6 /usr/lib/libmsodbcsql-17.so
-CXXLINK := -pthread -lg -ldl `pkg-config --libs libzip` `pkg-config --libs mysqlclient` -lodbc -lcrypto `pkg-config --libs glib-2.0`
+CXXLINK := -Wl,--export-dynamic -Wl,--no-undefined -pthread -ggdb -std=c++20 -shared
 
 # set library static owner to check modify and recompile program
 #LIBSTATIC := testlib.a
 
 # Program name
-PROGRAM := rank
+PROGRAM := ggauth701.so
 
 # Directory Output program App
-DIRSAVEPRROGRAM := ./Rank\ Server
+DIRSAVEPRROGRAM := ./ggauth70-1
+
+# Directory to Copy Lib
+GAMESERVERDIR 		:= ./Game\ Server
 
 # The build folder, for all generated output. This should normally be included
 # in a .gitignore rule
-BUILD_FOLDER := output-rs-$(CURRENT_OBJDIR_PREFIX)
+BUILD_FOLDER := output-ggauth70-$(CURRENT_OBJDIR_PREFIX)
 
 # my addiction
 CFILES := \
-	../Rank|Server/Rank|Server/Rank|Server.cpp \
-	../Rank|Server/Rank|Server/rank_server.cpp \
+	../ggauth70-1/ggauth70-1/dllmain.cpp \
+	../ggauth70-1/ggauth70-1/ggauth70-1.cpp \
+	../ggauth70-1/ggauth70-1/Protocol70.cpp \
 	../Projeto|IOCP/UTIL/exception.cpp \
 	../Projeto|IOCP/UTIL/message_pool.cpp \
 	../Projeto|IOCP/UTIL/message.cpp \
@@ -54,61 +58,12 @@ CFILES := \
 	../Projeto|IOCP/UTIL/event.cpp \
 	../Projeto|IOCP/THREAD|POOL/thread.cpp \
 	../Projeto|IOCP/UTIL/WinPort.cpp \
-	../Projeto|IOCP/UTIL/reader_ini.cpp \
-	../Projeto|IOCP/UTIL/util_time.cpp \
 	../Projeto|IOCP/THREAD|POOL/job_pool.cpp \
 	../Projeto|IOCP/THREAD|POOL/job.cpp \
 	../Projeto|IOCP/TIMER/timer.cpp \
 	../Projeto|IOCP/TIMER/timer_manager.cpp \
-	../Projeto|IOCP/UTIL/hex_util.cpp \
-	../Projeto|IOCP/THREAD|POOL/threadpool.cpp \
-	../Projeto|IOCP/IOCP/epoll.cpp \
-	../Projeto|IOCP/UTIL/buffer.cpp \
-	../Projeto|IOCP/SOCKET/session.cpp \
-	../Projeto|IOCP/PACKET/packet.cpp \
-	../Projeto|IOCP/COMPRESS/compress.cpp \
-	../Projeto|IOCP/COMPRESS/minilzo.c \
-	../Projeto|IOCP/CRYPT/crypt.cpp \
-	../Projeto|IOCP/DATABASE/normal_manager_db.cpp \
-	../Projeto|IOCP/DATABASE/normal_db.cpp \
-	../Projeto|IOCP/DATABASE/response.cpp \
-	../Projeto|IOCP/DATABASE/result_set.cpp \
-	../Projeto|IOCP/SOCKET/socketserver.cpp \
-	../Projeto|IOCP/SOCKET/socket.cpp \
-	../Projeto|IOCP/PANGYA_DB/pangya_db.cpp \
-	../Projeto|IOCP/DATABASE/exec_query.cpp \
-	../Projeto|IOCP/PACKET/packet_func.cpp \
-	../Projeto|IOCP/UTIL/func_arr.cpp \
-	../Projeto|IOCP/DATABASE/database.cpp \
-	../Projeto|IOCP/DATABASE/mssql.cpp \
-	../Projeto|IOCP/DATABASE/postgresql.cpp \
-	../Projeto|IOCP/DATABASE/mysql_db.cpp \
-	../Projeto|IOCP/Server/server.cpp \
-	../Projeto|IOCP/THREAD|POOL/threadpl_server.cpp \
-	../Projeto|IOCP/UTIL/iff.cpp \
-	../Projeto|IOCP/SOCKET/session_manager.cpp \
-	../Projeto|IOCP/UNIT/unit_connect.cpp \
-	../Projeto|IOCP/UNIT/unit_auth_server_connect.cpp \
-	../Projeto|IOCP/Smart|Calculator/Smart|Calculator.cpp \
-	../Rank|Server/PACKET/packet_func_rs.cpp \
-	../Rank|Server/SESSION/player.cpp \
-	../Rank|Server/SESSION/player_manager.cpp \
-	../Rank|Server/TYPE/player_info.cpp \
-	../Rank|Server/UTIL/rank_character.cpp \
-	../Rank|Server/UTIL/rank_refresh_time.cpp \
-	../Rank|Server/UTIL/rank_registry_manager.cpp \
-	../Rank|Server/UTIL/rank_registry.cpp \
-	../Rank|Server/PANGYA_DB/cmd_player_info.cpp \
-	../Rank|Server/PANGYA_DB/cmd_rank_config_info.cpp \
-	../Rank|Server/PANGYA_DB/cmd_rank_registry_character_info.cpp \
-	../Rank|Server/PANGYA_DB/cmd_rank_registry_info.cpp \
-	../Rank|Server/PANGYA_DB/cmd_update_rank_registry.cpp \
-	../Projeto|IOCP/PANGYA_DB/cmd_register_server.cpp \
-	../Projeto|IOCP/PANGYA_DB/cmd_server_list.cpp \
-	../Projeto|IOCP/PANGYA_DB/cmd_list_ip_ban.cpp \
-	../Projeto|IOCP/PANGYA_DB/cmd_list_mac_ban.cpp \
-	../Projeto|IOCP/PANGYA_DB/cmd_new_auth_server_key.cpp \
-	../Projeto|IOCP/PANGYA_DB/cmd_insert_block_ip.cpp
+	../Projeto|IOCP/UTIL/util_time.cpp \
+	../Projeto|IOCP/UTIL/hex_util.cpp
 
 target = $(BUILD_FOLDER)/$(subst |,\ ,$(filter %.o,$(patsubst %.cpp,%.o,${1}) $(patsubst %.c,%.o,${1})))
 target_dep = $(BUILD_FOLDER)/$(subst |,\ ,$(filter %.o.d,$(patsubst %.cpp,%.o.d,${1}) $(patsubst %.c,%.o.d,${1})))
@@ -198,7 +153,7 @@ OUT_OBJECTS = $(subst .a\,.a, $(subst .o\,.o,$(addsuffix \,$^)))
 $(BUILD_FOLDER)/$(PROGRAM): $(OBJ_FILES) $(LIBSTATIC)
 	@echo Linking $(notdir $@)
 	$(CXX) $(CFLAGS) $(LDFLAGS) $(OUT_OBJECTS) $(LDLIBS) -o $@
-	cp $(BUILD_FOLDER)/$(PROGRAM) $(DIRSAVEPRROGRAM)/$(PROGRAM)
+	cp $(BUILD_FOLDER)/$(PROGRAM) $(GAMESERVERDIR)/$(PROGRAM)
 
 # Remove debug information for a smaller executable. An embedded project might
 # instead using [arm-none-eabi-]objcopy to convert the ELF file to a raw binary
@@ -208,7 +163,8 @@ STRIPPED_OUTPUT := $(BUILD_FOLDER)/$(PROGRAM)-stripped
 $(STRIPPED_OUTPUT): $(BUILD_FOLDER)/$(PROGRAM)
 	@echo Stripping $(notdir $@)
 	objcopy --strip-debug $^ $@
-	cp $@ $(DIRSAVEPRROGRAM)/$(PROGRAM)
+	cp $@ $(GAMESERVERDIR)/$(PROGRAM)
+	cp $@ $(MESSAGESERVERDIR)/$(PROGRAM)
 
 # make build folder
 $(BUILD_FOLDER):

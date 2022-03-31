@@ -1,6 +1,6 @@
 // Arquivo player.cpp
 // Criado em 02/02/2021 as 17:17 por Acrisio
-// Implementa��o da classe player
+// Implementação da classe player
 
 #pragma pack(1)
 #include <WinSock2.h>

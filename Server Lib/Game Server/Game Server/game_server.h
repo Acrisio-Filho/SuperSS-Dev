@@ -25,10 +25,10 @@
 #include "../UTIL/broadcast_list.hpp"
 
 #include <cstdint>
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 #include "../UNIT/unit_gg_auth_server_connect.hpp"
 #include "../UNIT/unit_gg_interface.hpp"
-#elif INTPTR_MAX == INT32_MAX
+#elif INTPTR_MAX == INT32_MAX || MY_GG_SRV_LIB == 1
 #include "../CSAuth/GGAuth.hpp"
 #else
 #error Unknown pointer size or missing size macros!
@@ -38,7 +38,7 @@
 
 namespace stdA {
 	class game_server : public server
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 		, public IUnitGGAuthServer
 #endif
 	{
@@ -152,7 +152,7 @@ namespace stdA {
 			virtual void authCmdReloadGlobalSystem(uint32_t _tipo) override;
 			virtual void authCmdConfirmSendInfoPlayerOnline(uint32_t _req_server_uid, AuthServerPlayerInfo _aspi) override;
 
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 		public:
 			// Game Guard Auth Server
 			virtual void ggAuthCmdGetQuery(uint32_t _error, uint32_t _socket_id, GG_AUTH_DATA& _data) override;
@@ -239,9 +239,9 @@ namespace stdA {
 
 			LoginManager m_login_manager;
 
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 			unit_gg_auth_server_connect *m_game_guard;
-#elif INTPTR_MAX == INT32_MAX
+#elif INTPTR_MAX == INT32_MAX || MY_GG_SRV_LIB == 1
 			GGAuth *m_game_guard;
 #else
 #error Unknown pointer size or missing size macros!

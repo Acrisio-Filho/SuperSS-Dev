@@ -144,9 +144,9 @@ game_server::game_server() : server(m_player_manager, 2, 26, 8), m_player_manage
 
 		// Initialize Game Guard Auth
 		if (m_GameGuardAuth) {
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 			m_game_guard = new unit_gg_auth_server_connect(*this, m_si);
-#elif INTPTR_MAX == INT32_MAX
+#elif INTPTR_MAX == INT32_MAX || MY_GG_SRV_LIB == 1
 			m_game_guard = new GGAuth(m_si.max_user);
 #else
 #error Unknown pointer size or missing size macros!
@@ -3409,7 +3409,7 @@ void game_server::requestCheckGameGuardAuthAnswer(player& _session, packet *_pac
 			// Read reply
 			_packet->readBuffer(&_session.m_gg.m_csa.m_AuthAnswer, sizeof(GG_AUTH_DATA));
 
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 			DWORD err_success = _session.m_gg.m_csa.CheckAuthAnswer();
 
 			if (err_success != ERROR_SUCCESS) {
@@ -3434,7 +3434,7 @@ void game_server::requestCheckGameGuardAuthAnswer(player& _session, packet *_pac
 				_smp::message_pool::getInstance().push(new message("[game_server::requestCheckGameGuardAuthAnswer][Log] Player[UID=" + std::to_string(_session.m_pi.uid)
 						+ "] GG Auth Check answer: false", CL_FILE_LOG_AND_CONSOLE));
 			}
-#elif INTPTR_MAX == INT32_MAX
+#elif INTPTR_MAX == INT32_MAX || MY_GG_SRV_LIB == 1
 			DWORD err_success = _session.m_gg.m_csa.CheckAuthAnswer();
 
 			if (err_success == ERROR_SUCCESS)
@@ -3444,8 +3444,13 @@ void game_server::requestCheckGameGuardAuthAnswer(player& _session, packet *_pac
 				// Log
 				char sd[1024];
 
+#if defined(_WIN32)
 				sprintf_s(sd, 1024, "Err: %d, Index: %08X, Value1: %08X, Value2: %08X, Value3: %08X", err_success, _session.m_gg.m_csa.m_AuthAnswer.dwIndex, 
 						_session.m_gg.m_csa.m_AuthAnswer.dwValue1, _session.m_gg.m_csa.m_AuthAnswer.dwValue2, _session.m_gg.m_csa.m_AuthAnswer.dwValue3);
+#elif defined(__linux__)
+				sprintf(sd, "Err: %d, Index: %08X, Value1: %08X, Value2: %08X, Value3: %08X", err_success, _session.m_gg.m_csa.m_AuthAnswer.dwIndex, 
+						_session.m_gg.m_csa.m_AuthAnswer.dwValue1, _session.m_gg.m_csa.m_AuthAnswer.dwValue2, _session.m_gg.m_csa.m_AuthAnswer.dwValue3);
+#endif
 
 				_smp::message_pool::getInstance().push(new message("[game_server::requestCheckGameGuardAuthAnswer][Error] Player[UID=" + std::to_string(_session.m_pi.uid) + "] CSAuth Fail. " + sd, CL_FILE_LOG_AND_CONSOLE));
 				
@@ -3823,7 +3828,7 @@ void game_server::authCmdConfirmSendInfoPlayerOnline(uint32_t _req_server_uid, A
 	}
 };
 
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 void game_server::ggAuthCmdGetQuery(uint32_t _error, uint32_t _socket_id, GG_AUTH_DATA& _data) {
 
 	try {
@@ -4206,7 +4211,7 @@ void game_server::onAcceptCompleted(session *_session) {
 
 		p->m_gg.m_auth_reply = true;
 		p->m_gg.m_auth_time = 0;
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 		p->m_gg.m_csa.Init((uint32_t)
 #if defined(_WIN32)
 			p->m_sock
@@ -4214,7 +4219,7 @@ void game_server::onAcceptCompleted(session *_session) {
 			p->m_sock.fd
 #endif
 		);
-#elif INTPTR_MAX == INT32_MAX
+#elif INTPTR_MAX == INT32_MAX || MY_GG_SRV_LIB == 1
 		p->m_gg.m_csa.Init();
 #else
 #error Unknown pointer size or missing size macros!
@@ -4469,7 +4474,7 @@ void game_server::onStart() {
 
 	try {
 
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 		if (m_game_guard != nullptr)
 			m_game_guard->start();
 #endif

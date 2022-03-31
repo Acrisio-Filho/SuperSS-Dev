@@ -59,21 +59,35 @@ using namespace stdA;
 							_smp::message_pool::getInstance().push(new message("Saindo do trabalho->" + std::string((name_thread)))); \
 						return result; \
 
-#if defined(_WIN32)
+#if defined(_WIN32) && MY_GG_SRV_LIB == 0
 #pragma comment(lib, "legacy_stdio_definitions.lib")
 #endif
 
 #include <cstdint>
 
 #if INTPTR_MAX == INT64_MAX
-//#pragma comment(lib, "../CSAuth/ggsrvlib26_MT.lib") // New Lib
+	#if MY_GG_SRV_LIB == 1
+		#if defined(_DEBUG)
+			#pragma comment(lib, "../../GGSrvLib26-1/x64/Debug/GGSrvLib26-1.lib")
+		#else
+			#pragma comment(lib, "../../GGSrvLib26-1/x64/Release/GGSrvLib26-1.lib")
+		#endif
+	#endif
 #elif INTPTR_MAX == INT32_MAX
-#pragma comment(lib, "../CSAuth/ggsrvlib26_MT.lib")
+	#if MY_GG_SRV_LIB == 1
+		#if defined(_DEBUG)
+			#pragma comment(lib, "../../GGSrvLib26-1/Debug/GGSrvLib26-1.lib")
+		#else
+			#pragma comment(lib, "../../GGSrvLib26-1/Release/GGSrvLib26-1.lib")
+		#endif
+	#else
+		#pragma comment(lib, "../CSAuth/ggsrvlib26_MT.lib")
+	#endif
 #else
 #error Unknown pointer size or missing size macros!
 #endif
 
-#if INTPTR_MAX == INT64_MAX
+#if INTPTR_MAX == INT64_MAX && MY_GG_SRV_LIB == 0
 
 // My CCSAuth2
 CCSAuth2::CCSAuth2() : m_bAuth(false) {
@@ -186,7 +200,7 @@ void CCSAuth2::AllowOldVersion() {
 	/*if (m_bAuth)
 		GGAuthAllowOldVersion(m_auth);*/
 }
-#elif INTPTR_MAX == INT32_MAX
+#elif INTPTR_MAX == INT32_MAX || MY_GG_SRV_LIB == 1
 GGAUTHS_API void NpLog(int mode, char* msg) // referenced by
 {
 	if (mode & (NPLOG_DEBUG | NPLOG_ERROR)) // for examples 
@@ -197,15 +211,30 @@ GGAUTHS_API void GGAuthUpdateCallback(PGG_UPREPORT report) // referenced by
 {
 	char s[2048];
 
+#if defined(_WIN32)
 	sprintf_s(s, 2048, "GGAuth version update [%s] : [%ld] -> [%ld] \n", // for examples
 		report->nType == 1 ? "GameGuard Ver" : "Protocol Num",
 		report->dwBefore,
 		report->dwNext);
+#elif defined(__linux__)
+	sprintf(s, "GGAuth version update [%s] : [%u] -> [%u] \n", // for examples
+		report->nType == 1 ? "GameGuard Ver" : "Protocol Num",
+		report->dwBefore,
+		report->dwNext);
+#endif
 
 	_smp::message_pool::getInstance().push(new message(std::string("[game_server::GGAuthUpdateCallback][Log] ") + s, CL_FILE_LOG_AND_CONSOLE));
 };
 
-GGAuth::GGAuth(uint32_t _numActiveSession) : m_state(false), m_quit_update_timer(INVALID_HANDLE_VALUE), m_thread_update_timer(INVALID_HANDLE_VALUE) {
+GGAuth::GGAuth(uint32_t _numActiveSession) : m_state(false), 
+#if defined(_WIN32)
+	m_quit_update_timer(INVALID_HANDLE_VALUE), 
+	m_thread_update_timer(INVALID_HANDLE_VALUE) 
+#elif defined(__linux__)
+	m_quit_update_timer(nullptr), 
+	m_thread_update_timer(nullptr) 
+#endif
+	{
 
 	DWORD err = InitGameguardAuth(NULL, _numActiveSession, true, 0x03);
 
@@ -219,6 +248,7 @@ GGAuth::GGAuth(uint32_t _numActiveSession) : m_state(false), m_quit_update_timer
 	else
 		_smp::message_pool::getInstance().push(new message("[GGAuth::GGAuth][Log] Inicializou o InitGameguardAuth com sucesso.", CL_FILE_LOG_AND_CONSOLE));
 
+#if defined(_WIN32)
 	// Create Event
 	if ((m_quit_update_timer = CreateEvent(NULL, TRUE, FALSE, NULL)) == INVALID_HANDLE_VALUE || m_quit_update_timer == NULL) {
 
@@ -237,30 +267,97 @@ GGAuth::GGAuth(uint32_t _numActiveSession) : m_state(false), m_quit_update_timer
 	}
 	else
 		_smp::message_pool::getInstance().push(new message("[GGAuth::GGAuth][Log] Criou thread GGAuthUpdateTimer com sucesso. ID=" + std::to_string(err), CL_FILE_LOG_AND_CONSOLE));
+#elif defined(__linux__)
+	try {
+		// Create Event
+		m_quit_update_timer = new Event(true, 0u);
 
+		if (!m_quit_update_timer->is_good()) {
+
+			delete m_quit_update_timer;
+
+			m_quit_update_timer = nullptr;
+
+			_smp::message_pool::getInstance().push(new message("[GGAuth::GGAuth][Error] Nao conseguiu criar o evento do GGAuthUpdateTimer.", CL_FILE_LOG_AND_CONSOLE));
+
+			return;
+		}
+
+		// Init Thread UpdateTimer GG
+		m_thread_update_timer = new thread(0, GGAuth::updateTimerProc, this, 0, 0);
+
+		if (m_thread_update_timer == nullptr) {
+
+			_smp::message_pool::getInstance().push(new message("[GGAuth::GGAuth][Error] Nao conseguiu criar a thread do GGAuthUpdateTimer.", CL_FILE_LOG_AND_CONSOLE));
+
+			return;
+		}
+
+		_smp::message_pool::getInstance().push(new message("[GGAuth::GGAuth][Log] Criou thread GGAuthUpdateTimer com sucesso. ID=" + std::to_string(err), CL_FILE_LOG_AND_CONSOLE));
+
+	}catch (exception& e) {
+		_smp::message_pool::getInstance().push(new message("[GGAuth::GGAuth][ErrorSytem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
+	}
+		
+#endif
 	m_state = true;
 }
 
 GGAuth::~GGAuth() {
 
-	if (m_thread_update_timer != INVALID_HANDLE_VALUE && m_thread_update_timer != NULL) {
+	try {
 
-		// Termina thread
-		if (m_quit_update_timer != INVALID_HANDLE_VALUE && m_quit_update_timer != NULL) {
+#if defined(_WIN32)
+		if (m_thread_update_timer != INVALID_HANDLE_VALUE && m_thread_update_timer != NULL) {
 
-			// Termina thread pelo event
-			SetEvent(m_quit_update_timer);
+			// Termina thread
+			if (m_quit_update_timer != INVALID_HANDLE_VALUE && m_quit_update_timer != NULL) {
 
+				// Termina thread pelo event
+				SetEvent(m_quit_update_timer);
+
+			}
+			else // Termina for�ado
+				TerminateThread(m_thread_update_timer, -32);
+
+			if (WaitForSingleObject(m_thread_update_timer, INFINITE) != WAIT_OBJECT_0)
+				_smp::message_pool::getInstance().push(new message("[GGAuth::~GGAuth][Error] Nao conseguiu esperar pela thread update timer terminar. Error Code: " + std::to_string(GetLastError()), CL_FILE_LOG_AND_CONSOLE));
+
+			CloseHandle(m_thread_update_timer);
 		}
-		else // Termina for�ado
-			TerminateThread(m_thread_update_timer, -32);
 
-		if (WaitForSingleObject(m_thread_update_timer, INFINITE) != WAIT_OBJECT_0)
-			_smp::message_pool::getInstance().push(new message("[GGAuth::~GGAuth][Error] Nao conseguiu esperar pela thread update timer terminar. Error Code: " + std::to_string(GetLastError()), CL_FILE_LOG_AND_CONSOLE));
-
-		CloseHandle(m_thread_update_timer);
-
+		if (m_quit_update_timer != INVALID_HANDLE_VALUE && m_quit_update_timer != NULL)
+			CloseHandle(m_quit_update_timer);
+		
 		m_thread_update_timer = INVALID_HANDLE_VALUE;
+		m_quit_update_timer = INVALID_HANDLE_VALUE;
+#elif defined(__linux__)
+		if (m_thread_update_timer != nullptr) {
+
+			// Termina thread
+			if (m_quit_update_timer != nullptr) {
+
+				// Termina thread pelo event
+				m_quit_update_timer->set();
+
+			}
+			else // Termina for�ado
+				m_thread_update_timer->exit_thread();
+
+			m_thread_update_timer->waitThreadFinish(INFINITE);
+
+			delete m_thread_update_timer;
+		}
+
+		if (m_quit_update_timer != nullptr)
+			delete m_quit_update_timer;
+
+		m_thread_update_timer = nullptr;
+		m_quit_update_timer = nullptr;
+#endif
+
+	}catch (exception& e) {
+		_smp::message_pool::getInstance().push(new message("[GGAuth::~GGAuth][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
 	}
 
 	CleanupGameguardAuth();
@@ -268,26 +365,45 @@ GGAuth::~GGAuth() {
 	m_state = false;
 }
 
+#if defined(_WIN32)
 DWORD WINAPI GGAuth::updateTimerProc(LPVOID lpParameter) {
+#elif defined(__linux__)
+void* GGAuth::updateTimerProc(LPVOID lpParameter) {
+#endif
 	BEGIN_THREAD_SETUP(GGAuth);
-
-	DWORD err = 0;
 
 	if (!pTP->m_state) {
 
 		_smp::message_pool::getInstance().push(new message("[GGAuth::updateTimerProc][Error] GGAuth is not initialized.", CL_FILE_LOG_AND_CONSOLE));
 
+#if defined(_WIN32)
 		return -2;
+#elif defined(__linux__)
+		return (void*)-2;
+#endif
 	}
 
+	DWORD err = 0;
+
+#if defined(_WIN32)
 	while ((err = WaitForSingleObject(pTP->m_quit_update_timer, pTP->m_time_sleep)) == WAIT_TIMEOUT) {
+#elif defined(__linux__)
+	while ((err = pTP->m_quit_update_timer->wait(pTP->m_time_sleep)) == WAIT_TIMEOUT) {
+#endif
 
 		// GGAuthUpdateTimer
 		if ((err = GGAuthUpdateTimer()) != ERROR_SUCCESS)
 			_smp::message_pool::getInstance().push(new message("[GGAuth::updateTimerProc][Error] Nao conseguiu atualizar o GGAuthUpdateTimer. Error Code: " + std::to_string(err), CL_FILE_LOG_AND_CONSOLE));
 	}
 
-	_smp::message_pool::getInstance().push(new message("[GGAuth::updateTimerProc][Log] Finish Loop code: " + std::to_string(err) + (err != WAIT_OBJECT_0 ? std::string(", Win Error: ") + std::to_string(GetLastError()) : ""), CL_FILE_LOG_AND_CONSOLE));
+	_smp::message_pool::getInstance().push(new message("[GGAuth::updateTimerProc][Log] Finish Loop code: " + std::to_string(err) + (err != WAIT_OBJECT_0 
+		? 
+#if defined(_WIN32)
+			std::string(", Win Error: ") + std::to_string(GetLastError()) 
+#elif defined(__linux__)
+			std::string(", Linux Error: ") + std::to_string(errno) 
+#endif
+		: ""), CL_FILE_LOG_AND_CONSOLE));
 
 	END_THREAD_SETUP("updateTimerProc()");
 }
