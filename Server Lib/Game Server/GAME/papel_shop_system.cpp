@@ -110,7 +110,7 @@ void PapelShopSystem::initialize() {
 	// Load Config
 	CmdPapelShopConfig cmd_psc(true); // Waiter
 
-	NormalManagerDB::add(0, &cmd_psc, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_psc, nullptr, nullptr);
 
 	cmd_psc.waitEvent();
 
@@ -122,7 +122,7 @@ void PapelShopSystem::initialize() {
 	// Laod Coupon(s)
 	CmdPapelShopCoupon cmd_psCoupon(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_psCoupon, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_psCoupon, nullptr, nullptr);
 
 	cmd_psCoupon.waitEvent();
 
@@ -134,7 +134,7 @@ void PapelShopSystem::initialize() {
 	// Load Item(s)
 	CmdPapelShopItem cmd_psi(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_psi, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_psi, nullptr, nullptr);
 
 	cmd_psi.waitEvent();
 
@@ -333,7 +333,7 @@ void PapelShopSystem::updateDia() {
 
 		CmdUpdatePapelShopConfig cmd_upsc(m_ctx_ps, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_upsc, PapelShopSystem::SQLDBResponse, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_upsc, PapelShopSystem::SQLDBResponse, nullptr);
 
 		cmd_upsc.waitEvent();
 
@@ -400,7 +400,7 @@ void PapelShopSystem::updateDiaPlayer(player& _session) {
 			+ _formatDate(_session.m_pi.mi.papel_shop_last_update) + "]", CL_FILE_LOG_AND_CONSOLE));
 
 	// UPDATE ON DB
-	NormalManagerDB::add(2, new CmdUpdatePapelShopInfo(_session.m_pi.uid, _session.m_pi.mi.papel_shop, _session.m_pi.mi.papel_shop_last_update), PapelShopSystem::SQLDBResponse, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdatePapelShopInfo(_session.m_pi.uid, _session.m_pi.mi.papel_shop, _session.m_pi.mi.papel_shop_last_update), PapelShopSystem::SQLDBResponse, nullptr);
 
 	LEAVE_CHECK;
 
@@ -433,7 +433,7 @@ void PapelShopSystem::updatePlayerCount(player& _session) {
 #endif // _PS_COM_LIMIT
 
 		// UPDATE ON DB
-		NormalManagerDB::add(2, new CmdUpdatePapelShopInfo(_session.m_pi.uid, _session.m_pi.mi.papel_shop, _session.m_pi.mi.papel_shop_last_update), PapelShopSystem::SQLDBResponse, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdatePapelShopInfo(_session.m_pi.uid, _session.m_pi.mi.papel_shop, _session.m_pi.mi.papel_shop_last_update), PapelShopSystem::SQLDBResponse, nullptr);
 	}
 
 	LEAVE_CHECK;

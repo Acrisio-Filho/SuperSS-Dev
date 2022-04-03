@@ -257,7 +257,7 @@ void CoinCubeLocationUpdateSystem::initialize() {
 
 		cmd_ccli.setCourse(course_id);
 
-		NormalManagerDB::add(0, &cmd_ccli, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_ccli, nullptr, nullptr);
 
 		cmd_ccli.waitEvent();
 
@@ -710,7 +710,7 @@ void CoinCubeLocationUpdateSystem::update_spwan_location() {
 
 			cmd_uccl.setInfo(el);
 
-			NormalManagerDB::add(0, &cmd_uccl, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_uccl, nullptr, nullptr);
 
 			cmd_uccl.waitEvent();
 

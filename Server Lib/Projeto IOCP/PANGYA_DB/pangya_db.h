@@ -9,6 +9,7 @@
 #include "../DATABASE/exec_query.h"
 #include "../TYPE/list_fifo.h"
 #include "../TYPE/list_async.h"
+#include "../UTIL/string_util.hpp"
 #include <string>
 
 #include "../DATABASE/database.h"
@@ -19,36 +20,6 @@
 
 #ifndef IFNULL
 #define IFNULL(_func, _data) ((_data == nullptr) ? 0 : _func((_data))) 
-#endif
-
-#if defined(_WIN32)
-#define STRCPY_TO_MEMORY_FIXED_SIZE(_memory, _size, _str) \
-{ \
-	if ((_size) > 0 && (_str) != nullptr) { \
-\
-		if ((_str)[0] == '\0') { \
-			(_memory)[0] = '\0'; \
-		}else { \
-			int32_t len = (int32_t)strlen((_str)); \
-			len = (len > (_size) ? _size : len); \
-			memcpy_s((_memory), (_size), (_str), len); \
-		} \
-	} \
-}
-#elif defined(__linux__)
-#define STRCPY_TO_MEMORY_FIXED_SIZE(_memory, _size, _str) \
-{ \
-	if ((_size) > 0 && (_str) != nullptr) { \
-\
-		if ((_str)[0] == '\0') { \
-			(_memory)[0] = '\0'; \
-		}else { \
-			int32_t len = (int32_t)strlen((_str)); \
-			len = (len > (_size) ? _size : len); \
-			memcpy((_memory), (_str), len); \
-		} \
-	} \
-}
 #endif
 
 namespace stdA {
@@ -64,6 +35,8 @@ namespace stdA {
 			virtual void waitEvent();
 			virtual void wakeupWaiter();
 			virtual bool isWaitable();
+
+			friend class NormalDB;
 
         protected: // Metôdos
 			virtual response* _insert(database& _db, std::string _query);

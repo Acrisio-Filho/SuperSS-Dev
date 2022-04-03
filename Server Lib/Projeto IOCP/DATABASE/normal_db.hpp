@@ -54,7 +54,7 @@ namespace stdA {
 					}
                 };
                 void execQuery(database& _db) {
-                    if (!_db.is_connected() && !_db.is_valid())
+                    if (_db.hasGoneAway() || !_db.is_connected() || !_db.is_valid())
                         throw exception("[NormalDB::msg_t::execQuery][Error] argument database _db is invalid", STDA_MAKE_ERROR(STDA_ERROR_TYPE::NORMAL_DB, 5, 0));
 
                     if (_pangya_db == nullptr)
@@ -79,6 +79,13 @@ namespace stdA {
 						throw exception("[NormalDB::mgs_t::isWaitable][Error] _pangya_db is nullptr", STDA_MAKE_ERROR(STDA_ERROR_TYPE::NORMAL_DB, 1, 0));
 
 					return _pangya_db->isWaitable();
+				};
+				void setException(std::string _exception_msg) {
+					if (_pangya_db == nullptr)
+						throw exception("[NormalDB::mgs_t::setException][Error] _pangya_db is nullptr", STDA_MAKE_ERROR(STDA_ERROR_TYPE::NORMAL_DB, 1, 0));
+
+					_pangya_db->m_exception = exception("[NormalDB::msg_t::setException][Error] " + _pangya_db->_getName() + " -> " + _exception_msg, 
+							STDA_MAKE_ERROR(STDA_ERROR_TYPE::NORMAL_DB, 0, 10000));
 				};
             protected:
 				uint32_t id;		// ID da msg
@@ -112,8 +119,12 @@ namespace stdA {
 
 			void checkIsDeadAndRevive();
 
+			void freeAllWaiting(std::string _msg);
+
         protected:
             void close();
+
+			bool forceWakeMsg(msg_t* _msg, std::string _exception_msg);
 
         protected:
 #if defined(_WIN32)
@@ -137,6 +148,7 @@ namespace stdA {
 
 			uint32_t volatile m_continue_exec;
 			uint32_t volatile m_continue_response;
+			uint32_t volatile m_free_all_waiting;
 
         // Member of Class not instance
         protected:

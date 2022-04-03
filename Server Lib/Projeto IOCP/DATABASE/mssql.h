@@ -25,22 +25,6 @@
 namespace stdA {
     class mssql : public database {
         public:
-            enum ERROR_TYPE : uint32_t {
-                INVALID_HANDLE,
-                INVALID_PARAMETER,
-                ALLOC_HANDLE_FAIL_ENV,
-				ALLOC_HANDLE_FAIL_DBC,
-				ALLOC_HANDLE_FAIL_STMT,
-                SET_ATTR_ENV_FAIL,
-                CONNECT_DRIVER_FAIL,
-                EXEC_QUERY_FAIL,
-                FETCH_QUERY_FAIL,
-				MORE_RESULTS,
-                GERAL_ERROR,
-				HAS_CONNECT,
-            };
-
-        public:
 			mssql();
 			mssql(std::wstring _db_address, std::wstring _db_name, std::wstring _user_name, std::wstring _user_pass, unsigned short _db_port);
 			mssql(std::string _db_address, std::string _db_name, std::string _user_name, std::string _user_pass, unsigned short _db_port);
@@ -48,6 +32,8 @@ namespace stdA {
 
             virtual void init() override;
             virtual void destroy();
+
+			virtual bool hasGoneAway() override;
 
             virtual void connect() override;
 			virtual void connect(std::wstring _db_address, std::wstring _db_name, std::wstring _user_name, std::wstring _user_pass, unsigned short _db_port) override;

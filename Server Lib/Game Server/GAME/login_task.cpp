@@ -46,10 +46,10 @@ LoginTask::~LoginTask() {
 
 void LoginTask::exec() {
 
-	//NormalManagerDB::add(0, new CmdPlayerInfo(m_pi.uid), LoginManager::SQLDBResponse, this);
+	//snmdb::NormalManagerDB::getInstance().add(0, new CmdPlayerInfo(m_pi.uid), LoginManager::SQLDBResponse, this);
 
 	// Troquei a parte de verificação inicial para o game server
-	NormalManagerDB::add(2, new CmdUserEquip(m_pi.uid), LoginManager::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(2, new CmdUserEquip(m_pi.uid), LoginManager::SQLDBResponse, this);
 }
 
 player& LoginTask::getSession() {

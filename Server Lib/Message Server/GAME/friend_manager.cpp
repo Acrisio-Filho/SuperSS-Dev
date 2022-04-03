@@ -71,7 +71,7 @@ void FriendManager::init(player_info& _pi) {
 
 	CmdFriendInfo cmd_fi(m_pi.uid, CmdFriendInfo::ALL, 0u, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_fi, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_fi, nullptr, nullptr);
 
 	cmd_fi.waitEvent();
 
@@ -183,7 +183,7 @@ void FriendManager::requestAddFriend(FriendInfoEx& _fi) {
 	addFriend(_fi);
 
 	// UPDATE ON DB
-	NormalManagerDB::add(1, new CmdAddFriend(m_pi.uid, _fi), FriendManager::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(1, new CmdAddFriend(m_pi.uid, _fi), FriendManager::SQLDBResponse, this);
 }
 
 void FriendManager::requestDeleteFriend(FriendInfoEx& _fi) {
@@ -197,7 +197,7 @@ void FriendManager::requestDeleteFriend(uint32_t _uid) {
 	deleteFriend(_uid);
 
 	// UPDATE ON DB
-	NormalManagerDB::add(2, new CmdDeleteFriend(m_pi.uid, _uid), FriendManager::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(2, new CmdDeleteFriend(m_pi.uid, _uid), FriendManager::SQLDBResponse, this);
 }
 
 void FriendManager::requestUpdateFriendInfo(FriendInfoEx& _fi) {
@@ -206,7 +206,7 @@ void FriendManager::requestUpdateFriendInfo(FriendInfoEx& _fi) {
 		throw exception("[FriendManager::requestUpdateFriendInfo][Error] _fi.uid is invalid(zero)", STDA_MAKE_ERROR(STDA_ERROR_TYPE::FRIEND_MANAGER, 1, 0));
 
 	// UPDATE ON DB
-	NormalManagerDB::add(3, new CmdUpdateFriend(m_pi.uid, _fi), FriendManager::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(3, new CmdUpdateFriend(m_pi.uid, _fi), FriendManager::SQLDBResponse, this);
 }
 
 // add Friend

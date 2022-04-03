@@ -105,8 +105,10 @@ RoomGrandZodiacEvent::~RoomGrandZodiacEvent() {
 
 bool RoomGrandZodiacEvent::isAllReady() {
 
-	// � sempre true porque quem come�a o jogo nessa sala � sempre o server
-	return true;
+	// é sempre true porque quem começa o jogo nessa sala é sempre o server
+	// O cliente da erro na hora de começar se tiver convidado na sala
+	// então verifica se não tem nenhum convidado na sala
+	return !_haveInvited();
 }
 
 bool RoomGrandZodiacEvent::startGame() {
@@ -271,7 +273,7 @@ void* RoomGrandZodiacEvent::waitTimeStart() {
 
 								m_state_rgze.setState(eSTATE_ROOM_GRAND_ZODIAC_EVENT_SYNC::WAIT_10_SECONDS_START);
 
-							}else if (v_sessions.size() == m_ri.max_player) {
+							}else if (_getRealNumPlayersWithoutInvited() == m_ri.max_player) {
 
 								// A sala atingiu o n�mero m�ximo de player
 								// Come�a o Grand Zodiac Event em 10 segundos
@@ -367,14 +369,18 @@ void RoomGrandZodiacEvent::count_down(int64_t _sec_to_start) {
 		// Bloquea a sala para n�o d� erro de conflito
 		lock();
 
-		if (_sec_to_start <= 0) {	// Come�a o jogo
+		if (_sec_to_start <= 0) {	// Começa o jogo
 			
-			// exclu� o timer se ele ainda existir
+			// excluí o timer se ele ainda existir
 			clear_timer_count_down();
 
-			// Come�a o jogo se tem pelo menos 1 jogador na sala
+			// Começa o jogo se tem pelo menos 1 jogador na sala
 			if (v_sessions.size() >= 1 && startGame())
 				sgs::gs::getInstance().sendUpdateRoomInfo(this, 3);
+			else if (v_sessions.size() >= 1)
+				// Coloca para começar espera o tempo de começar o jogo de novo, por que não conseguiu criar a sala
+				// Pode ter convidado na sala, aí não pode iniciar o jogo por que o cliente trava
+				count_down(10);
 
 		}else {
 

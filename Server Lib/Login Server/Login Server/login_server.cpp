@@ -170,7 +170,7 @@ void login_server::requestDownPlayerOnGameServer(player& _session, packet *_pack
 			// Auth Server não está online, resolver por aqui mesmo
 			CmdRegisterLogon cmd_rl(_session.m_pi.uid, 1/*Option 1 desloga no banco de dados*/, true/*Waiter*/);
 
-			NormalManagerDB::add(0, &cmd_rl, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_rl, nullptr, nullptr);
 
 			cmd_rl.waitEvent();
 
@@ -404,7 +404,7 @@ void login_server::requestLogin(player& _session, packet *_packet) {
 
 			CmdVerifyID cmd_verifyId(id, true/*Waiter*/); // ID
 
-			NormalManagerDB::add(0, &cmd_verifyId, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_verifyId, nullptr, nullptr);
 
 			cmd_verifyId.waitEvent();
 
@@ -415,7 +415,7 @@ void login_server::requestLogin(player& _session, packet *_packet) {
 
 				CmdVerifyPass cmd_verifyPass(cmd_verifyId.getUID(), pass_md5, true/*Waiter*/); // PASSWORD
 
-				NormalManagerDB::add(0, &cmd_verifyPass, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_verifyPass, nullptr, nullptr);
 
 				cmd_verifyPass.waitEvent();
 
@@ -426,7 +426,7 @@ void login_server::requestLogin(player& _session, packet *_packet) {
 
 					CmdPlayerInfo cmd_pi(cmd_verifyId.getUID(), true/*Waiter*/);
 
-					NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 					cmd_pi.waitEvent();
 
@@ -440,9 +440,9 @@ void login_server::requestLogin(player& _session, packet *_packet) {
 					CmdFirstLoginCheck cmd_flc(pi.uid, true/*Waiter*/);
 					CmdFirstSetCheck cmd_fsc(pi.uid, true/*Waiter*/);
 
-					NormalManagerDB::add(0, &cmd_lc, nullptr, nullptr);
-					NormalManagerDB::add(0, &cmd_flc, nullptr, nullptr);
-					NormalManagerDB::add(0, &cmd_fsc, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_lc, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_flc, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_fsc, nullptr, nullptr);
 
 					cmd_lc.waitEvent();
 
@@ -505,7 +505,7 @@ void login_server::requestLogin(player& _session, packet *_packet) {
 
 						CmdVerifyIP cmd_vi(pi.uid, _session.m_ip, true/*Waiter*/);
 
-						NormalManagerDB::add(0, &cmd_vi, nullptr, nullptr);
+						snmdb::NormalManagerDB::getInstance().add(0, &cmd_vi, nullptr, nullptr);
 
 						cmd_vi.waitEvent();
 
@@ -583,7 +583,7 @@ void login_server::requestLogin(player& _session, packet *_packet) {
 								// Bloquea todos os IP que o player logar e da error de que a area dele foi bloqueada
 
 								// Add o ip do player para a lista de ip banidos
-								NormalManagerDB::add(1, new CmdInsertBlockIP(_session.m_ip, "255.255.255.255"), login_server::SQLDBResponse, this);
+								snmdb::NormalManagerDB::getInstance().add(1, new CmdInsertBlockIP(_session.m_ip, "255.255.255.255"), login_server::SQLDBResponse, this);
 
 								// Resposta
 								p.init_plain((unsigned short)0x01);
@@ -608,7 +608,7 @@ void login_server::requestLogin(player& _session, packet *_packet) {
 								// Bloquea o MAC Address que o player logar e da error de que a area dele foi bloqueada
 
 								// Add o MAC Address do player para a lista de MAC Address banidos
-								NormalManagerDB::add(2, new CmdInsertBlockMAC(mac_address), login_server::SQLDBResponse, this);
+								snmdb::NormalManagerDB::getInstance().add(2, new CmdInsertBlockMAC(mac_address), login_server::SQLDBResponse, this);
 
 								// Resposta
 								p.init_plain((unsigned short)0x01);
@@ -769,7 +769,7 @@ void login_server::requestLogin(player& _session, packet *_packet) {
 
 				CmdCreateUser cmd_cu(cmd_verifyId.getID(), password, ip, getUID(), true/*Waiter*/);
 
-				NormalManagerDB::add(0, &cmd_cu, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_cu, nullptr, nullptr);
 
 				cmd_cu.waitEvent();
 
@@ -782,7 +782,7 @@ void login_server::requestLogin(player& _session, packet *_packet) {
 
 				CmdPlayerInfo cmd_pi(pi.uid, true/*Waiter*/);
 
-				NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 				cmd_pi.waitEvent();
 
@@ -884,7 +884,7 @@ void login_server::requestReLogin(player& _session, packet *_packet) {
 
 		CmdVerifyID cmd_verifyId(id, true/*Waiter*/); // ID
 
-		NormalManagerDB::add(0, &cmd_verifyId, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_verifyId, nullptr, nullptr);
 
 		cmd_verifyId.waitEvent();
 
@@ -896,7 +896,7 @@ void login_server::requestReLogin(player& _session, packet *_packet) {
 
 		CmdPlayerInfo cmd_pi(cmd_verifyId.getUID(), true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 		cmd_pi.waitEvent();
 
@@ -911,7 +911,7 @@ void login_server::requestReLogin(player& _session, packet *_packet) {
 
 		CmdAuthKeyLoginInfo cmd_akli(_session.m_pi.uid, true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_akli, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_akli, nullptr, nullptr);
 
 		cmd_akli.waitEvent();
 
@@ -932,7 +932,7 @@ void login_server::requestReLogin(player& _session, packet *_packet) {
 		
 		CmdVerifyIP cmd_vi(_session.m_pi.uid, _session.m_ip, true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_vi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_vi, nullptr, nullptr);
 
 		cmd_vi.waitEvent();
 
@@ -963,7 +963,7 @@ void login_server::requestReLogin(player& _session, packet *_packet) {
 				// Bloquea todos os IP que o player logar e da error de que a area dele foi bloqueada
 
 				// Add o ip do player para a lista de ip banidos
-				NormalManagerDB::add(1, new CmdInsertBlockIP(_session.m_ip, "255.255.255.255"), login_server::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(1, new CmdInsertBlockIP(_session.m_ip, "255.255.255.255"), login_server::SQLDBResponse, this);
 
 				// Resposta
 				throw exception("[login_server::requestReLogin][Log] Player[UID=" + std::to_string(_session.m_pi.uid) 
@@ -1082,8 +1082,7 @@ void login_server::onHeartBeat() {
 
 	}catch (exception& e) {
 
-		if (!STDA_ERROR_CHECK_SOURCE_AND_ERROR(e.getCodeError(), STDA_ERROR_TYPE::PANGYA_DB, 6))
-			throw;
+		_smp::message_pool::getInstance().push(new message("[login_server::onHeartBeat][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
 	}
 };
 

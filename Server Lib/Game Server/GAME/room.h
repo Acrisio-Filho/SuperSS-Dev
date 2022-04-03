@@ -15,10 +15,9 @@
 #endif
 
 #include <vector>
-//#include "../../Projeto IOCP/SOCKET/session.h"
 #include "../SESSION/player.hpp"
 #include "../TYPE/pangya_game_st.h"
-#include "../GAME/personal_shop.hpp"
+#include "../GAME/personal_shop_manager.hpp"
 
 #include "game.hpp"
 
@@ -57,9 +56,11 @@ namespace stdA {
 			const uint32_t getPosition(player *_session);
 
 			PlayerRoomInfoEx* getPlayerInfo(player *_session);
-			PersonalShop* getPlayerShop(player *_session);
 
-			std::vector< player* > getSessions(player *_session = nullptr);
+			std::vector< player* > getSessions(player *_session = nullptr, bool _with_invited = true);
+
+			uint32_t getRealNumPlayersWithoutInvited();
+			bool haveInvited();
 
 			// Sets
 			void setNome(std::string _nome);
@@ -260,9 +261,6 @@ namespace stdA {
 			void updateMaster(player* _session);
 			void updateGuild(player& _session);
 
-			// Personal Shop
-			void clear_personal_shop(player* _session);
-
 			// Jogador Chutado da sala
 			void clear_player_kicked();
 			void addPlayerKicked(uint32_t _uid);
@@ -283,11 +281,18 @@ namespace stdA {
 			// Para as classes filhas, empedir que exclua a sala dependendo do se tem player ou não na sala
 			virtual bool isDropRoom();
 
+			// protected por que é o método unsave(inseguro), sem thread safe
+			uint32_t _getRealNumPlayersWithoutInvited();
+
+			// protected por que é o método unsave(inseguro), sem thread safe
+			bool _haveInvited();
+
         protected:
             std::vector< player* > v_sessions;
 			std::map< player*, PlayerRoomInfoEx > m_player_info;
-			std::map< player*, PersonalShop > m_player_shop;
 			std::map< uint32_t/*UID*/, bool > m_player_kicked;
+
+			PersonalShopManager m_personal_shop;
 
 			std::vector< Team > m_teans;
 
@@ -305,10 +310,8 @@ namespace stdA {
 
 #if defined(_WIN32)
 			CRITICAL_SECTION m_cs;
-			CRITICAL_SECTION m_ps_cs;		// Personal Shop Critical Section
 #elif defined(__linux__)
 			pthread_mutex_t m_cs;
-			pthread_mutex_t m_ps_cs;		// Personal Shop Critical Section
 #endif
 
 		protected:

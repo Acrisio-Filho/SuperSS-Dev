@@ -126,7 +126,7 @@ void DropSystem::initialize() {
 
 	CmdDropCourseConfig cmd_dcc(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_dcc, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_dcc, nullptr, nullptr);
 
 	cmd_dcc.waitEvent();
 
@@ -137,7 +137,7 @@ void DropSystem::initialize() {
 
 	CmdDropCourseInfo cmd_dci(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_dci, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_dci, nullptr, nullptr);
 
 	cmd_dci.waitEvent();
 

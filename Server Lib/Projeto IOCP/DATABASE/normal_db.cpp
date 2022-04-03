@@ -54,9 +54,13 @@ NormalDB::NormalDB() : m_pExec(nullptr), m_pResponse(nullptr), m_ctx_db{0}, m_st
 #if defined(_WIN32)
 	InterlockedExchange(&m_continue_exec, 0u);
 	InterlockedExchange(&m_continue_response, 0u);
+
+	InterlockedExchange(&m_free_all_waiting, 0u);
 #elif defined(__linux__)
     __atomic_store_n(&m_continue_exec, 0u, __ATOMIC_RELAXED);
 	__atomic_store_n(&m_continue_response, 0u, __ATOMIC_RELAXED);
+
+	__atomic_store_n(&m_free_all_waiting, 0u, __ATOMIC_RELAXED);
 #endif
 }
 
@@ -86,9 +90,13 @@ void NormalDB::init() {
 #if defined(_WIN32)
 		InterlockedExchange(&m_continue_exec, 1u);
 		InterlockedExchange(&m_continue_response, 1u);
+
+		InterlockedExchange(&m_free_all_waiting, 0u);
 #elif defined(__linux__)
         __atomic_store_n(&m_continue_exec, 1u, __ATOMIC_RELAXED);
 		__atomic_store_n(&m_continue_response, 1u, __ATOMIC_RELAXED);
+
+		__atomic_store_n(&m_free_all_waiting, 0u, __ATOMIC_RELAXED);
 #endif
 
         m_pExec = new thread(TT_NORMAL_EXEC_QUERY, NormalDB::ThreadFunc, this);
@@ -125,9 +133,13 @@ void NormalDB::sendCloseAndWait() {
 #if defined(_WIN32)
 	InterlockedExchange(&m_continue_exec, 0u);
 	InterlockedExchange(&m_continue_response, 0u);
+
+	InterlockedExchange(&m_free_all_waiting, 1u);
 #elif defined(__linux__)
     __atomic_store_n(&m_continue_exec, 0u, __ATOMIC_RELAXED);
 	__atomic_store_n(&m_continue_response, 0u, __ATOMIC_RELAXED);
+
+	__atomic_store_n(&m_free_all_waiting, 1u, __ATOMIC_RELAXED);
 #endif
 
 	if (m_pExec != nullptr) {
@@ -142,6 +154,30 @@ void NormalDB::sendCloseAndWait() {
 		m_unResponse.push(nullptr);
 		
 		m_pResponse->waitThreadFinish(INFINITE);
+	}
+
+	// acordar quem está dormindo e deletar que não está
+	auto all = m_unExec.getAll();
+
+	for (auto& el : all) {
+
+		if (forceWakeMsg(el, "[NormalDB::sendCloseAndWait][Error] force wake"))
+			continue;
+
+		if (el != nullptr)
+			delete el;
+
+		el = nullptr;
+	}
+
+	all = m_unResponse.getAll();
+
+	for (auto& el : all) {
+		
+		if (el != nullptr)
+			delete el;
+
+		el = nullptr;
 	}
 }
 
@@ -161,6 +197,23 @@ void NormalDB::close() {
     m_pResponse = nullptr;
 
     m_state = false;
+}
+
+bool NormalDB::forceWakeMsg(msg_t* _msg, std::string _exception_msg) {
+
+	if (_msg == nullptr || !_msg->isWaitable())
+		return false;
+
+	_msg->setException(_exception_msg);
+
+	_msg->wakeupWaiter();
+
+	// delete msg
+	delete _msg;
+
+	_msg = nullptr;
+
+	return true;
 }
 
 #if defined(_WIN32)
@@ -188,6 +241,15 @@ void* NormalDB::ThreadFunc2(LPVOID lpParameter) {
 }
 
 int NormalDB::add(msg_t* _msg) {
+
+#if defined(_WIN32)
+	if (InterlockedCompareExchange(&m_free_all_waiting, 1, 1) == 1
+#elif defined(__linux__)
+	int32_t check_m = 1; // Compare
+	if (__atomic_compare_exchange_n(&m_free_all_waiting, &check_m, 1, true, __ATOMIC_RELAXED, __ATOMIC_RELAXED) == 1
+#endif
+			&& forceWakeMsg(_msg, "[NormalDB::Add][Error] force wake"))
+		return 1; // wake msg, don't push into list
     
 	m_unExec.push(_msg);
 
@@ -195,20 +257,41 @@ int NormalDB::add(msg_t* _msg) {
 }
 
 int NormalDB::add(uint32_t _id, pangya_db *_pangya_db, callback_response _callback_response, void *_arg) {
-
-	add(new(msg_t){ _id, _pangya_db, _callback_response, _arg });
-
-	return 0;
+	return add(new(msg_t){ _id, _pangya_db, _callback_response, _arg });
 }
 
 void NormalDB::checkIsDeadAndRevive() {
 
-	if (m_pExec == nullptr || !m_pExec->isLive())
+	if (m_pExec == nullptr)
 		m_pExec = new thread(TT_NORMAL_EXEC_QUERY, NormalDB::ThreadFunc, this);
+	else if (!m_pExec->isLive())
+		m_pExec->init_thread();
 
-	if (m_pResponse == nullptr || !m_pResponse->isLive())
+	if (m_pResponse == nullptr)
 		m_pResponse = new thread(TT_NORMAL_RESPONSE, NormalDB::ThreadFunc2, this);
+	else if (!m_pResponse->isLive())
+		m_pResponse->init_thread();
 
+}
+
+void NormalDB::freeAllWaiting(std::string _msg) {
+
+#if defined(_WIN32)
+	InterlockedExchange(&m_free_all_waiting, 1u);
+#elif defined(__linux__)
+	__atomic_store_n(&m_free_all_waiting, 1u, __ATOMIC_RELAXED);
+#endif
+
+	auto all = m_unExec.getAll();
+
+	for (auto& el : all) {
+
+		if (forceWakeMsg(el, _msg))
+			continue;
+
+		// push again msg not waitable
+		m_unExec.push(el);
+	}
 }
 
 #if defined(_WIN32)
@@ -290,7 +373,25 @@ void* NormalDB::runExecQuery() {
                 continue;
             }
 
-            _msg->execQuery(*_db);
+			try {
+
+				_msg->execQuery(*_db);
+
+			}catch (exception& e) {
+
+				// É erro de conexão
+				if (STDA_ERROR_CHECK_SOURCE_AND_ERROR(e.getCodeError(), STDA_ERROR_TYPE::NORMAL_DB, 5)) {
+
+					// Log
+					_smp::message_pool::getInstance().push(new message("[NormalDB::runExecQuery][Error] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
+
+					// Coloca a msg no pool devo até ter uma conexão com o banco de dados para executar
+					add(_msg);
+				}
+
+				// Relança
+				throw;
+			}
 
 			// é para ativar quem estava esperando, ou manda para a thread que response pela função callback
 			if (_msg->isWaitable()) {

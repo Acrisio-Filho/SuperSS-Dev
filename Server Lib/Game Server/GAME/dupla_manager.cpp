@@ -418,7 +418,7 @@ void DuplaManager::saveGuildMembersData() {
 				el.p[0]->m_pi.mi.guild_point = el.p[0]->m_pi.gi.point += gmp.point;
 
 				// Update ON DB
-				NormalManagerDB::add(1, new CmdUpdateGuildMemberPoints(gmp), DuplaManager::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateGuildMemberPoints(gmp), DuplaManager::SQLDBResponse, this);
 			}
 
 			// Player 2
@@ -436,7 +436,7 @@ void DuplaManager::saveGuildMembersData() {
 				el.p[1]->m_pi.mi.guild_point = el.p[1]->m_pi.gi.point += gmp.point;
 
 				// Update ON DB
-				NormalManagerDB::add(1, new CmdUpdateGuildMemberPoints(gmp), DuplaManager::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateGuildMemberPoints(gmp), DuplaManager::SQLDBResponse, this);
 			}
 		}
 

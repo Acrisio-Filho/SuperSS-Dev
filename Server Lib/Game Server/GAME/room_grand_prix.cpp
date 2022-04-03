@@ -81,8 +81,10 @@ RoomGrandPrix::~RoomGrandPrix() {
 
 bool RoomGrandPrix::isAllReady() {
 
-	// Grand Prix sempre � true, por que � o server que come�a ou � o GP ROOKIE que ele come�a sozinho
-	return true;
+	// Grand Prix sempre é true, por que é o server que começa ou é o GP ROOKIE que ele começa sozinho
+	// O cliente da erro na hora de começar se tiver convidado na sala
+	// então verifica se não tem nenhum convidado na sala
+	return !_haveInvited();
 }
 
 void RoomGrandPrix::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _cpir) {
@@ -460,7 +462,7 @@ bool RoomGrandPrix::requestStartGame(player& _session, packet *_packet) {
 
 		// Diferente de Grand Prix ROOKIE(TUTO), manda para o requestStartGame da class room, para tratar esse requisi��o
 		if (sIff::getInstance().getGrandPrixAba(m_gp._typeid) != IFF::GrandPrixData::GP_ABA::ROOKIE)
-			room::requestStartGame(_session, _packet);
+			ret = room::requestStartGame(_session, _packet);
 		else {
 
 			// Verifica se j� tem um jogo inicializado e lan�a error se tiver, para o cliente receber uma resposta
@@ -707,9 +709,9 @@ void RoomGrandPrix::count_down_to_start(int64_t _sec_to_start) {
 		// Bloquea a sala para ela n�o ser destruida antes de acabar de fazer o que tem que fazer aqui
 		lock();
 
-		if (_sec_to_start <= 0) {	// Come�a o jogo
+		if (_sec_to_start <= 0) {	// Começa o jogo
 			
-			// exclu� o timer se ele ainda existir
+			// excluí o timer se ele ainda existir
 			if (m_count_down != nullptr) {
 				
 				sgs::gs::getInstance().unMakeTime(m_count_down);
@@ -717,9 +719,13 @@ void RoomGrandPrix::count_down_to_start(int64_t _sec_to_start) {
 				m_count_down = nullptr;
 			}
 
-			// Come�a o jogo se tem pelo menos 1 jogador na sala
+			// Começa o jogo se tem pelo menos 1 jogador na sala
 			if (v_sessions.size() >= 1 && startGame())
 				sgs::gs::getInstance().sendUpdateRoomInfo(this, 3);
+			else if (v_sessions.size() >= 1)
+				// tenta de novo daqui a 10 segundos, por que pode ter convidado na sala, 
+				// GP não tem, o cliente não deixa, mas vai que algum hacker conseguiu
+				count_down_to_start(10);
 
 		}else {
 

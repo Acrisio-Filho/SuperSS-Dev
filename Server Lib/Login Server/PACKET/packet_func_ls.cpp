@@ -132,7 +132,7 @@ int packet_func::packet003(void* _arg1, void* _arg2) {
 		// Registra o logon no server_uid do player_uid
 		CmdRegisterLogonServer cmd_rls(pd._session.m_pi.uid, server_uid, true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_rls, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_rls, nullptr, nullptr);
 
 		cmd_rls.waitEvent();
 
@@ -141,7 +141,7 @@ int packet_func::packet003(void* _arg1, void* _arg2) {
 
 		CmdAuthKeyGame cmd_auth_key_game(pd._session.m_pi.uid, server_uid, true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_auth_key_game, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_auth_key_game, nullptr, nullptr);
 
 		cmd_auth_key_game.waitEvent();
 
@@ -205,7 +205,7 @@ int packet_func::packet006(void* _arg1, void* _arg2) {
 
 		CmdSaveNick cmd_sn(pd._session.m_pi.uid, wnick, true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_sn, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_sn, nullptr, nullptr);
 
 		cmd_sn.waitEvent();
 
@@ -214,7 +214,7 @@ int packet_func::packet006(void* _arg1, void* _arg2) {
 		
 		CmdAddFirstLogin cmd_afl(pd._session.m_pi.uid, 1, true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_afl, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_afl, nullptr, nullptr);
 
 		cmd_afl.waitEvent();
 
@@ -227,7 +227,7 @@ int packet_func::packet006(void* _arg1, void* _arg2) {
 		// Aqui colocar para verificar se ele já fez o first set, se não envia o pacote do first set, se não success_login
 		CmdFirstSetCheck cmd_fsc(pd._session.m_pi.uid, true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_fsc, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_fsc, nullptr, nullptr);
 
 		cmd_fsc.waitEvent();
 
@@ -330,7 +330,7 @@ int packet_func::packet007(void* _arg1, void* _arg2) {
 		if (nc == SUCCESS) {
 			CmdVerifNick cmd_vn(wnick, true/*Waiter*/);
 
-			NormalManagerDB::add(0, &cmd_vn, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_vn, nullptr, nullptr);
 
 			cmd_vn.waitEvent();
 
@@ -415,8 +415,8 @@ int packet_func::packet008(void* _arg1, void* _arg2) {
 		CmdAddCharacter cmd_ac(pd._session.m_pi.uid, ci, 0, 1, true/*Waiter*/);
 		CmdAddFirstSet cmd_afs(pd._session.m_pi.uid, true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_ac, nullptr, nullptr);
-		NormalManagerDB::add(0, &cmd_afs, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_ac, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_afs, nullptr, nullptr);
 
 		cmd_ac.waitEvent();
 
@@ -434,7 +434,7 @@ int packet_func::packet008(void* _arg1, void* _arg2) {
 		// Update Character Equipado no banco de dados
 		CmdUpdateCharacterEquiped cmd_uce(pd._session.m_pi.uid, ci.id, true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_uce, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_uce, nullptr, nullptr);
 
 		cmd_uce.waitEvent();
 
@@ -670,7 +670,7 @@ inline void packet_func::succes_login(void* _arg, player *_session, int option) 
 
 		CmdServerList cmd_server_list(CmdServerList::GAME, true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_server_list, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_server_list, nullptr, nullptr);
 
 		cmd_server_list.waitEvent();
 
@@ -683,8 +683,8 @@ inline void packet_func::succes_login(void* _arg, player *_session, int option) 
 
 		CmdAuthKeyLogin cmd_auth_key_login(_session->m_pi.uid, true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_server_list, nullptr, nullptr);
-		NormalManagerDB::add(0, &cmd_auth_key_login, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_server_list, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_auth_key_login, nullptr, nullptr);
 
 		cmd_server_list.waitEvent();
 	
@@ -706,7 +706,7 @@ inline void packet_func::succes_login(void* _arg, player *_session, int option) 
 		if (option == 0) {
 			CmdChatMacroUser cmd_macro_user(_session->m_pi.uid, true/*Waiter*/);
 
-			NormalManagerDB::add(0, &cmd_macro_user, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_macro_user, nullptr, nullptr);
 
 			cmd_macro_user.waitEvent();
 
@@ -721,7 +721,7 @@ inline void packet_func::succes_login(void* _arg, player *_session, int option) 
 		// RegisterLogin do Player
 		CmdRegisterPlayerLogin cmd_rpl(_session->m_pi.uid, ip, ls->getUID(), true/*Waiter*/);
 
-		NormalManagerDB::add(0, &cmd_rpl, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_rpl, nullptr, nullptr);
 
 		cmd_rpl.waitEvent();
 

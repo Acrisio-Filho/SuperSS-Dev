@@ -28,6 +28,15 @@ namespace stdA {
 				OPEN,
 			};
 
+			struct Locker {
+				public:
+					Locker(PersonalShop& _shop);
+					~Locker();
+
+				protected:
+					PersonalShop& m_shop;
+			};
+
 		public:
 			PersonalShop(player& _session);
 			~PersonalShop();
@@ -68,6 +77,10 @@ namespace stdA {
 
 			void buyItem(player& _session, PersonalShopItem& _psi);
 
+		protected:
+			void _lock();
+			void _unlock();
+
 		private:
 			void destroy();
 
@@ -90,10 +103,8 @@ namespace stdA {
 		protected:
 #if defined(_WIN32)
 			CRITICAL_SECTION m_cs;
-			CRITICAL_SECTION m_i_cs;
 #elif defined(__linux__)
 			pthread_mutex_t m_cs;
-			pthread_mutex_t m_i_cs;
 #endif
 			std::vector< player* > v_open_shop_visit;	// Os visitantes que est�o com o shop aberto
 	};

@@ -454,7 +454,7 @@ std::vector< RemoveDailyQuestUser > MgrDailyQuest::getOldQuestUser(player& _sess
 
 		CmdOldDailyQuestInfo cmd_odqi(_session.m_pi.uid, true);
 
-		NormalManagerDB::add(0, &cmd_odqi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_odqi, nullptr, nullptr);
 
 		cmd_odqi.waitEvent();
 
@@ -503,7 +503,7 @@ std::vector< AchievementInfoEx > MgrDailyQuest::addQuestUser(DailyQuestInfo& _dq
 	// Seta no banco de dados a data que o player add a nova quest
 	_session.m_pi.dqiu.current_date = (uint32_t)GetLocalTimeAsUnix();
 
-	NormalManagerDB::add(0, new CmdUpdateDailyQuestUser(_session.m_pi.uid, _session.m_pi.dqiu), MgrDailyQuest::SQLDBResponse, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateDailyQuestUser(_session.m_pi.uid, _session.m_pi.dqiu), MgrDailyQuest::SQLDBResponse, nullptr);
 
 	return v_ADQU;
 }
@@ -513,7 +513,7 @@ void MgrDailyQuest::removeQuestUser(player& _session, std::vector< RemoveDailyQu
 	CHECK_SESSION("removeQuestUser", _session);
 
 	if (!_v_el.empty())
-		NormalManagerDB::add(0, new CmdDeleteDailyQuest(_session.m_pi.uid, _v_el), MgrDailyQuest::SQLDBResponse, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdDeleteDailyQuest(_session.m_pi.uid, _v_el), MgrDailyQuest::SQLDBResponse, nullptr);
 }
 
 std::vector< AchievementInfoEx > MgrDailyQuest::leaveQuestUser(player& _session, int32_t* _quest_id, uint32_t _count) {
@@ -603,18 +603,18 @@ std::vector< AchievementInfoEx > MgrDailyQuest::acceptQuestUser(player& _session
 				it->second.map_counter_item.insert(std::make_pair(cii.id, cii));
 
 				// Atualiza o counter id da quest no banco de dados
-				NormalManagerDB::add(0, new CmdUpdateQuestUser(_session.m_pi.uid, el), MgrDailyQuest::SQLDBResponse, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateQuestUser(_session.m_pi.uid, el), MgrDailyQuest::SQLDBResponse, nullptr);
 			}
 			
 			// Update Achievement, Status Active == 3
 			it->second.status = 3;
 
-			NormalManagerDB::add(0, new CmdUpdateAchievementUser(_session.m_pi.uid, it->second), MgrDailyQuest::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateAchievementUser(_session.m_pi.uid, it->second), MgrDailyQuest::SQLDBResponse, nullptr);
 
 			_session.m_pi.dqiu.accept_date = (uint32_t)GetLocalTimeAsUnix();
 
 			// Update Last Quest Accept Player
-			NormalManagerDB::add(0, new CmdUpdateDailyQuestUser(_session.m_pi.uid, _session.m_pi.dqiu), MgrDailyQuest::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateDailyQuestUser(_session.m_pi.uid, _session.m_pi.dqiu), MgrDailyQuest::SQLDBResponse, nullptr);
 
 			v_ai.push_back(it->second);
 
@@ -635,7 +635,7 @@ int32_t MgrDailyQuest::addCounterItemUser(player& _session, CounterItemInfo& _ci
 	// Add Counter Item
 	CmdAddCounterItem cmd_aci(_session.m_pi.uid, _cii._typeid, _cii.value/*Value inicial do counter item*/, true);	// waitable
 
-	NormalManagerDB::add(0, &cmd_aci, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_aci, nullptr, nullptr);
 
 	cmd_aci.waitEvent();
 
@@ -693,7 +693,7 @@ void MgrDailyQuest::updateDailyQuest(DailyQuestInfo& _dqi) {
 
 	CmdUpdateDailyQuest cmd_udq(_dqi, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_udq, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_udq, nullptr, nullptr);
 
 	cmd_udq.waitEvent();
 

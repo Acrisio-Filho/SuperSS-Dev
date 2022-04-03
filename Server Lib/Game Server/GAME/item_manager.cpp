@@ -973,7 +973,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 			// Add no banco de dados
 			CmdAddCharacter cmd_ac(_uid, ce, _purchase, 0/*_gift_flag*/, true);	// Waitable
 
-			NormalManagerDB::add(0, &cmd_ac, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_ac, nullptr, nullptr);
 		
 			cmd_ac.waitEvent();
 
@@ -1017,7 +1017,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 		
 			CmdAddCaddie cmd_ac(_uid, ci, _purchase, 0/*_gift_flag*/, true);	// Waitable
 
-			NormalManagerDB::add(2, &cmd_ac, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(2, &cmd_ac, nullptr, nullptr);
 
 			cmd_ac.waitEvent();
 
@@ -1093,7 +1093,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 			auto str_end_date = _formatDate(ci.end_parts_date);
 
 			// Atualiza no para os 2 aqui
-			NormalManagerDB::add(5, new CmdUpdateCaddieItem(_uid, str_end_date, ci), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(5, new CmdUpdateCaddieItem(_uid, str_end_date, ci), item_manager::SQLDBResponse, nullptr);
 
 			break;
 		}
@@ -1132,7 +1132,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 					auto str_date = _formatDate(pMi.data);
 				
 					// Cmd update time mascot db
-					NormalManagerDB::add(6, new CmdUpdateMascotTime(_uid, pMi.id, str_date), item_manager::SQLDBResponse, nullptr/*o item_manager é static*/);
+					snmdb::NormalManagerDB::getInstance().add(6, new CmdUpdateMascotTime(_uid, pMi.id, str_date), item_manager::SQLDBResponse, nullptr/*o item_manager é static*/);
 				}
 
 				_item.id = pMi.id;
@@ -1165,7 +1165,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 				CmdAddMascot cmd_am(_uid, mi, _item.STDA_C_ITEM_TIME, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_am, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_am, nullptr, nullptr);
 
 				cmd_am.waitEvent();
 
@@ -1225,7 +1225,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 				_item.id = ret_id = (RetAddItem::TYPE)pWi.id;
 
-				NormalManagerDB::add(7, new CmdUpdateBallQntd(_uid, pWi.id, pWi.STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(7, new CmdUpdateBallQntd(_uid, pWi.id, pWi.STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
 
 				STATIC_ADD_ITEM_SUCESS_MSG_LOG("Atualizou Ball");
 			}else {	// não tem, add
@@ -1246,7 +1246,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 				CmdAddBall cmd_ab(_uid, wi, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ab, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ab, nullptr, nullptr);
 
 				cmd_ab.waitEvent();
 
@@ -1311,7 +1311,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 					_item.date.date.sysDate[1] = UnixToSystemTime(pWi.end_date_unix_local);
 
 					// Atualiza o tempo do ClubSet do player
-					NormalManagerDB::add(20, new CmdUpdateClubSetTime(_uid, pWi), item_manager::SQLDBResponse, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(20, new CmdUpdateClubSetTime(_uid, pWi), item_manager::SQLDBResponse, nullptr);
 
 					_item.STDA_C_ITEM_QNTD = 1;
 					_item.stat.qntd_ant = 0;
@@ -1347,7 +1347,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 				if (_gift_flag && wi.id > 0) {
 					CmdGetGiftClubSet cmd_ggcs(_uid, wi, true);	// Waiter
 
-					NormalManagerDB::add(0, &cmd_ggcs, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_ggcs, nullptr, nullptr);
 
 					cmd_ggcs.waitEvent();
 
@@ -1364,7 +1364,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 				}else {
 					CmdAddClubSet cmd_acs(_uid, wi, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-					NormalManagerDB::add(0, &cmd_acs, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_acs, nullptr, nullptr);
 
 					cmd_acs.waitEvent();
 
@@ -1424,7 +1424,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 				_item.id = ret_id = (RetAddItem::TYPE)pCi.id;
 
-				NormalManagerDB::add(8, new CmdUpdateCardQntd(_uid, pCi.id, pCi.qntd), item_manager::SQLDBResponse, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(8, new CmdUpdateCardQntd(_uid, pCi.id, pCi.qntd), item_manager::SQLDBResponse, nullptr);
 
 				STATIC_ADD_ITEM_SUCESS_MSG_LOG("Atualizou Card");
 			
@@ -1439,7 +1439,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 				CmdAddCard cmd_ac(_uid, ci, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ac, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ac, nullptr, nullptr);
 
 				cmd_ac.waitEvent();
 
@@ -1485,7 +1485,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 			CmdAddFurniture cmd_af(_uid, mri, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_af, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_af, nullptr, nullptr);
 
 			cmd_af.waitEvent();
 
@@ -1529,7 +1529,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 				_item.id = ret_id = (RetAddItem::TYPE)pWi.id;
 
-				NormalManagerDB::add(9, new CmdUpdateItemQntd(_uid, pWi.id, pWi.STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(9, new CmdUpdateItemQntd(_uid, pWi.id, pWi.STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
 
 				STATIC_ADD_ITEM_SUCESS_MSG_LOG("Atualizou AuxPart");
 			}else {
@@ -1553,7 +1553,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 				CmdAddItem cmd_ai(_uid, wi, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ai, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ai, nullptr, nullptr);
 
 				cmd_ai.waitEvent();
 
@@ -1681,7 +1681,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 				_item.id = ret_id = (RetAddItem::TYPE)pWi.id;
 
-				NormalManagerDB::add(9, new CmdUpdateItemQntd(_uid, pWi.id, pWi.STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(9, new CmdUpdateItemQntd(_uid, pWi.id, pWi.STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
 
 				STATIC_ADD_ITEM_SUCESS_MSG_LOG("Atualizou Item");
 			}else {
@@ -1705,7 +1705,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 				CmdAddItem cmd_ai(_uid, wi, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ai, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ai, nullptr, nullptr);
 
 				cmd_ai.waitEvent();
 
@@ -1768,7 +1768,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 			CmdAddSkin cmd_as(_uid, wi, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_as, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_as, nullptr, nullptr);
 
 			cmd_as.waitEvent();
 
@@ -1844,7 +1844,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 			if (_gift_flag && wi.id > 0) {
 				CmdGetGiftPart cmd_ggp(_uid, wi, _item.type_iff, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ggp, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ggp, nullptr, nullptr);
 
 				cmd_ggp.waitEvent();
 
@@ -1861,7 +1861,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 			}else {
 				CmdAddPart cmd_ap(_uid, wi, _purchase, 0/*_gift_flag*/, _item.type_iff, true);	// Waiter
 
-				NormalManagerDB::add(3, &cmd_ap, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(3, &cmd_ap, nullptr, nullptr);
 
 				cmd_ap.waitEvent();
 
@@ -1935,7 +1935,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 					
 					ce.default_hair = hair->cor;
 
-					NormalManagerDB::add(4, new CmdAddCharacterHairStyle(_uid, ce, _purchase, 0/*_gift_flag*/), item_manager::SQLDBResponse, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(4, new CmdAddCharacterHairStyle(_uid, ce, _purchase, 0/*_gift_flag*/), item_manager::SQLDBResponse, nullptr);
 
 					ret_id = (RetAddItem::TYPE)ce.id;
 
@@ -1974,7 +1974,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 					_item.id = ret_id = (RetAddItem::TYPE)tsi.id;
 
-					NormalManagerDB::add(18, new CmdUpdateTrofelEspecialQntd(_uid, tsi.id, tsi.qntd, CmdUpdateTrofelEspecialQntd::eTYPE::ESPECIAL), item_manager::SQLDBResponse, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(18, new CmdUpdateTrofelEspecialQntd(_uid, tsi.id, tsi.qntd, CmdUpdateTrofelEspecialQntd::eTYPE::ESPECIAL), item_manager::SQLDBResponse, nullptr);
 
 					STATIC_ADD_ITEM_SUCESS_MSG_LOG("Atualizou Trofel Especial");
 				}else {
@@ -1986,7 +1986,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 					CmdAddTrofelEspecial cmd_ts(_uid, ts, CmdAddTrofelEspecial::eTYPE::ESPECIAL, true);	// Waiter
 
-					NormalManagerDB::add(0, &cmd_ts, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_ts, nullptr, nullptr);
 
 					cmd_ts.waitEvent();
 
@@ -2022,7 +2022,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 					_item.id = ret_id = (RetAddItem::TYPE)tsi.id;
 
-					NormalManagerDB::add(18, new CmdUpdateTrofelEspecialQntd(_uid, tsi.id, tsi.qntd, CmdUpdateTrofelEspecialQntd::eTYPE::GRAND_PRIX), item_manager::SQLDBResponse, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(18, new CmdUpdateTrofelEspecialQntd(_uid, tsi.id, tsi.qntd, CmdUpdateTrofelEspecialQntd::eTYPE::GRAND_PRIX), item_manager::SQLDBResponse, nullptr);
 
 					STATIC_ADD_ITEM_SUCESS_MSG_LOG("Atualizou Trofel Grand Prix");
 				}else {
@@ -2034,7 +2034,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, uint32_t _ui
 
 					CmdAddTrofelEspecial cmd_ts(_uid, ts, CmdAddTrofelEspecial::eTYPE::GRAND_PRIX, true);	// Waiter
 
-					NormalManagerDB::add(0, &cmd_ts, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_ts, nullptr, nullptr);
 
 					cmd_ts.waitEvent();
 
@@ -2227,7 +2227,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 			// Add no banco de dados
 			CmdAddCharacter cmd_ac(_session.m_pi.uid, ce, _purchase, 0/*_gift_flag*/, true);	// Waitable
 
-			NormalManagerDB::add(0, &cmd_ac, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_ac, nullptr, nullptr);
 		
 			cmd_ac.waitEvent();
 
@@ -2252,7 +2252,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 			_session.m_pi.ue.character_id = it_char->second.id;
 			_session.m_pi.ei.char_info = &it_char->second;
 
-			NormalManagerDB::add(17, new CmdUpdateCharacterEquiped(_session.m_pi.uid, _session.m_pi.ue.character_id), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(17, new CmdUpdateCharacterEquiped(_session.m_pi.uid, _session.m_pi.ue.character_id), item_manager::SQLDBResponse, nullptr);
 		
 			ret_id = (RetAddItem::TYPE)ce.id;
 
@@ -2281,7 +2281,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 		
 			CmdAddCaddie cmd_ac(_session.m_pi.uid, ci, _purchase, 0/*_gift_flag*/, true);	// Waitable
 
-			NormalManagerDB::add(2, &cmd_ac, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(2, &cmd_ac, nullptr, nullptr);
 
 			cmd_ac.waitEvent();
 
@@ -2374,7 +2374,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 			auto str_end_date = formatDateLocal(end_date);
 
 			// Atualiza no para os 2 aqui
-			NormalManagerDB::add(5, new CmdUpdateCaddieItem(_session.m_pi.uid, str_end_date, *ci), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(5, new CmdUpdateCaddieItem(_session.m_pi.uid, str_end_date, *ci), item_manager::SQLDBResponse, nullptr);
 
 			break;
 		}
@@ -2414,7 +2414,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 					auto str_date = _formatDate(pMi->data);
 				
 					// Cmd update time mascot db
-					NormalManagerDB::add(6, new CmdUpdateMascotTime(_session.m_pi.uid, pMi->id, str_date), item_manager::SQLDBResponse, nullptr/*o item_manager é static*/);
+					snmdb::NormalManagerDB::getInstance().add(6, new CmdUpdateMascotTime(_session.m_pi.uid, pMi->id, str_date), item_manager::SQLDBResponse, nullptr/*o item_manager é static*/);
 				}
 
 				_item.id = pMi->id;
@@ -2463,7 +2463,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 				CmdAddMascot cmd_am(_session.m_pi.uid, mi, _item.STDA_C_ITEM_TIME, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_am, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_am, nullptr, nullptr);
 
 				cmd_am.waitEvent();
 
@@ -2528,7 +2528,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 				_item.id = ret_id = (RetAddItem::TYPE)pWi->id;
 
-				NormalManagerDB::add(7, new CmdUpdateBallQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(7, new CmdUpdateBallQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
 
 				ADD_ITEM_SUCESS_MSG_LOG("Atualizou Ball");
 			}else {	// não tem, add
@@ -2549,7 +2549,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 				CmdAddBall cmd_ab(_session.m_pi.uid, wi, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ab, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ab, nullptr, nullptr);
 
 				cmd_ab.waitEvent();
 
@@ -2616,7 +2616,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 					_item.date.date.sysDate[1] = UnixToSystemTime(pWi->end_date_unix_local);
 
 					// Atualiza o tempo do ClubSet do player
-					NormalManagerDB::add(20, new CmdUpdateClubSetTime(_session.m_pi.uid, *pWi), item_manager::SQLDBResponse, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(20, new CmdUpdateClubSetTime(_session.m_pi.uid, *pWi), item_manager::SQLDBResponse, nullptr);
 
 					_item.STDA_C_ITEM_QNTD = 1;
 					_item.stat.qntd_ant = 0;
@@ -2666,7 +2666,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 				if (_gift_flag && wi.id > 0) {
 					CmdGetGiftClubSet cmd_ggcs(_session.m_pi.uid, wi, true);	// Waiter
 
-					NormalManagerDB::add(0, &cmd_ggcs, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_ggcs, nullptr, nullptr);
 
 					cmd_ggcs.waitEvent();
 
@@ -2683,7 +2683,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 				}else {
 					CmdAddClubSet cmd_acs(_session.m_pi.uid, wi, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-					NormalManagerDB::add(0, &cmd_acs, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_acs, nullptr, nullptr);
 
 					cmd_acs.waitEvent();
 
@@ -2746,7 +2746,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 				_item.id = ret_id = (RetAddItem::TYPE)pCi->id;
 
-				NormalManagerDB::add(8, new CmdUpdateCardQntd(_session.m_pi.uid, pCi->id, pCi->qntd), item_manager::SQLDBResponse, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(8, new CmdUpdateCardQntd(_session.m_pi.uid, pCi->id, pCi->qntd), item_manager::SQLDBResponse, nullptr);
 
 				ADD_ITEM_SUCESS_MSG_LOG("Atualizou Card");
 			
@@ -2761,7 +2761,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 				CmdAddCard cmd_ac(_session.m_pi.uid, ci, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ac, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ac, nullptr, nullptr);
 
 				cmd_ac.waitEvent();
 
@@ -2812,7 +2812,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 			CmdAddFurniture cmd_af(_session.m_pi.uid, mri, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_af, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_af, nullptr, nullptr);
 
 			cmd_af.waitEvent();
 
@@ -2859,7 +2859,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 				_item.id = ret_id = (RetAddItem::TYPE)pWi->id;
 
-				NormalManagerDB::add(9, new CmdUpdateItemQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(9, new CmdUpdateItemQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
 
 				ADD_ITEM_SUCESS_MSG_LOG("Atualizou AuxPart");
 			}else {
@@ -2883,7 +2883,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 				CmdAddItem cmd_ai(_session.m_pi.uid, wi, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ai, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ai, nullptr, nullptr);
 
 				cmd_ai.waitEvent();
 
@@ -3029,7 +3029,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 						pWi->STDA_C_ITEM_TIME = _item.STDA_C_ITEM_TIME / 24; // converte de novo para Dias para salvar no banco de dados
 
 						// Atualiza o tempo do Premium Ticket do player
-						NormalManagerDB::add(19, new CmdUpdatePremiumTicketTime(_session.m_pi.uid, *pWi), item_manager::SQLDBResponse, nullptr);
+						snmdb::NormalManagerDB::getInstance().add(19, new CmdUpdatePremiumTicketTime(_session.m_pi.uid, *pWi), item_manager::SQLDBResponse, nullptr);
 
 						// update ano (Horas) que o item ainda tem
 						pWi->ano = (_item.STDA_C_ITEM_TIME > 0) ? STDA_TRANSLATE_FLAG_TIME_TO_HOUR(_item.flag_time, _item.STDA_C_ITEM_TIME) : -1;
@@ -3075,7 +3075,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 					// ---- fim do verifica se o Premium Ticket está no update item ----
 
 				}else // Atualiza a quantidade do item normal
-					NormalManagerDB::add(9, new CmdUpdateItemQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(9, new CmdUpdateItemQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
 
 				// Atualiza Gacha Coupon
 				if (_item._typeid == 0x1A000080/*Coupon Gacha*/) {
@@ -3123,7 +3123,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 				CmdAddItem cmd_ai(_session.m_pi.uid, wi, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ai, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ai, nullptr, nullptr);
 
 				cmd_ai.waitEvent();
 
@@ -3206,7 +3206,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 			CmdAddSkin cmd_as(_session.m_pi.uid, wi, _purchase, 0/*_gift_flag*/, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_as, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_as, nullptr, nullptr);
 
 			cmd_as.waitEvent();
 
@@ -3287,7 +3287,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 			if (_gift_flag && wi.id > 0) {
 				CmdGetGiftPart cmd_ggp(_session.m_pi.uid, wi, _item.type_iff, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ggp, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ggp, nullptr, nullptr);
 
 				cmd_ggp.waitEvent();
 
@@ -3304,7 +3304,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 			}else {
 				CmdAddPart cmd_ap(_session.m_pi.uid, wi, _purchase, 0/*_gift_flag*/, _item.type_iff, true);	// Waiter
 
-				NormalManagerDB::add(3, &cmd_ap, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(3, &cmd_ap, nullptr, nullptr);
 
 				cmd_ap.waitEvent();
 
@@ -3383,7 +3383,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 					ce->default_hair = hair->cor;
 
-					NormalManagerDB::add(4, new CmdAddCharacterHairStyle(_session.m_pi.uid, *ce, _purchase, 0/*_gift_flag*/), item_manager::SQLDBResponse, &_session);
+					snmdb::NormalManagerDB::getInstance().add(4, new CmdAddCharacterHairStyle(_session.m_pi.uid, *ce, _purchase, 0/*_gift_flag*/), item_manager::SQLDBResponse, &_session);
 
 					ret_id = (RetAddItem::TYPE)ce->id;
 
@@ -3422,7 +3422,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 					_item.id = ret_id = (RetAddItem::TYPE)tsi->id;
 
-					NormalManagerDB::add(18, new CmdUpdateTrofelEspecialQntd(_session.m_pi.uid, tsi->id, tsi->qntd, CmdUpdateTrofelEspecialQntd::eTYPE::ESPECIAL), item_manager::SQLDBResponse, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(18, new CmdUpdateTrofelEspecialQntd(_session.m_pi.uid, tsi->id, tsi->qntd, CmdUpdateTrofelEspecialQntd::eTYPE::ESPECIAL), item_manager::SQLDBResponse, nullptr);
 
 					ADD_ITEM_SUCESS_MSG_LOG("Atualizou Trofel Especial");
 				}else {
@@ -3434,7 +3434,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 					CmdAddTrofelEspecial cmd_ts(_session.m_pi.uid, ts, CmdAddTrofelEspecial::eTYPE::ESPECIAL, true);	// Waiter
 
-					NormalManagerDB::add(0, &cmd_ts, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_ts, nullptr, nullptr);
 
 					cmd_ts.waitEvent();
 
@@ -3473,7 +3473,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 					_item.id = ret_id = (RetAddItem::TYPE)tsi->id;
 
-					NormalManagerDB::add(18, new CmdUpdateTrofelEspecialQntd(_session.m_pi.uid, tsi->id, tsi->qntd, CmdUpdateTrofelEspecialQntd::eTYPE::GRAND_PRIX), item_manager::SQLDBResponse, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(18, new CmdUpdateTrofelEspecialQntd(_session.m_pi.uid, tsi->id, tsi->qntd, CmdUpdateTrofelEspecialQntd::eTYPE::GRAND_PRIX), item_manager::SQLDBResponse, nullptr);
 
 					ADD_ITEM_SUCESS_MSG_LOG("Atualizou Trofel Grand Prix");
 				}else {
@@ -3485,7 +3485,7 @@ item_manager::RetAddItem::TYPE item_manager::addItem(stItem& _item, player& _ses
 
 					CmdAddTrofelEspecial cmd_ts(_session.m_pi.uid, ts, CmdAddTrofelEspecial::eTYPE::GRAND_PRIX, true);	// Waiter
 
-					NormalManagerDB::add(0, &cmd_ts, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_ts, nullptr, nullptr);
 
 					cmd_ts.waitEvent();
 
@@ -3776,7 +3776,7 @@ int32_t item_manager::giveItem(stItem& _item, player& _session, unsigned char _g
 		ret_id = pCi->id;
 
 		if (pCi->qntd == 0) {
-			NormalManagerDB::add(12, new CmdDeleteCard(_session.m_pi.uid, pCi->id), item_manager::SQLDBResponse, nullptr);	// Delete Card
+			snmdb::NormalManagerDB::getInstance().add(12, new CmdDeleteCard(_session.m_pi.uid, pCi->id), item_manager::SQLDBResponse, nullptr);	// Delete Card
 
 			//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_ci, second.id, == , pCi->id);
 			auto it = _session.m_pi.findCaddieItById(pCi->id);
@@ -3784,7 +3784,7 @@ int32_t item_manager::giveItem(stItem& _item, player& _session, unsigned char _g
 			if (it != _session.m_pi.mp_ci.end())
 				_session.m_pi.mp_ci.erase(it);
 		}else
-			NormalManagerDB::add(8, new CmdUpdateCardQntd(_session.m_pi.uid, pCi->id, pCi->qntd), item_manager::SQLDBResponse, nullptr);	// Update
+			snmdb::NormalManagerDB::getInstance().add(8, new CmdUpdateCardQntd(_session.m_pi.uid, pCi->id, pCi->qntd), item_manager::SQLDBResponse, nullptr);	// Update
 
 		break;
 	}
@@ -3800,7 +3800,7 @@ int32_t item_manager::giveItem(stItem& _item, player& _session, unsigned char _g
 		_item.stat.qntd_dep = 0;
 		_item.STDA_C_ITEM_QNTD = -1;
 
-		NormalManagerDB::add(13, new CmdGiftClubSet(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);	// Gift ClubSet
+		snmdb::NormalManagerDB::getInstance().add(13, new CmdGiftClubSet(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);	// Gift ClubSet
 
 		// Return value, avoid memory leaks
 		ret_id = pWi->id;
@@ -3837,7 +3837,7 @@ int32_t item_manager::giveItem(stItem& _item, player& _session, unsigned char _g
 		ret_id = pWi->id;
 
 		if (pWi->STDA_C_ITEM_QNTD == 0) {
-			NormalManagerDB::add(11, new CmdDeleteBall(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);	// Delete Ball
+			snmdb::NormalManagerDB::getInstance().add(11, new CmdDeleteBall(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);	// Delete Ball
 
 			//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_wi, id, == , pWi->id);
 			auto it = _session.m_pi.findWarehouseItemItById(pWi->id);
@@ -3845,7 +3845,7 @@ int32_t item_manager::giveItem(stItem& _item, player& _session, unsigned char _g
 			if (it != _session.m_pi.mp_wi.end())
 				_session.m_pi.mp_wi.erase(it);
 		}else
-			NormalManagerDB::add(7, new CmdUpdateBallQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);	// Update
+			snmdb::NormalManagerDB::getInstance().add(7, new CmdUpdateBallQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);	// Update
 
 		break;
 	}
@@ -3882,7 +3882,7 @@ int32_t item_manager::giveItem(stItem& _item, player& _session, unsigned char _g
 		ret_id = pWi->id;
 
 		if (pWi->STDA_C_ITEM_QNTD == 0) {
-			NormalManagerDB::add(10, new CmdDeleteItem(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);	// Delete Item
+			snmdb::NormalManagerDB::getInstance().add(10, new CmdDeleteItem(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);	// Delete Item
 
 			//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_wi, id, == , pWi->id);
 			auto it = _session.m_pi.findWarehouseItemItById(pWi->id);
@@ -3890,7 +3890,7 @@ int32_t item_manager::giveItem(stItem& _item, player& _session, unsigned char _g
 			if (it != _session.m_pi.mp_wi.end())
 				_session.m_pi.mp_wi.erase(it);
 		}else
-			NormalManagerDB::add(9, new CmdUpdateItemQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);	// Update
+			snmdb::NormalManagerDB::getInstance().add(9, new CmdUpdateItemQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);	// Update
 
 		break;
 	}
@@ -3919,7 +3919,7 @@ int32_t item_manager::giveItem(stItem& _item, player& _session, unsigned char _g
 		_item.stat.qntd_dep = 0;
 		_item.STDA_C_ITEM_QNTD = -1;
 
-		NormalManagerDB::add(14, new CmdGiftPart(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);	// Gift Part
+		snmdb::NormalManagerDB::getInstance().add(14, new CmdGiftPart(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);	// Gift Part
 
 		// Return value, avoid memory leaks
 		ret_id = pWi->id;
@@ -3999,7 +3999,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 
 			_item.stat.qntd_dep = pWi->STDA_C_ITEM_QNTD;
 
-			NormalManagerDB::add(0, new CmdDeleteItem(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, new CmdDeleteItem(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);
 
 			//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_wi, id, == , pWi->id);
 			auto it = _session.m_pi.findWarehouseItemItById(pWi->id);
@@ -4023,7 +4023,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 						el->unequipAuxPart(_item._typeid);
 
 						// Update ON DB
-						NormalManagerDB::add(0, new CmdUpdateCharacterAllPartEquiped(_session.m_pi.uid, *el), item_manager::SQLDBResponse, nullptr);
+						snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterAllPartEquiped(_session.m_pi.uid, *el), item_manager::SQLDBResponse, nullptr);
 
 #ifdef _DEBUG
 						_smp::message_pool::getInstance().push(new message("[item_manager::removeItem][Log] player[UID=" + std::to_string(_session.m_pi.uid) 
@@ -4054,7 +4054,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 
 			_item.stat.qntd_dep = pWi->STDA_C_ITEM_QNTD;
 
-			NormalManagerDB::add(0, new CmdUpdateItemQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateItemQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
 
 			ret_id = pWi->id;
 
@@ -4087,7 +4087,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 			// Passa o typeid do Warehouse para o _item para garantir, se não tiver colocado o typeid, na estrutura
 			_item._typeid = pWi->_typeid;
 			
-			NormalManagerDB::add(0, new CmdDeleteBall(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, new CmdDeleteBall(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);
 
 			//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_wi, id, == , pWi->id);
 			auto it = _session.m_pi.findWarehouseItemItById(pWi->id);
@@ -4116,7 +4116,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 					_session.m_pi.ei.comet = pBall;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _session.m_pi.ue.ball_typeid), item_manager::SQLDBResponse, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _session.m_pi.ue.ball_typeid), item_manager::SQLDBResponse, nullptr);
 
 #ifdef _DEBUG
 					_smp::message_pool::getInstance().push(new message("[item_manager::removeItem][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] substitui a bola[TYPEID="
@@ -4139,7 +4139,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 
 			_item.stat.qntd_dep = pWi->STDA_C_ITEM_QNTD;
 
-			NormalManagerDB::add(0, new CmdUpdateBallQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
 
 			ret_id = pWi->id;
 
@@ -4165,7 +4165,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 
 		_item.stat.qntd_dep = 0;
 
-		NormalManagerDB::add(0, new CmdDeleteCaddie(_session.m_pi.uid, pCi->id), item_manager::SQLDBResponse, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdDeleteCaddie(_session.m_pi.uid, pCi->id), item_manager::SQLDBResponse, nullptr);
 
 		//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_ci, second.id, == , pCi->id);
 		auto it = _session.m_pi.findCaddieItById(pCi->id);
@@ -4206,7 +4206,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 
 			pCi->qntd = 0;
 
-			NormalManagerDB::add(0, new CmdDeleteCard(_session.m_pi.uid, pCi->id), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, new CmdDeleteCard(_session.m_pi.uid, pCi->id), item_manager::SQLDBResponse, nullptr);
 
 			//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_card_info, id, == , pCi->id);
 			auto it = _session.m_pi.findCardItById(pCi->id);
@@ -4226,7 +4226,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 
 			_item.stat.qntd_dep = pCi->qntd;
 
-			NormalManagerDB::add(0, new CmdUpdateCardQntd(_session.m_pi.uid, pCi->id, pCi->qntd), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCardQntd(_session.m_pi.uid, pCi->id, pCi->qntd), item_manager::SQLDBResponse, nullptr);
 
 			ret_id = pCi->id;
 
@@ -4256,7 +4256,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 
 		_item.stat.qntd_dep = 0;
 
-		NormalManagerDB::add(0, new CmdDeleteItem(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdDeleteItem(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);
 
 		//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_wi, id, == , pWi->id);
 		auto it = _session.m_pi.findWarehouseItemItById(pWi->id);
@@ -4287,7 +4287,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 
 		_item.stat.qntd_dep = 0;
 
-		NormalManagerDB::add(0, new CmdDeleteFurniture(_session.m_pi.uid, pFi->id), item_manager::SQLDBResponse, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdDeleteFurniture(_session.m_pi.uid, pFi->id), item_manager::SQLDBResponse, nullptr);
 
 		//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_mri, id, == , pFi->id);
 		auto it = _session.m_pi.findMyRoomItemItById(pFi->id);
@@ -4326,7 +4326,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 
 			_item.stat.qntd_dep = pWi->STDA_C_ITEM_QNTD;
 
-			NormalManagerDB::add(0, new CmdDeleteItem(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, new CmdDeleteItem(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);
 
 			//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_wi, id, == , pWi->id);
 			auto it = _session.m_pi.findWarehouseItemItById(pWi->id);
@@ -4346,7 +4346,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 
 			_item.stat.qntd_dep = pWi->STDA_C_ITEM_QNTD;
 
-			NormalManagerDB::add(0, new CmdUpdateItemQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateItemQntd(_session.m_pi.uid, pWi->id, pWi->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
 
 			ret_id = pWi->id;
 
@@ -4372,7 +4372,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 
 		_item.stat.qntd_dep = 0;
 
-		NormalManagerDB::add(0, new CmdDeleteMascot(_session.m_pi.uid, pMi->id), item_manager::SQLDBResponse, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdDeleteMascot(_session.m_pi.uid, pMi->id), item_manager::SQLDBResponse, nullptr);
 
 		//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_mi, id, == , pMi->id);
 		auto it = _session.m_pi.findMascotItById(pMi->id);
@@ -4403,7 +4403,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 		
 		_item.stat.qntd_dep = 0;
 
-		NormalManagerDB::add(0, new CmdDeleteItem(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdDeleteItem(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);
 
 		//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_wi, id, == , pWi->id);
 		auto it = _session.m_pi.findWarehouseItemItById(pWi->id);
@@ -4423,7 +4423,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 			ci->unequipPart(_item._typeid);
 
 			// Update ON DB
-			NormalManagerDB::add(0, new CmdUpdateCharacterAllPartEquiped(_session.m_pi.uid, *ci), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterAllPartEquiped(_session.m_pi.uid, *ci), item_manager::SQLDBResponse, nullptr);
 
 #ifdef _DEBUG
 			_smp::message_pool::getInstance().push(new message("[item_manager::removeItem][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] desequipou o Part[TYPEID="
@@ -4466,7 +4466,7 @@ int32_t item_manager::removeItem(stItem& _item, player& _session) {
 
 		_item.stat.qntd_dep = 0;
 
-		NormalManagerDB::add(0, new CmdDeleteItem(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdDeleteItem(_session.m_pi.uid, pWi->id), item_manager::SQLDBResponse, nullptr);
 
 		//auto it = VECTOR_FIND_ITEM(_session.m_pi.v_wi, id, == , pWi->id);
 		auto it = _session.m_pi.findWarehouseItemItById(pWi->id);
@@ -4561,7 +4561,7 @@ void* item_manager::transferItem(player& _s_snd, player& _s_rcv, PersonalShopIte
 
 			ret_wi = pWi_r;
 
-			NormalManagerDB::add(9, new CmdUpdateItemQntd(_s_rcv.m_pi.uid, pWi_r->id, pWi_r->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(9, new CmdUpdateItemQntd(_s_rcv.m_pi.uid, pWi_r->id, pWi_r->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);
 
 		}else {	// Cria um novo item para ele
 
@@ -4581,7 +4581,7 @@ void* item_manager::transferItem(player& _s_snd, player& _s_rcv, PersonalShopIte
 
 			CmdAddItem cmd_ai(_s_rcv.m_pi.uid, wi, 0, 0/*_gift_flag*/, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_ai, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_ai, nullptr, nullptr);
 
 			cmd_ai.waitEvent();
 
@@ -4603,7 +4603,7 @@ void* item_manager::transferItem(player& _s_snd, player& _s_rcv, PersonalShopIte
 		pWi_s->STDA_C_ITEM_QNTD -= (short)_psi.item.qntd;
 
 		if (pWi_s->STDA_C_ITEM_QNTD == 0) {
-			NormalManagerDB::add(10, new CmdDeleteItem(_s_snd.m_pi.uid, pWi_s->id), item_manager::SQLDBResponse, nullptr);	// Delete Item
+			snmdb::NormalManagerDB::getInstance().add(10, new CmdDeleteItem(_s_snd.m_pi.uid, pWi_s->id), item_manager::SQLDBResponse, nullptr);	// Delete Item
 
 			//auto it = VECTOR_FIND_ITEM(_s_snd.m_pi.v_wi, id, == , pWi_s->id);
 			auto it = _s_snd.m_pi.findWarehouseItemItById(pWi_s->id);
@@ -4612,7 +4612,7 @@ void* item_manager::transferItem(player& _s_snd, player& _s_rcv, PersonalShopIte
 				_s_snd.m_pi.mp_wi.erase(it);
 
 		}else
-			NormalManagerDB::add(9, new CmdUpdateItemQntd(_s_snd.m_pi.uid, pWi_s->id, pWi_s->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);	// Update
+			snmdb::NormalManagerDB::getInstance().add(9, new CmdUpdateItemQntd(_s_snd.m_pi.uid, pWi_s->id, pWi_s->STDA_C_ITEM_QNTD), item_manager::SQLDBResponse, nullptr);	// Update
 
 		TRANSFER_ITEM_SUCESS_MSG_LOG("Transferiu Item");
 
@@ -4649,7 +4649,7 @@ void* item_manager::transferItem(player& _s_snd, player& _s_rcv, PersonalShopIte
 			}
 
 			// CmdTransferPart
-			NormalManagerDB::add(16, new CmdTransferPart(_s_snd.m_pi.uid, _s_rcv.m_pi.uid, pWi_s->id, (unsigned char)part->type_item), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(16, new CmdTransferPart(_s_snd.m_pi.uid, _s_rcv.m_pi.uid, pWi_s->id, (unsigned char)part->type_item), item_manager::SQLDBResponse, nullptr);
 
 			// Add para o player que comprou
 			ret_wi = &_s_rcv.m_pi.mp_wi.insert(std::make_pair(pWi_s->id, *pWi_s))->second;
@@ -4723,7 +4723,7 @@ void* item_manager::transferItem(player& _s_snd, player& _s_rcv, PersonalShopIte
 
 			ret_wi = pCi_r;
 
-			NormalManagerDB::add(9, new CmdUpdateCardQntd(_s_rcv.m_pi.uid, pCi_r->id, pCi_r->qntd), item_manager::SQLDBResponse, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(9, new CmdUpdateCardQntd(_s_rcv.m_pi.uid, pCi_r->id, pCi_r->qntd), item_manager::SQLDBResponse, nullptr);
 
 		}else {	// Cria um novo item para ele
 
@@ -4737,7 +4737,7 @@ void* item_manager::transferItem(player& _s_snd, player& _s_rcv, PersonalShopIte
 
 			CmdAddCard cmd_ac(_s_rcv.m_pi.uid, ci, 0, 0/*_gift_flag*/, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_ac, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_ac, nullptr, nullptr);
 
 			cmd_ac.waitEvent();
 
@@ -4759,7 +4759,7 @@ void* item_manager::transferItem(player& _s_snd, player& _s_rcv, PersonalShopIte
 		pCi_s->qntd -= (short)_psi.item.qntd;
 
 		if (pCi_s->qntd == 0) {
-			NormalManagerDB::add(10, new CmdDeleteCard(_s_snd.m_pi.uid, pCi_s->id), item_manager::SQLDBResponse, nullptr);	// Delete Item
+			snmdb::NormalManagerDB::getInstance().add(10, new CmdDeleteCard(_s_snd.m_pi.uid, pCi_s->id), item_manager::SQLDBResponse, nullptr);	// Delete Item
 
 			//auto it = VECTOR_FIND_ITEM(_s_snd.m_pi.v_wi, id, == , pWi_s->id);
 			auto it = _s_snd.m_pi.findCardItById(pCi_s->id);
@@ -4768,7 +4768,7 @@ void* item_manager::transferItem(player& _s_snd, player& _s_rcv, PersonalShopIte
 				_s_snd.m_pi.v_card_info.erase(it);
 
 		}else
-			NormalManagerDB::add(9, new CmdUpdateCardQntd(_s_snd.m_pi.uid, pCi_s->id, pCi_s->qntd), item_manager::SQLDBResponse, nullptr);	// Update
+			snmdb::NormalManagerDB::getInstance().add(9, new CmdUpdateCardQntd(_s_snd.m_pi.uid, pCi_s->id, pCi_s->qntd), item_manager::SQLDBResponse, nullptr);	// Update
 
 		TRANSFER_ITEM_SUCESS_MSG_LOG("Transferiu Card");
 
@@ -4784,7 +4784,7 @@ void* item_manager::transferItem(player& _s_snd, player& _s_rcv, PersonalShopIte
 	}
 
 	if (ret_wi != nullptr)
-		NormalManagerDB::add(15, new CmdPersonalShopLog(_s_snd.m_pi.uid, _s_rcv.m_pi.uid, _psi, _psi_r.item.id), item_manager::SQLDBResponse, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(15, new CmdPersonalShopLog(_s_snd.m_pi.uid, _s_rcv.m_pi.uid, _psi, _psi_r.item.id), item_manager::SQLDBResponse, nullptr);
 
 	return ret_wi;
 };
@@ -5564,7 +5564,7 @@ void item_manager::openTicketReportScroll(player& _session, int32_t _ticket_scro
 
 		CmdTicketReportDadosInfo cmd_trdi(_ticket_scroll_id, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_trdi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_trdi, nullptr, nullptr);
 
 		cmd_trdi.waitEvent();
 
@@ -5694,7 +5694,7 @@ bool item_manager::ownerItem(uint32_t _uid, uint32_t _typeid) {
 		
 		CmdFindDolfiniLockerItem cmd_dli(_uid, _typeid, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_dli, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_dli, nullptr, nullptr);
 
 		cmd_dli.waitEvent();
 
@@ -5711,7 +5711,7 @@ bool item_manager::ownerItem(uint32_t _uid, uint32_t _typeid) {
 	{
 		CmdFindCharacter cmd_fc(_uid, _typeid, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_fc, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_fc, nullptr, nullptr);
 
 		cmd_fc.waitEvent();
 
@@ -5726,7 +5726,7 @@ bool item_manager::ownerItem(uint32_t _uid, uint32_t _typeid) {
 	{
 		CmdFindCaddie cmd_fc(_uid, _typeid, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_fc, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_fc, nullptr, nullptr);
 
 		cmd_fc.waitEvent();
 
@@ -5757,7 +5757,7 @@ bool item_manager::ownerItem(uint32_t _uid, uint32_t _typeid) {
 	{
 		CmdFindFurniture cmd_ff(_uid, _typeid, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_ff, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_ff, nullptr, nullptr);
 
 		cmd_ff.waitEvent();
 
@@ -5845,7 +5845,7 @@ CaddieInfoEx item_manager::_ownerCaddieItem(uint32_t _uid, uint32_t _typeid) {
 
 	CmdFindCaddie cmd_fc(_uid, (iff::CADDIE << 26) | sIff::getInstance().getCaddieIdentify(_typeid), true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_fc, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_fc, nullptr, nullptr);
 
 	cmd_fc.waitEvent();
 
@@ -5863,7 +5863,7 @@ CharacterInfo item_manager::_ownerHairStyle(uint32_t _uid, uint32_t _typeid) {
 
 		CmdFindCharacter cmd_fc(_uid, (iff::CHARACTER << 26) | hair->character, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_fc, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_fc, nullptr, nullptr);
 
 		cmd_fc.waitEvent();
 
@@ -5880,7 +5880,7 @@ MascotInfoEx item_manager::_ownerMascot(uint32_t _uid, uint32_t _typeid) {
 	
 	CmdFindMascot cmd_fm(_uid, _typeid, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_fm, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_fm, nullptr, nullptr);
 
 	cmd_fm.waitEvent();
 
@@ -5894,7 +5894,7 @@ WarehouseItemEx item_manager::_ownerBall(uint32_t _uid, uint32_t _typeid) {
 	
 	CmdFindWarehouseItem cmd_fwi(_uid, _typeid, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_fwi, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_fwi, nullptr, nullptr);
 
 	cmd_fwi.waitEvent();
 
@@ -5908,7 +5908,7 @@ CardInfo item_manager::_ownerCard(uint32_t _uid, uint32_t _typeid) {
 	
 	CmdFindCard cmd_fc(_uid, _typeid, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_fc, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_fc, nullptr, nullptr);
 
 	cmd_fc.waitEvent();
 
@@ -5922,7 +5922,7 @@ WarehouseItemEx item_manager::_ownerAuxPart(uint32_t _uid, uint32_t _typeid) {
 	
 	CmdFindWarehouseItem cmd_fwi(_uid, _typeid, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_fwi, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_fwi, nullptr, nullptr);
 
 	cmd_fwi.waitEvent();
 
@@ -5936,7 +5936,7 @@ WarehouseItemEx item_manager::_ownerItem(uint32_t _uid, uint32_t _typeid) {
 	
 	CmdFindWarehouseItem cmd_fwi(_uid, _typeid, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_fwi, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_fwi, nullptr, nullptr);
 
 	cmd_fwi.waitEvent();
 
@@ -5959,7 +5959,7 @@ TrofelEspecialInfo item_manager::_ownerTrofelEspecial(uint32_t _uid, uint32_t _t
 
 	CmdFindTrofelEspecial cmd_fts(_uid, _typeid, type, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_fts, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_fts, nullptr, nullptr);
 
 	cmd_fts.waitEvent();
 
@@ -5990,7 +5990,7 @@ bool item_manager::ownerMailBoxItem(uint32_t _uid, uint32_t _typeid) {
 
 	CmdFindMailBoxItem cmd_fmbi(_uid, _typeid, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_fmbi, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_fmbi, nullptr, nullptr);
 
 	cmd_fmbi.waitEvent();
 

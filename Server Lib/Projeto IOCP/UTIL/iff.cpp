@@ -1561,6 +1561,10 @@ std::map< uint32_t, IFF::GrandPrixAIOptionalData >& iff::getGrandPrixAIOptionalD
 	return m_grand_prix_ai_optinal_data;
 };
 
+std::map<uint32_t, IFF::GrandPrixData>& iff::getGrandPrixData() {
+	return m_grand_prix_data;
+};
+
 std::map< uint32_t, IFF::Ability >& iff::getAbility() {
 	return m_ability;
 };

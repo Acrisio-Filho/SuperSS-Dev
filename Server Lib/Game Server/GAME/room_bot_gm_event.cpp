@@ -120,8 +120,10 @@ RoomBotGMEvent::~RoomBotGMEvent() {
 
 bool RoomBotGMEvent::isAllReady() {
 	
-	// � sempre true porque quem come�a o jogo nessa sala � sempre o server
-	return true;
+	// é sempre true porque quem começa o jogo nessa sala é sempre o server
+	// O cliente da erro na hora de começar se tiver convidado na sala
+	// então verifica se não tem nenhum convidado na sala
+	return !_haveInvited();
 }
 
 bool RoomBotGMEvent::startGame() {
@@ -283,14 +285,14 @@ void* RoomBotGMEvent::waitTimeStart() {
 
 						if (m_timer_count_down == nullptr) {
 
-							// Ele tenta come�ar se n�o tiver ningu�m na sala ele destroi ela
+							// Ele tenta começar se não tiver ninguém na sala ele destroi ela
 							if ((getLocalTimeDiff(m_create_room) / STDA_10_MICRO_PER_MIN) >= 2 /*&& v_sessions.size() > 0*/) {
 
 								count_down(10); // 10 segundos
 
 								m_state_rbge.setState(eSTATE_ROOM_BOT_GM_EVENT_SYNC::WAIT_10_SECONDS_START);
 
-							}else if (v_sessions.size() == m_ri.max_player) {
+							}else if (_getRealNumPlayersWithoutInvited() == m_ri.max_player) {
 
 								// A sala atingiu o n�mero m�ximo de player
 								// Come�a o Bot GM Event em 10 segundos
@@ -315,7 +317,7 @@ void* RoomBotGMEvent::waitTimeStart() {
 					}
 					case eSTATE_ROOM_BOT_GM_EVENT_SYNC::WAIT_10_SECONDS_START:
 					{
-						// Aqui deixa acabar o tempo e fecha a sala se n�o tiver ningu�m nela
+						// Aqui deixa acabar o tempo e fecha a sala se não tiver ninguém nela
 						// Faz nada
 						break;
 					}
@@ -368,7 +370,7 @@ int RoomBotGMEvent::_count_down_time(void* _arg1, void* _arg2) {
 
 		if (rbge != nullptr && instancia_valid(rbge))
 			if (rbge->count_down(sec_to_start))
-				sgs::gs::getInstance().destroyRoom(rbge->m_channel_owner, rbge->m_ri.numero); // Destroi a sala, se n�o tem players, ou n�o conseguiu inicializar
+				sgs::gs::getInstance().destroyRoom(rbge->m_channel_owner, rbge->m_ri.numero); // Destroi a sala, se não tem players, ou não conseguiu inicializar
 
 	}catch (exception& e) {
 
@@ -384,17 +386,21 @@ int RoomBotGMEvent::count_down(int64_t _sec_to_start) {
 
 	try {
 
-		// Bloquea a sala para n�o d� erro de conflito
+		// Bloquea a sala para não dá erro de conflito
 		lock();
 
-		if (_sec_to_start <= 0) {	// Come�a o jogo
+		if (_sec_to_start <= 0) {	// Começa o jogo
 			
-			// exclu� o timer se ele ainda existir
+			// excluí o timer se ele ainda existir
 			clear_timer_count_down();
 
-			// Come�a o jogo se tem pelo menos 1 jogador na sala
+			// Começa o jogo se tem pelo menos 1 jogador na sala
 			if (v_sessions.size() >= 1 && startGame())
 				sgs::gs::getInstance().sendUpdateRoomInfo(this, 3); // Update Room Info
+			else if (v_sessions.size() >= 1)
+				// Coloca para começar espera o tempo de começar o jogo de novo, por que não conseguiu criar a sala
+				// Pode ter convidado na sala, aí não pode iniciar o jogo por que o cliente trava
+				count_down(10);
 			else
 				ret = 1; // Destroi a sala
 
@@ -699,7 +705,7 @@ void RoomBotGMEvent::finish_game() {
 }
 
 bool RoomBotGMEvent::isDropRoom() {
-	return false; // N�o drop(destroy) a sala
+	return false; // Não drop(destroy) a sala
 }
 
 void RoomBotGMEvent::push_instancia(RoomBotGMEvent* _rbge) {

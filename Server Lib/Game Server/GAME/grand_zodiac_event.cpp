@@ -248,7 +248,7 @@ void GrandZodiacEvent::initialize() {
 
 		CmdGrandZodiacEventInfo cmd_gzei(true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_gzei, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_gzei, nullptr, nullptr);
 
 		cmd_gzei.waitEvent();
 

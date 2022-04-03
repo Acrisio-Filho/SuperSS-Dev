@@ -2667,7 +2667,7 @@ void channel::requestExitedFromWebGuild(player& _session, packet *_packet) {
 
 			CmdGuildUpdateActivityInfo cmd_guai(_session.m_pi.gi.uid, _session.m_pi.uid, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_guai, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_guai, nullptr, nullptr);
 
 			cmd_guai.waitEvent();
 
@@ -2710,7 +2710,7 @@ void channel::requestExitedFromWebGuild(player& _session, packet *_packet) {
 								// Member Info
 								CmdMemberInfo cmd_mi(s->m_pi.uid, true);	// Waiter
 
-								NormalManagerDB::add(0, &cmd_mi, nullptr, nullptr);
+								snmdb::NormalManagerDB::getInstance().add(0, &cmd_mi, nullptr, nullptr);
 
 								cmd_mi.waitEvent();
 
@@ -2738,7 +2738,7 @@ void channel::requestExitedFromWebGuild(player& _session, packet *_packet) {
 									// Guild info
 									CmdGuildInfo cmd_gi(s->m_pi.uid, 0, true);	// Waiter
 
-									NormalManagerDB::add(0, &cmd_gi, nullptr, nullptr);
+									snmdb::NormalManagerDB::getInstance().add(0, &cmd_gi, nullptr, nullptr);
 
 									cmd_gi.waitEvent();
 
@@ -2857,7 +2857,7 @@ void channel::requestExitedFromWebGuild(player& _session, packet *_packet) {
 					}
 
 					// Atualiza o STATE do guild update activity por que ela já foi tratada
-					NormalManagerDB::add(27, new CmdUpdateGuildUpdateActiviy(el.index), channel::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(27, new CmdUpdateGuildUpdateActiviy(el.index), channel::SQLDBResponse, this);
 				}
 			}
 		}
@@ -5026,7 +5026,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 					
 				*pCe = ci;
 
-				NormalManagerDB::add(0, new CmdUpdateCharacterAllPartEquiped(_session.m_pi.uid, ci), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterAllPartEquiped(_session.m_pi.uid, ci), channel::SQLDBResponse, this);
 
 			}else {
 
@@ -5073,7 +5073,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 						item_id = _session.m_pi.ue.caddie_id;	// Desequipa caddie
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 				
 				}else {
 
@@ -5090,7 +5090,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 				_session.m_pi.ue.caddie_id = 0;
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 			}// else Não tem nenhum caddie equipado, para desequipar, então o cliente só quis atualizar o estado
 		
@@ -5174,7 +5174,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 #endif
 
 				// Update ON DB
-				NormalManagerDB::add(25, new CmdUpdateItemSlot(_session.m_pi.uid, (uint32_t*)ue.item_slot), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(25, new CmdUpdateItemSlot(_session.m_pi.uid, (uint32_t*)ue.item_slot), channel::SQLDBResponse, this);
 
 			}catch (exception& e) {
 
@@ -5229,7 +5229,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 					item_id = _session.m_pi.ue.ball_typeid;
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 				
 			}else if (item_id == 0) { // Bola 0 coloca a bola padrão para ele, se for premium user coloca a bola de premium user
 
@@ -5242,7 +5242,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 					item_id = _session.m_pi.ue.ball_typeid;
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 			}else {
 			
@@ -5278,7 +5278,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 						item_id = _session.m_pi.ue.clubset_id;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 				}else // O Cliente é que tem que saber do erro, não posso passa essa excessão para função anterior
 					_smp::message_pool::getInstance().push(new message("[channel::requestChangePlayerItemMyRoom][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou atualizar o ClubSet[TYPEID=" 
@@ -5311,7 +5311,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 						_session.m_pi.ue.skin_typeid[i] = pWi->_typeid;
 
 						// Update ON DB
-						NormalManagerDB::add(0, new CmdUpdateSkinEquiped(_session.m_pi.uid, _session.m_pi.ue), channel::SQLDBResponse, this);
+						snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateSkinEquiped(_session.m_pi.uid, _session.m_pi.ue), channel::SQLDBResponse, this);
 					
 					}else {
 					
@@ -5328,14 +5328,14 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 					_session.m_pi.ue.skin_typeid[i] = 0u;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateSkinEquiped(_session.m_pi.uid, _session.m_pi.ue), channel::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateSkinEquiped(_session.m_pi.uid, _session.m_pi.ue), channel::SQLDBResponse, this);
 				}
 			}
 
 			// Verifica se a Skin pode ser equipada
 			if (_session.checkSkinEquiped(_session.m_pi.ue))
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateSkinEquiped(_session.m_pi.uid, _session.m_pi.ue), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateSkinEquiped(_session.m_pi.uid, _session.m_pi.ue), channel::SQLDBResponse, this);
 
 			packet_func::pacote06B(p, &_session, &_session.m_pi, type, error);
 			packet_func::session_send(p, &_session, 1);
@@ -5359,7 +5359,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 				packet_func::session_send(p, &_session, 1);
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 			}else {
 			
@@ -5390,7 +5390,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 						item_id = _session.m_pi.ue.mascot_id;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 			
 				}else {
 				
@@ -5407,7 +5407,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 				_session.m_pi.ue.mascot_id = 0;
 
 				// Att No DB
-				NormalManagerDB::add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 			}// else Não tem nenhum mascot equipado, para desequipar, então o cliente só quis atualizar o estado
 
@@ -5453,7 +5453,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 				_session.checkCharacterEquipedCutin(*pCe);
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateCharacterCutinEquiped(_session.m_pi.uid, *pCe), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterCutinEquiped(_session.m_pi.uid, *pCe), channel::SQLDBResponse, this);
 				
 			}else {
 			
@@ -5503,7 +5503,7 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 
 				// Update ON DB, Verifica se o Poster pode ser equipado
 				if (_session.checkPosterEquiped(_session.m_pi.ue) || error == 4/*sucesso*/)
-					NormalManagerDB::add(0, new CmdUpdatePosterEquiped(_session.m_pi.uid, _session.m_pi.ue), channel::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdatePosterEquiped(_session.m_pi.uid, _session.m_pi.ue), channel::SQLDBResponse, this);
 
 				packet_func::pacote06B(p, &_session, &_session.m_pi, type, error);
 				packet_func::session_send(p, &_session, 1);
@@ -5621,7 +5621,7 @@ void channel::requestChangeMascotMessage(player& _session, packet *_packet) {
 #endif
 
 		// Update Mascot info no DB
-		NormalManagerDB::add(26, new CmdUpdateMascotInfo(_session.m_pi.uid, *pMi), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(26, new CmdUpdateMascotInfo(_session.m_pi.uid, *pMi), channel::SQLDBResponse, this);
 
 		// Update on GAME
 		p.init_plain((unsigned short)0xE2);
@@ -5709,7 +5709,7 @@ void channel::requestPayCaddieHolyDay(player& _session, packet *_packet) {
 		_session.m_pi.consomePang(caddie->valor_mensal);
 
 		// UPDATE ON DB
-		NormalManagerDB::add(20, new CmdPayCaddieHolyDay(_session.m_pi.uid, pCi->id, end_dt), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(20, new CmdPayCaddieHolyDay(_session.m_pi.uid, pCi->id, end_dt), channel::SQLDBResponse, this);
 
 		// Verifica se o Caddie já tem um item update, por que se tiver, 
 		// ele vai desequipar o caddie por que o player não relogou quando acabou o tempo do caddie
@@ -5794,7 +5794,7 @@ void channel::requestSetNoticeBeginCaddieHolyDay(player& _session, packet *_pack
 			pCi->check_end = check;
 
 			// UPDATE ON DB
-			NormalManagerDB::add(21, new CmdSetNoticeCaddieHolyDay(_session.m_pi.uid, pCi->id, pCi->check_end), channel::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(21, new CmdSetNoticeCaddieHolyDay(_session.m_pi.uid, pCi->id, pCi->check_end), channel::SQLDBResponse, this);
 		}
 
 		// Log
@@ -6703,7 +6703,7 @@ void channel::requestExtendRental(player& _session, packet *_packet) {
 		auto end_date = formatDateLocal(pWi->end_date_unix_local);
 
 		// Cmd Extend Rental + 7 dias no DB
-		NormalManagerDB::add(5, new CmdExtendRental(_session.m_pi.uid, pWi->id, end_date), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(5, new CmdExtendRental(_session.m_pi.uid, pWi->id, end_date), channel::SQLDBResponse, this);
 
 		// Tira os pangs do valor de renovar o Rental Item
 		_session.m_pi.consomePang(part->valor_rental);
@@ -6802,7 +6802,7 @@ void channel::requestDeleteRental(player& _session, packet* _packet) {
 			_session.m_pi.mp_wi.erase(it);
 
 		// Att no Banco de dados
-		NormalManagerDB::add(6, new CmdDeleteRental(_session.m_pi.uid, tmp_wi.id), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(6, new CmdDeleteRental(_session.m_pi.uid, tmp_wi.id), channel::SQLDBResponse, this);
 
 		_smp::message_pool::getInstance().push(new message("[Rental::Delete][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] deletou Rental Item[TYPEID=" 
 				+ std::to_string(tmp_wi._typeid) + ", ID=" + std::to_string(tmp_wi.id) + "]", CL_FILE_LOG_AND_CONSOLE));
@@ -7338,7 +7338,7 @@ void channel::requestCharacterStatsUp(player& _session, packet *_packet) {
 		pCi->pcl[stat]++;
 
 		// CmdUpdateCharacterPCL
-		NormalManagerDB::add(7, new CmdUpdateCharacterPCL(_session.m_pi.uid, *pCi), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(7, new CmdUpdateCharacterPCL(_session.m_pi.uid, *pCi), channel::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[CharacterStats::UPGRADE][Log] Player[UID=" + std::to_string(_session.m_pi.uid) + "] upou Character[TYPEID=" 
@@ -7449,7 +7449,7 @@ void channel::requestCharacterStatsDown(player& _session, packet *_packet) {
 		pCi->pcl[stat]--;
 
 		// Update on DB
-		NormalManagerDB::add(7, new CmdUpdateCharacterPCL(_session.m_pi.uid, *pCi), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(7, new CmdUpdateCharacterPCL(_session.m_pi.uid, *pCi), channel::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[CharacterStats::DOWNGRADE][Log] Player[UID=" + std::to_string(_session.m_pi.uid) + "] desupou Character[TYPEID="
@@ -7626,7 +7626,7 @@ void channel::requestCharacterMasteryExpand(player& _session, packet *_packet) {
 		v_item.push_back(item);
 
 		// Atualiza ON DB
-		NormalManagerDB::add(9, new CmdUpdateCharacterMastery(_session.m_pi.uid, *pCi), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(9, new CmdUpdateCharacterMastery(_session.m_pi.uid, *pCi), channel::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[CharacterMasteryExpand][Log] Player[UID=" + std::to_string(_session.m_pi.uid) + "] expandiu Character[TYPEID=" 
@@ -7860,7 +7860,7 @@ void channel::requestCharacterCardEquip(player& _session, packet *_packet) {
 		v_item.push_back(item);
 
 		// Update ON DB
-		NormalManagerDB::add(10, new CmdEquipCard(_session.m_pi.uid, cei, 0/*nao é card de tempo, é o normal*/), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(10, new CmdEquipCard(_session.m_pi.uid, cei, 0/*nao é card de tempo, é o normal*/), channel::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[EquipCard][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] equipou card[TYPEID=" + std::to_string(ce.card_typeid) + "] no Character[TYPEID=" 
@@ -8103,7 +8103,7 @@ void channel::requestCharacterCardEquipWithPatcher(player& _session, packet* _pa
 		v_item.push_back(item);
 
 		// Update ON DB
-		NormalManagerDB::add(10, new CmdEquipCard(_session.m_pi.uid, cei, 0/*nao é card de tempo, é o normal*/), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(10, new CmdEquipCard(_session.m_pi.uid, cei, 0/*nao é card de tempo, é o normal*/), channel::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[EquipCardWithPatcher][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] equipou card[TYPEID=" + std::to_string(ce.card_typeid) + "] no Character[TYPEID=" 
@@ -8323,7 +8323,7 @@ void channel::requestCharacterRemoveCard(player& _session, packet* _packet) {
 		v_item.push_back(item);
 
 		// Update ON DB
-		NormalManagerDB::add(11, new CmdRemoveEquipedCard(_session.m_pi.uid, *pCei), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(11, new CmdRemoveEquipedCard(_session.m_pi.uid, *pCei), channel::SQLDBResponse, this);
 
 		// Remove Equiped Card
 		auto it = std::find_if(_session.m_pi.v_cei.begin(), _session.m_pi.v_cei.end(), [&](auto _el) {
@@ -8442,7 +8442,7 @@ void channel::requestClubSetStatsUpdate(player& _session, packet *_packet) {
 				pWi->c[stat]++;
 
 				// Update ON DB
-				NormalManagerDB::add(8, new CmdUpdateClubSetStats(_session.m_pi.uid, *pWi, enchant->pang), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(8, new CmdUpdateClubSetStats(_session.m_pi.uid, *pWi, enchant->pang), channel::SQLDBResponse, this);
 
 				// Update Achievement ON SERVER, DB and GAME
 				sys_achieve.incrementCounter(0x6C400084u/*ClubSet stats Upgrade*/);
@@ -8468,7 +8468,7 @@ void channel::requestClubSetStatsUpdate(player& _session, packet *_packet) {
 				pWi->c[stat]--;
 
 				// Update ON DB
-				NormalManagerDB::add(8, new CmdUpdateClubSetStats(_session.m_pi.uid, *pWi, 0), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(8, new CmdUpdateClubSetStats(_session.m_pi.uid, *pWi, 0), channel::SQLDBResponse, this);
 
 				// Update Achievement ON SERVER, DB and GAME
 				sys_achieve.incrementCounter(0x6C400085u/*ClubSet stats Downgrade*/);
@@ -8839,7 +8839,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 				}
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 			}else if (_session.m_pi.ue.caddie_id > 0 && _session.m_pi.ei.cad_info != nullptr) {	// Desequipa Caddie
 			
@@ -8882,7 +8882,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 				error = 0;
 
 				// Att No DB
-				NormalManagerDB::add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 			
 			} // else Não tem nenhum caddie equipado, para desequipar, então o cliente só quis atualizar o estado
 			
@@ -8903,7 +8903,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 					item_id = _session.m_pi.ue.ball_typeid;
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 					
 			}else if (item_id == 0) { // Bola 0 coloca a bola padrão para ele, se for premium user coloca a bola de premium user
 
@@ -8916,7 +8916,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 					item_id = _session.m_pi.ue.ball_typeid;
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 			}else {
 				
@@ -8941,7 +8941,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 					error = 0;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 			
 				}else {
 
@@ -8974,7 +8974,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 								error = 0;
 
 								// Update ON DB
-								NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+								snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 								// Update ON GAME
 								p.init_plain((unsigned short)0x216);
@@ -9040,7 +9040,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 							item_id = _session.m_pi.ue.clubset_id;
 
 						// Update ON DB
-						NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+						snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 					}else {
 						
@@ -9075,7 +9075,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 							error = 0;
 
 							// Update ON DB
-							NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+							snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 			
 						}else {
 
@@ -9117,7 +9117,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 										error = 0;
 
 										// Update ON DB
-										NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+										snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 										// Update ON GAME
 										p.init_plain((unsigned short)0x216);
@@ -9178,7 +9178,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 						error = 0;
 
 						// Update ON DB
-						NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+						snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 			
 					}else {
 
@@ -9220,7 +9220,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 									error = 0;
 
 									// Update ON DB
-									NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+									snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 									// Update ON GAME
 									p.init_plain((unsigned short)0x216);
@@ -9280,7 +9280,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 					error = 0;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 			
 				}else {
 
@@ -9322,7 +9322,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 								error = 0;
 
 								// Update ON DB
-								NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+								snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 								// Update ON GAME
 								p.init_plain((unsigned short)0x216);
@@ -9367,7 +9367,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 				_session.m_pi.ue.character_id = item_id;
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 				// Update Player Info Channel and Room
 				updatePlayerInfo(_session);
@@ -9389,7 +9389,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 					error = 0;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 					// Update Player Info Channel and Room
 					updatePlayerInfo(_session);
@@ -9479,7 +9479,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 					}
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 					
 				}else {
 
@@ -9497,7 +9497,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 					item_id = 0;
 
 					// Att No DB
-					NormalManagerDB::add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 				}
 
 			}else if (_session.m_pi.ue.mascot_id > 0 && _session.m_pi.ei.mascot_info != nullptr) {	// Desequipa Mascot
@@ -9508,7 +9508,7 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 				item_id = 0;
 
 				// Att No DB
-				NormalManagerDB::add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
 
 			} // else Não tem nenhum mascot equipado, para desequipar, então o cliente só quis atualizar o estado
 			
@@ -9825,8 +9825,8 @@ void channel::requestClubSetWorkShopTransferMasteryPts(player& _session, packet 
 		v_item.push_back(item);
 
 		// Atualiza ON DB
-		NormalManagerDB::add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub_src, CmdUpdateClubSetWorkshop::F_TRANSFER_MASTERY_PTS), channel::SQLDBResponse, this);
-		NormalManagerDB::add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub_dst, CmdUpdateClubSetWorkshop::F_TRANSFER_MASTERY_PTS), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub_src, CmdUpdateClubSetWorkshop::F_TRANSFER_MASTERY_PTS), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub_dst, CmdUpdateClubSetWorkshop::F_TRANSFER_MASTERY_PTS), channel::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[ClubSet Workshop::TransferMasteryPts][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] transferiu mastery pts[value=" + std::to_string(mastery) + "] do ClubSet[TYPEID=" 
@@ -9963,7 +9963,7 @@ void channel::requestClubSetWorkShopRecoveryPts(player& _session, packet *_packe
 		v_item.push_back(item);
 
 		// UPDATE ON DB
-		NormalManagerDB::add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub, CmdUpdateClubSetWorkshop::F_R_RECOVERY_PTS), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub, CmdUpdateClubSetWorkshop::F_R_RECOVERY_PTS), channel::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[ClubSet WorkShop::RecoveryPts][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] recuperou os pontos do ClubSet[TYPEID=" 
@@ -10179,7 +10179,7 @@ void channel::requestClubSetWorkShopUpLevel(player& _session, packet* _packet) {
 		pClub->clubset_workshop.c[stat]++;
 
 		// UPDATE ON DB
-		NormalManagerDB::add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub, CmdUpdateClubSetWorkshop::F_UP_LEVEL), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub, CmdUpdateClubSetWorkshop::F_UP_LEVEL), channel::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[ClubSetWorkshop::UpLevel][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] upou Level[stat=" 
@@ -10373,7 +10373,7 @@ void channel::requestClubSetWorkShopUpLevelCancel(player& _session, packet* _pac
 		item.clubset_workshop.recovery = pClub->clubset_workshop.recovery_pts;
 
 		// UPDATE ON DB
-		NormalManagerDB::add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub, CmdUpdateClubSetWorkshop::F_UP_LEVEL_CANCEL), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub, CmdUpdateClubSetWorkshop::F_UP_LEVEL_CANCEL), channel::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[ClubSetWorkshop::UpLevelCancel][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] cancelou o Up Level[stat=" 
@@ -10582,7 +10582,7 @@ void channel::requestClubSetWorkShopUpRank(player& _session, packet *_packet) {
 		v_item.push_back(item);
 
 		// UPDATE ON DB
-		NormalManagerDB::add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub, CmdUpdateClubSetWorkshop::F_UP_RANK), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub, CmdUpdateClubSetWorkshop::F_UP_RANK), channel::SQLDBResponse, this);
 
 		// UPDATE ON JOGO
 		p.init_plain((unsigned short)0x216);
@@ -11039,10 +11039,10 @@ void channel::requestClubSetReset(player& _session, packet *_packet) {
 		// UPDATE ON DB
 
 		// Reset ON DB ClubSet Workshop
-		NormalManagerDB::add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub, CmdUpdateClubSetWorkshop::F_RESET), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub, CmdUpdateClubSetWorkshop::F_RESET), channel::SQLDBResponse, this);
 
 		// Reset ON DB ClubSet Stats
-		NormalManagerDB::add(8, new CmdUpdateClubSetStats(_session.m_pi.uid, *pClub, 0), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(8, new CmdUpdateClubSetStats(_session.m_pi.uid, *pClub, 0), channel::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[ClubSet::Reset][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] resetou o ClubSet[TYPEID=" 
@@ -11287,7 +11287,7 @@ void channel::requestMakeTutorial(player& _session, packet *_packet) {
 				MailBoxManager::sendMessageWithItem(0, _session.m_pi.uid, msg, v_item);
 
 				// UPDATE ON DB
-				NormalManagerDB::add(14, new CmdTutoEventClear(_session.m_pi.uid, CmdTutoEventClear::T_ROOKIE), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(14, new CmdTutoEventClear(_session.m_pi.uid, CmdTutoEventClear::T_ROOKIE), channel::SQLDBResponse, this);
 
 				_smp::message_pool::getInstance().push(new message("[Tutorial][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] Concluiu Todos Tutoriais Rookie", CL_FILE_LOG_AND_CONSOLE)); // UPDATE ON DB
 			}
@@ -11393,7 +11393,7 @@ void channel::requestMakeTutorial(player& _session, packet *_packet) {
 				MailBoxManager::sendMessageWithItem(0, _session.m_pi.uid, msg, v_item);
 
 				// UPDATE ON DB
-				NormalManagerDB::add(14, new CmdTutoEventClear(_session.m_pi.uid, CmdTutoEventClear::T_BEGINNER), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(14, new CmdTutoEventClear(_session.m_pi.uid, CmdTutoEventClear::T_BEGINNER), channel::SQLDBResponse, this);
 
 				_smp::message_pool::getInstance().push(new message("[Tutorial][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] Concluiu Todos Tutoriais Beginner", CL_FILE_LOG_AND_CONSOLE)); // UPDATE ON DB
 			}
@@ -11477,7 +11477,7 @@ void channel::requestMakeTutorial(player& _session, packet *_packet) {
 				MailBoxManager::sendMessageWithItem(0, _session.m_pi.uid, msg, v_item);
 
 				// UPDATE ON DB
-				NormalManagerDB::add(14, new CmdTutoEventClear(_session.m_pi.uid, CmdTutoEventClear::T_ADVANCER), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(14, new CmdTutoEventClear(_session.m_pi.uid, CmdTutoEventClear::T_ADVANCER), channel::SQLDBResponse, this);
 
 				_smp::message_pool::getInstance().push(new message("[Tutorial][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] Concluiu Todos Tutoriais Advancer", CL_FILE_LOG_AND_CONSOLE)); // UPDATE ON DB
 			}
@@ -11489,7 +11489,7 @@ void channel::requestMakeTutorial(player& _session, packet *_packet) {
 		}
 		
 		// UPDATE ON DB
-		NormalManagerDB::add(13, new CmdUpdateTutorial(_session.m_pi.uid, _session.m_pi.TutoInfo), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(13, new CmdUpdateTutorial(_session.m_pi.uid, _session.m_pi.TutoInfo), channel::SQLDBResponse, this);
 
 		// UPDATE ON JOGO
 		// Resposta do Make Tutorial
@@ -11566,7 +11566,7 @@ void channel::requestCookie(player& _session, packet *_packet) {
 		// aí vou atualizar aqui com o do banco de dados
 		CmdGrandZodiacPontos cmd_gzp(_session.m_pi.uid, CmdGrandZodiacPontos::eCMD_GRAND_ZODIAC_TYPE::CGZT_GET, true);
 
-		NormalManagerDB::add(0, &cmd_gzp, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_gzp, nullptr, nullptr);
 
 		cmd_gzp.waitEvent();
 
@@ -11594,7 +11594,7 @@ void channel::requestUpdateGachaCoupon(player& _session, packet *_packet) {
 
 		CmdCouponGacha cmd_cg(_session.m_pi.uid, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_cg, channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_cg, channel::SQLDBResponse, this);
 
 		cmd_cg.waitEvent();
 
@@ -11831,7 +11831,7 @@ void channel::requestOpenBoxMail(player& _session, packet *_packet) {
 
 				unsigned char opt = (ctx_bi->_typeid == PANG_POUCH_TYPEID) ? 2 : 1;
 
-				NormalManagerDB::add(23, new CmdInsertSpinningCubeSuperRareWinBroadcast(msg, opt), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(23, new CmdInsertSpinningCubeSuperRareWinBroadcast(msg, opt), channel::SQLDBResponse, this);
 			}
 
 			// UPDATE Achievement ON SERVER, DB and GAME
@@ -12163,7 +12163,7 @@ void channel::requestOpenBoxMail(player& _session, packet *_packet) {
 
 		// DB Register Rare Win Log
 		if (ctx_bi != nullptr && ctx_bi->raridade > 0)
-			NormalManagerDB::add(22, new CmdInsertBoxRareWinLog(_session.m_pi.uid, box->_typeid, *ctx_bi), channel::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(22, new CmdInsertBoxRareWinLog(_session.m_pi.uid, box->_typeid, *ctx_bi), channel::SQLDBResponse, this);
 
 	}catch (exception& e) {
 
@@ -12331,7 +12331,7 @@ void channel::requestOpenBoxMyRoom(player& _session, packet *_packet) {
 
 		// DB Register Rare Win Log
 		if (ctx_bi != nullptr && ctx_bi->raridade > 0)
-			NormalManagerDB::add(22, new CmdInsertBoxRareWinLog(_session.m_pi.uid, box->_typeid, *ctx_bi), channel::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(22, new CmdInsertBoxRareWinLog(_session.m_pi.uid, box->_typeid, *ctx_bi), channel::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[BoxSystem::BoxMyRoom][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] abriu Box e ganhou o Item(ns){" + str + "} [TYPEID="
@@ -12566,7 +12566,7 @@ void channel::requestPlayMemorial(player& _session, packet *_packet) {
 
 		// DB Register Rare Win Log
 		if (!win_item.empty() && win_item.begin()->tipo > 0 && win_item.size() == 1)
-			NormalManagerDB::add(24, new CmdInsertMemorialRareWinLog(_session.m_pi.uid, c->_typeid, *win_item.begin()), channel::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(24, new CmdInsertMemorialRareWinLog(_session.m_pi.uid, c->_typeid, *win_item.begin()), channel::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[MemorialSystem::Play][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] jogou Coin[TYPEID=" 
@@ -13220,7 +13220,7 @@ void channel::requestUseCardSpecial(player& _session, packet *_packet) {
 				}
 
 				// UPDATE ON DB
-				NormalManagerDB::add(17, new CmdUpdateCardSpecialTime(_session.m_pi.uid, *pCei), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(17, new CmdUpdateCardSpecialTime(_session.m_pi.uid, *pCei), channel::SQLDBResponse, this);
 
 				cei = *pCei;
 
@@ -13233,7 +13233,7 @@ void channel::requestUseCardSpecial(player& _session, packet *_packet) {
 				// UPDATE ON DB
 				CmdEquipCard cmd_ec(_session.m_pi.uid, cei, card->tempo, true/*Waiter*/);
 				
-				NormalManagerDB::add(10, &cmd_ec, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(10, &cmd_ec, nullptr, nullptr);
 
 				cmd_ec.waitEvent();
 
@@ -13389,7 +13389,7 @@ void channel::requestUseItemBuff(player& _session, packet *_packet) {
 			}
 
 			// UPDATE ON DB
-			NormalManagerDB::add(16, new CmdUpdateItemBuff(_session.m_pi.uid, *pIb), channel::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(16, new CmdUpdateItemBuff(_session.m_pi.uid, *pIb), channel::SQLDBResponse, this);
 
 			// Passa o Item buff já equipado(atualizado o tempo) para o novo que foi inicializado
 			ib = *pIb;
@@ -13410,7 +13410,7 @@ void channel::requestUseItemBuff(player& _session, packet *_packet) {
 			// UPDATE ON DB
 			CmdUseItemBuff cmd_uib(_session.m_pi.uid, ib, tli->time, true/*Waiter*/);
 			
-			NormalManagerDB::add(15, &cmd_uib, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(15, &cmd_uib, nullptr, nullptr);
 
 			cmd_uib.waitEvent();
 
@@ -13608,7 +13608,7 @@ void channel::requestOpenMailBox(player& _session, packet *_packet) {
 
 		/*CmdMailBoxInfo cmd_mbi(_session.m_pi.uid, CmdMailBoxInfo::NORMAL, pagina, true);
 
-		NormalManagerDB::add(0, &cmd_mbi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_mbi, nullptr, nullptr);
 
 		cmd_mbi.waitEvent();
 
@@ -13674,7 +13674,7 @@ void channel::requestInfoMail(player& _session, packet *_packet) {
 
 		/*CmdEmailInfo cmd_ei(_session.m_pi.uid, email_id, true);	// waitable
 
-		NormalManagerDB::add(0, &cmd_ei, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_ei, nullptr, nullptr);
 
 		cmd_ei.waitEvent();
 
@@ -13958,7 +13958,7 @@ void channel::requestTakeItemFomMail(player& _session, packet *_packet) {
 
 		/*CmdEmailInfo cmd_ei(_session.m_pi.uid, email_id, true);	// waitable
 
-		NormalManagerDB::add(0, &cmd_ei, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_ei, nullptr, nullptr);
 
 		cmd_ei.waitEvent();
 
@@ -14027,7 +14027,7 @@ void channel::requestTakeItemFomMail(player& _session, packet *_packet) {
 
 			/*CmdItemLeftFromEmail cmd_ilfe(email_id, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_ilfe, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_ilfe, nullptr, nullptr);
 
 			cmd_ilfe.waitEvent();
 
@@ -14157,13 +14157,13 @@ void channel::requestDeleteMail(player& _session, packet *_packet) {
 
 		_session.m_pi.m_mail_box.deleteEmail(a_email_id, (uint32_t)num_email);
 
-		//NormalManagerDB::add(0, new CmdDeleteEmail(_session.m_pi.uid, a_email_id, num_email), nullptr/*por enquanto deixar nullptr mais depois colocar um funcao de retorno*/, nullptr);
+		//snmdb::NormalManagerDB::getInstance().add(0, new CmdDeleteEmail(_session.m_pi.uid, a_email_id, num_email), nullptr/*por enquanto deixar nullptr mais depois colocar um funcao de retorno*/, nullptr);
 		
 		auto mails = _session.m_pi.m_mail_box.getPage((uint32_t)pagina);
 
 		/*CmdMailBoxInfo cmd_mbi(_session.m_pi.uid, CmdMailBoxInfo::NORMAL, pagina, true);	// waitable
 
-		NormalManagerDB::add(0, &cmd_mbi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_mbi, nullptr, nullptr);
 
 		cmd_mbi.waitEvent();
 
@@ -14235,7 +14235,7 @@ void channel::requestMakePassDolfiniLocker(player& _session, packet *_packet) {
 		packet_func::session_send(p, &_session, 1);
 
 		// Cmd Update Pass Dolfini Locker
-		NormalManagerDB::add(1, new CmdUpdateDolfiniLockerPass(_session.m_pi.uid, pass), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateDolfiniLockerPass(_session.m_pi.uid, pass), channel::SQLDBResponse, this);
 
 	}catch (exception& e) {
 		_smp::message_pool::getInstance().push(new message("[channel::requestMakePassDolfiniLocker][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
@@ -14338,7 +14338,7 @@ void channel::requestChangeDolfiniLockerPass(player& _session, packet *_packet) 
 
 			_smp::message_pool::getInstance().push(new message("[Dolfini Locker::Change Pass][Log] player[UID=" + std::to_string(_session.m_pi.uid) +"] trocou a senha[old=" + old_pass + ", new=" + new_pass + "] com sucesso", CL_FILE_LOG_AND_CONSOLE));
 
-			NormalManagerDB::add(1, new CmdUpdateDolfiniLockerPass(_session.m_pi.uid, new_pass), channel::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateDolfiniLockerPass(_session.m_pi.uid, new_pass), channel::SQLDBResponse, this);
 		}
 
 		packet_func::session_send(p, &_session, 1);
@@ -14392,7 +14392,7 @@ void channel::requestChangeDolfiniLockerModeEnter(player& _session, packet *_pac
 			_smp::message_pool::getInstance().push(new message("[Dolfini Locker::Change Mode Enter][Log] ", CL_FILE_LOG_AND_CONSOLE));
 
 			// Cmd update Mode Enter[locker]
-			NormalManagerDB::add(2, new CmdUpdateDolfiniLockerMode(_session.m_pi.uid, locker), channel::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateDolfiniLockerMode(_session.m_pi.uid, locker), channel::SQLDBResponse, this);
 		}
 
 		packet_func::session_send(p, &_session, 1);
@@ -14538,7 +14538,7 @@ void channel::requestUpdateDolfiniLockerPang(player& _session, packet *_packet) 
 				+ std::to_string(pang) + ", OPTION=" + std::to_string((unsigned short)opt) + "] com sucesso.", CL_FILE_LOG_AND_CONSOLE));
 
 		// Cmd update pang do dolfini locker do player no DB
-		NormalManagerDB::add(3, new CmdUpdateDolfiniLockerPang(_session.m_pi.uid, _session.m_pi.df.pang), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(3, new CmdUpdateDolfiniLockerPang(_session.m_pi.uid, _session.m_pi.df.pang), channel::SQLDBResponse, this);
 
 		p.init_plain((unsigned short)0x171);
 
@@ -14646,7 +14646,7 @@ void channel::requestAddDolfiniLockerItem(player& _session, packet *_packet) {
 			// cmd add Item no Dolfini Locker do player
 			CmdAddDolfiniLockerItem cmd_adli(_session.m_pi.uid, aTI[i], true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_adli, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_adli, nullptr, nullptr);
 
 			cmd_adli.waitEvent();
 
@@ -14779,7 +14779,7 @@ void channel::requestRemoveDolfiniLockerItem(player& _session, packet *_packet) 
 					+ std::to_string(aTI[i].item._typeid) + ", ID=" + std::to_string(aTI[i].item.id) + "] que ele nao tem. Do Dolfini Locker ", STDA_MAKE_ERROR(STDA_ERROR_TYPE::CHANNEL, 550, 5100451));
 
 			// cmd remove Item no Dolfini Locker do player
-			NormalManagerDB::add(4, new CmdDeleteDolfiniLockerItem(_session.m_pi.uid, aTI[i].index), channel::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(4, new CmdDeleteDolfiniLockerItem(_session.m_pi.uid, aTI[i].index), channel::SQLDBResponse, this);
 
 			// tira o item do Dolfini Locker item vector do player
 			_session.m_pi.df.v_item.erase(ii);
@@ -15088,7 +15088,7 @@ void channel::requestExchangeTPByItemLegacyTikiShop(player& _session, packet* _p
 		// Tiki Points
 		_session.m_pi.m_legacy_tiki_pts += tiki_pts;
 
-		NormalManagerDB::add(28, new CmdUpdateLegacyTikiShopPoint(_session.m_pi.uid, _session.m_pi.m_legacy_tiki_pts), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(28, new CmdUpdateLegacyTikiShopPoint(_session.m_pi.uid, _session.m_pi.m_legacy_tiki_pts), channel::SQLDBResponse, this);
 
 		// Achievement Add 1 valor de Exchange Legacy Tiki Shop ao contador
 		sys_achieve.incrementCounter(0x6C400086u/*Exchange Legacy Tiki Shop*/, 1);
@@ -15249,7 +15249,7 @@ void channel::requestExchangeItemByTPLegacyTikiShop(player& _session, packet* _p
 		_session.m_pi.m_legacy_tiki_pts -= tiki_pts;
 
 		// Att no banco de dados
-		NormalManagerDB::add(28, new CmdUpdateLegacyTikiShopPoint(_session.m_pi.uid, _session.m_pi.m_legacy_tiki_pts), channel::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(28, new CmdUpdateLegacyTikiShopPoint(_session.m_pi.uid, _session.m_pi.m_legacy_tiki_pts), channel::SQLDBResponse, this);
 
 		// Add os itens
 		auto rai = item_manager::addItem(v_item, _session, 0, 0);
@@ -15818,7 +15818,7 @@ void channel::requestPlayPapelShop(player& _session, packet *_packet) {
 				// Add +1 ao contador de item Rare Win no Papel Shop
 				sys_achieve.incrementCounter(0x6C400081u/*Rare Win*/);
 
-				NormalManagerDB::add(19, new CmdInsertPapelShopRareWinLog(_session.m_pi.uid, el), channel::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(19, new CmdInsertPapelShopRareWinLog(_session.m_pi.uid, el), channel::SQLDBResponse, this);
 			}
 		});
 

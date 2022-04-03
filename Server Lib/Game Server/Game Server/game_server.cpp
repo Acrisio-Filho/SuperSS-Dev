@@ -156,7 +156,7 @@ game_server::game_server() : server(m_player_manager, 2, 26, 8), m_player_manage
 		// SINCRONAR por que se não alguem pode pegar lixo de memória se ele ainda nao estiver inicializado
 		CmdDailyQuestInfo cmd_dqi(true);
 
-		NormalManagerDB::add(1, &cmd_dqi, game_server::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(1, &cmd_dqi, game_server::SQLDBResponse, this);
 
 		cmd_dqi.waitEvent();
 
@@ -965,7 +965,7 @@ void game_server::sendRankServer(player& _session) {
 
 		CmdServerList cmd_sl(CmdServerList::TYPE_SERVER::RANK, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_sl, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_sl, nullptr, nullptr);
 
 		cmd_sl.waitEvent();
 
@@ -1236,7 +1236,7 @@ void game_server::requestLogin(player& _session, packet *_packet) {
 		// Verifica se o server está mantle, se tiver verifica se o player tem capacidade para entrar
 		CmdPlayerInfo cmd_pi(_pi.uid, true); // Waiter
 
-		NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 		cmd_pi.waitEvent();
 
@@ -1274,7 +1274,7 @@ void game_server::requestLogin(player& _session, packet *_packet) {
 				// Bloquea todos os IP que o player logar e da error de que a area dele foi bloqueada
 
 				// Add o ip do player para a lista de ip banidos
-				NormalManagerDB::add(9, new CmdInsertBlockIP(_session.m_ip, "255.255.255.255"), game_server::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(9, new CmdInsertBlockIP(_session.m_ip, "255.255.255.255"), game_server::SQLDBResponse, this);
 
 				// Resposta
 				throw exception("[game_server::requestLogin][Log] Player[UID=" + std::to_string(pi->uid) + ", IP=" + std::string(_session.m_ip) 
@@ -1285,7 +1285,7 @@ void game_server::requestLogin(player& _session, packet *_packet) {
 				// Bloquea o MAC Address que o player logar e da error de que a area dele foi bloqueada
 
 				// Add o MAC Address do player para a lista de MAC Address banidos
-				NormalManagerDB::add(10, new CmdInsertBlockMAC(mac_address), game_server::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(10, new CmdInsertBlockMAC(mac_address), game_server::SQLDBResponse, this);
 
 				// Resposta
 				throw exception("[game_server::requestLogin][Log] Player[UID=" + std::to_string(pi->uid)
@@ -1306,7 +1306,7 @@ void game_server::requestLogin(player& _session, packet *_packet) {
 		// Verifica o Auth Key do player
 		CmdAuthKeyLoginInfo cmd_akli(pi->uid, true); // Waiter
 
-		NormalManagerDB::add(0, &cmd_akli, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_akli, nullptr, nullptr);
 
 		cmd_akli.waitEvent();
 
@@ -1351,7 +1351,7 @@ void game_server::requestLogin(player& _session, packet *_packet) {
 		// Member Info
 		CmdMemberInfo cmd_mi(pi->uid, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_mi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_mi, nullptr, nullptr);
 
 		cmd_mi.waitEvent();
 
@@ -1410,10 +1410,10 @@ void game_server::requestLogin(player& _session, packet *_packet) {
 		_session.m_is_authorized = 1u;
 
 		// Registra no Banco de dados que o player está logado no Game Server
-		NormalManagerDB::add(5, new CmdRegisterLogon(pi->uid, 0/*Logou*/), game_server::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(5, new CmdRegisterLogon(pi->uid, 0/*Logou*/), game_server::SQLDBResponse, this);
 
 		// Resgistra o Login do Player no server
-		NormalManagerDB::add(7, new CmdRegisterLogonServer(pi->uid, std::to_string(m_si.uid)), game_server::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(7, new CmdRegisterLogonServer(pi->uid, std::to_string(m_si.uid)), game_server::SQLDBResponse, this);
 
 		_smp::message_pool::getInstance().push(new message("[game_server::requestLogin][Log] Player[OID=" + std::to_string(_session.m_oid) + ", UID=" + std::to_string(pi->uid) + ", NICKNAME=" 
 				+ std::string(pi->nickname) + "] Autenticou com sucesso.", CL_FILE_LOG_AND_CONSOLE));
@@ -1547,7 +1547,7 @@ void game_server::requestChangeServer(player& _session, packet *_packet) {
 
 		CmdAuthKeyGame cmd_akg(_session.m_pi.uid, server_uid, true);	// waitable
 
-		NormalManagerDB::add(0, &cmd_akg, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_akg, nullptr, nullptr);
 
 		cmd_akg.waitEvent();
 
@@ -1558,7 +1558,7 @@ void game_server::requestChangeServer(player& _session, packet *_packet) {
 
 		CmdUpdateAuthKeyLogin cmd_uakl(_session.m_pi.uid, 1, true);	// waitable
 
-		NormalManagerDB::add(0, &cmd_uakl, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_uakl, nullptr, nullptr);
 
 		cmd_uakl.waitEvent();
 
@@ -1640,7 +1640,7 @@ void game_server::requestUCCWebKey(player& _session, packet *_packet) {
 		// Gera Web Key UCC
 		CmdGeraUCCWebKey cmd_guwk(_session.m_pi.uid, pWi->id, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_guwk, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_guwk, nullptr, nullptr);
 
 		cmd_guwk.waitEvent();
 
@@ -1757,7 +1757,7 @@ void game_server::requestUCCSystem(player& _session, packet *_packet) {
 			// UPDATE ON DB
 			CmdUpdateUCC cmd_uu(_session.m_pi.uid, it->second, si, CmdUpdateUCC::FOREVER, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_uu, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_uu, nullptr, nullptr);
 
 			cmd_uu.waitEvent();
 
@@ -1803,7 +1803,7 @@ void game_server::requestUCCSystem(player& _session, packet *_packet) {
 
 				CmdFindUCC cmd_fu(ucc_id, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_fu, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_fu, nullptr, nullptr);
 
 				cmd_fu.waitEvent();
 
@@ -1939,7 +1939,7 @@ void game_server::requestUCCSystem(player& _session, packet *_packet) {
 			// UPDATE ON DB
 			CmdUpdateUCC cmd_uu(_session.m_pi.uid, *pWi, draw_dt, CmdUpdateUCC::COPY, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_uu, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_uu, nullptr, nullptr);
 
 			cmd_uu.waitEvent();
 
@@ -2026,7 +2026,7 @@ void game_server::requestUCCSystem(player& _session, packet *_packet) {
 			// UPDATE ON DB
 			CmdUpdateUCC cmd_uu(_session.m_pi.uid, it->second, si, CmdUpdateUCC::TEMPORARY, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_uu, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_uu, nullptr, nullptr);
 
 			cmd_uu.waitEvent();
 
@@ -2235,7 +2235,7 @@ void game_server::requestChangeChatMacroUser(player& _session, packet *_packet) 
 		_session.m_pi.cmu = cmu;
 
 		// UPDATE ON DB
-		NormalManagerDB::add(3, new CmdUpdateChatMacroUser(_session.m_pi.uid, _session.m_pi.cmu), game_server::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(3, new CmdUpdateChatMacroUser(_session.m_pi.uid, _session.m_pi.cmu), game_server::SQLDBResponse, this);
 
 	}catch (exception& e) {
 
@@ -2278,7 +2278,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 			
 			CmdMemberInfo cmd_mi(uid, true);	// waitable
 
-			NormalManagerDB::add(0, &cmd_mi, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_mi, nullptr, nullptr);
 
 			cmd_mi.waitEvent();
 
@@ -2300,7 +2300,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 
 				CmdCharacterInfo cmd_ci(uid, CmdCharacterInfo::ONE, -1, true);	// waitable
 
-				NormalManagerDB::add(0, &cmd_ci, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ci, nullptr, nullptr);
 
 				cmd_ci.waitEvent();
 
@@ -2311,7 +2311,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 
 				CmdUserEquip cmd_ue(uid, true);	// waitable
 
-				NormalManagerDB::add(0, &cmd_ue, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ue, nullptr, nullptr);
 
 				cmd_ue.waitEvent();
 
@@ -2322,7 +2322,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 
 				CmdUserInfo cmd_ui(uid, true);	// waitable
 
-				NormalManagerDB::add(0, &cmd_ui, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ui, nullptr, nullptr);
 
 				cmd_ui.waitEvent();
 
@@ -2333,7 +2333,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 
 				CmdGuildInfo cmd_gi(uid, 0, true);	// waitable
 
-				NormalManagerDB::add(0, &cmd_gi, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_gi, nullptr, nullptr);
 
 				cmd_gi.waitEvent();
 
@@ -2344,7 +2344,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 
 				CmdMapStatistics cmd_ms(uid, CmdMapStatistics::TYPE_SEASON(season), CmdMapStatistics::NORMAL, CmdMapStatistics::M_NORMAL, true);	// waitable
 
-				NormalManagerDB::add(0, &cmd_ms, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ms, nullptr, nullptr);
 
 				cmd_ms.waitEvent();
 
@@ -2355,7 +2355,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 
 				cmd_ms.setType(CmdMapStatistics::ASSIST);
 
-				NormalManagerDB::add(0, &cmd_ms, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ms, nullptr, nullptr);
 
 				cmd_ms.waitEvent();
 
@@ -2367,7 +2367,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 				cmd_ms.setType(CmdMapStatistics::NORMAL);
 				cmd_ms.setModo(CmdMapStatistics::M_NATURAL);
 
-				NormalManagerDB::add(0, &cmd_ms, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ms, nullptr, nullptr);
 
 				cmd_ms.waitEvent();
 
@@ -2378,7 +2378,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 
 				cmd_ms.setType(CmdMapStatistics::ASSIST);
 
-				NormalManagerDB::add(0, &cmd_ms, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ms, nullptr, nullptr);
 
 				cmd_ms.waitEvent();
 
@@ -2390,7 +2390,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 				cmd_ms.setType(CmdMapStatistics::NORMAL);
 				cmd_ms.setModo(CmdMapStatistics::M_GRAND_PRIX);
 
-				NormalManagerDB::add(0, &cmd_ms, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ms, nullptr, nullptr);
 
 				cmd_ms.waitEvent();
 
@@ -2401,7 +2401,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 
 				cmd_ms.setType(CmdMapStatistics::ASSIST);
 
-				NormalManagerDB::add(0, &cmd_ms, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ms, nullptr, nullptr);
 
 				cmd_ms.waitEvent();
 
@@ -2412,7 +2412,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 
 				CmdTrophySpecial cmd_tei(uid, CmdTrophySpecial::TYPE_SEASON(season), CmdTrophySpecial::NORMAL, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_tei, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_tei, nullptr, nullptr);
 
 				cmd_tei.waitEvent();
 
@@ -2423,7 +2423,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 
 				CmdTrofelInfo cmd_ti(uid, CmdTrofelInfo::TYPE_SEASON(season), true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ti, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ti, nullptr, nullptr);
 
 				cmd_ti.waitEvent();
 
@@ -2434,7 +2434,7 @@ void game_server::requestPlayerInfo(player& _session, packet *_packet) {
 
 				cmd_tei.setType(CmdTrophySpecial::GRAND_PRIX);
 
-				NormalManagerDB::add(0, &cmd_tei, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_tei, nullptr, nullptr);
 
 				cmd_tei.waitEvent();
 
@@ -3190,7 +3190,7 @@ void game_server::requestTranslateSubPacket(player& _session, packet *_packet) {
 #endif // _DEBUG
 
 			// UPDATE ON DB
-			NormalManagerDB::add(4, new CmdInsertMsgOff(_session.m_pi.uid, uid, msg), game_server::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(4, new CmdInsertMsgOff(_session.m_pi.uid, uid, msg), game_server::SQLDBResponse, this);
 
 			// Log
 			_smp::message_pool::getInstance().push(new message("[game_server::requestTranslateSubPacket::MessageOff][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] mandou Message Off[" 
@@ -3277,7 +3277,7 @@ void game_server::requestSendTicker(player& _session, packet *_packet) {
 #endif // _DEBUG
 
 			// Add o Ticker para Commando DB para o Auth Server mandar para os outros serveres
-			NormalManagerDB::add(6, new CmdInsertTicker(_session.m_pi.uid, m_si.uid, msg), game_server::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(6, new CmdInsertTicker(_session.m_pi.uid, m_si.uid, msg), game_server::SQLDBResponse, this);
 
 			// Salva CP Log
 			_session.saveCPLog(cp_log);
@@ -3708,7 +3708,7 @@ void game_server::authCmdDisconnectPlayer(uint32_t _req_server_uid, uint32_t _pl
 		}else {
 
 			// Não encontrou o player no server, então desconecta no banco de dados
-			NormalManagerDB::add(5, new CmdRegisterLogon(_player_uid, 1/*Logout*/), game_server::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(5, new CmdRegisterLogon(_player_uid, 1/*Logout*/), game_server::SQLDBResponse, this);
 			
 			// Log
 			_smp::message_pool::getInstance().push(new message("[game_server::authCmdDisconnectPlayer][WARNING] Comando do Auth Server, Server[UID=" + std::to_string(_req_server_uid)
@@ -3745,7 +3745,7 @@ void game_server::authCmdNewMailArrivedMailBox(uint32_t _player_uid, uint32_t _m
 
 		/*CmdMailBoxInfo cmd_mbi(_player_uid, CmdMailBoxInfo::TYPE::NAO_LIDO, 1u/*Page*//*, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_mbi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_mbi, nullptr, nullptr);
 
 		cmd_mbi.waitEvent();
 
@@ -4287,7 +4287,7 @@ void game_server::onDisconnected(session *_session) {
 	}
 
 	// Register Player Logon ON DB, 0 Login, 1 Logout
-	NormalManagerDB::add(5, new CmdRegisterLogon(_player->m_pi.uid, 1/*Logout*/), game_server::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(5, new CmdRegisterLogon(_player->m_pi.uid, 1/*Logout*/), game_server::SQLDBResponse, this);
 
 	// Remove o Context do player se tiver no Smart Calculator
 	if (m_si.rate.smart_calculator)
@@ -4978,7 +4978,7 @@ void game_server::config_init() {
 	// Recupera Valores de rate do server do banco de dados
 	CmdRateConfigInfo cmd_rci(m_si.uid, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_rci, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_rci, nullptr, nullptr);
 
 	cmd_rci.waitEvent();
 
@@ -5009,7 +5009,7 @@ void game_server::config_init() {
 		setRateClubMastery(100u);
 
 		// Atualiza no banco de dados
-		NormalManagerDB::add(8, new CmdUpdateRateConfigInfo(m_si.uid, m_si.rate), game_server::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(8, new CmdUpdateRateConfigInfo(m_si.uid, m_si.rate), game_server::SQLDBResponse, this);
 	
 	}else {	// Conseguiu recuperar com sucesso os valores do server
 
@@ -5390,7 +5390,7 @@ void game_server::updateRateAndEvent(uint32_t _tipo, uint32_t _qntd) {
 		}
 
 		// Update no DB os server do server que foram alterados
-		NormalManagerDB::add(8, new CmdUpdateRateConfigInfo(m_si.uid, m_si.rate), game_server::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(8, new CmdUpdateRateConfigInfo(m_si.uid, m_si.rate), game_server::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[game_server::updateRateAndEvent][Log] New Rate[Tipo=" + std::to_string(_tipo) + ", QNTD="
@@ -6134,7 +6134,7 @@ void game_server::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* _
 			usleep(100000);	// Espera 100 milli segundo
 #endif
 
-			NormalManagerDB::add(1, new CmdDailyQuestInfo, game_server::SQLDBResponse, _arg);
+			snmdb::NormalManagerDB::getInstance().add(1, new CmdDailyQuestInfo, game_server::SQLDBResponse, _arg);
 
 			//m_dqi = cmd_dqi.getInfo();
 

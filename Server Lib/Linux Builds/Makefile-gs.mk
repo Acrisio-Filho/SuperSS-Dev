@@ -378,7 +378,8 @@ CFILES := \
 	../Projeto|IOCP/PANGYA_DB/cmd_chat_macro_user.cpp \
 	../Projeto|IOCP/PANGYA_DB/cmd_add_item_base.cpp \
 	../Projeto|IOCP/UTIL/random_gen.cpp \
-	../Projeto|IOCP/UTIL/md5.cpp
+	../Projeto|IOCP/UTIL/md5.cpp \
+	../Game|Server/GAME/personal_shop_manager.cpp
 
 target = $(BUILD_FOLDER)/$(subst |,\ ,$(filter %.o,$(patsubst %.cpp,%.o,${1}) $(patsubst %.c,%.o,${1})))
 target_dep = $(BUILD_FOLDER)/$(subst |,\ ,$(filter %.o.d,$(patsubst %.cpp,%.o.d,${1}) $(patsubst %.c,%.o.d,${1})))

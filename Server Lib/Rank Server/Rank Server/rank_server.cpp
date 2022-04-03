@@ -132,7 +132,7 @@ void rank_server::requestLogin(player& _session, packet *_packet) {
 
 		CmdPlayerInfo cmd_pi(uid, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 		cmd_pi.waitEvent();
 
@@ -166,7 +166,7 @@ void rank_server::requestLogin(player& _session, packet *_packet) {
 				// Bloquea todos os IP que o player logar e da error de que a area dele foi bloqueada
 
 				// Add o ip do player para a lista de ip banidos
-				NormalManagerDB::add(1, new CmdInsertBlockIP(_session.m_ip, "255.255.255.255"), rank_server::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(1, new CmdInsertBlockIP(_session.m_ip, "255.255.255.255"), rank_server::SQLDBResponse, this);
 
 				// Resposta
 				throw exception("[rank_server::requestLogin][Log] Player[UID=" + std::to_string(_session.m_pi.uid) + ", IP=" + std::string(_session.m_ip)
@@ -177,7 +177,7 @@ void rank_server::requestLogin(player& _session, packet *_packet) {
 				// Bloquea o MAC Address que o player logar e da error de que a area dele foi bloqueada
 
 				// Add o MAC Address do player para a lista de MAC Address banidos
-				//NormalManagerDB::add(2, new CmdInsertBlockMAC(mac_address), rank_server::SQLDBResponse, this);
+				//snmdb::NormalManagerDB::getInstance().add(2, new CmdInsertBlockMAC(mac_address), rank_server::SQLDBResponse, this);
 
 				// Resposta
 				throw exception("[rank_server::requestLogin][Log] Player[UID=" + std::to_string(_session.m_pi.uid)
@@ -679,7 +679,7 @@ void rank_server::onHeartBeat() {
 #endif
 
 			// Envia a requisi��o para o banco de dados
-			NormalManagerDB::add(1, new CmdUpdateRankRegistry(), rank_server::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateRankRegistry(), rank_server::SQLDBResponse, this);
 		}
 
 	}catch (exception& e) {
@@ -785,7 +785,7 @@ void rank_server::config_init() {
 	// Carrega a configura��o do Rank
 	CmdRankConfigInfo cmd_rci(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_rci, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_rci, nullptr, nullptr);
 
 	cmd_rci.waitEvent();
 

@@ -387,7 +387,7 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 				return;
 			}*/
 
-			///NormalManagerDB::add(1, new CmdAuthKeyLoginInfo(pi->uid), LoginManager::SQLDBResponse, task);
+			///snmdb::NormalManagerDB::getInstance().add(1, new CmdAuthKeyLoginInfo(pi->uid), LoginManager::SQLDBResponse, task);
 
 			break;
 		}
@@ -454,11 +454,11 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 			task->getSession().m_is_authorized = 1u;
 
 			// Registra no Banco de dados que o player está logado no Game Server
-			NormalManagerDB::add(40, new CmdRegisterLogon(pi->uid, 0/*Logou*//*), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(40, new CmdRegisterLogon(pi->uid, 0/*Logou*//*), LoginManager::SQLDBResponse, task);
 
 			// Resgistra o Login do Player no server
 			if (sgs::gs != nullptr)
-				NormalManagerDB::add(41, new CmdRegisterLogonServer(pi->uid, std::to_string(sgs::gs->getInfo().uid)), LoginManager::SQLDBResponse, task);
+				snmdb::NormalManagerDB::getInstance().add(41, new CmdRegisterLogonServer(pi->uid, std::to_string(sgs::gs->getInfo().uid)), LoginManager::SQLDBResponse, task);
 
 			_smp::message_pool::getInstance().push(new message("[LoginManager::SQLDBResponse][Log] Player[OID=" + std::to_string(task->getSession().m_oid) + ", UID=" + std::to_string(pi->uid) + ", NICKNAME="
 					+ std::string(pi->nickname) + "] Autenticou com sucesso.", CL_FILE_LOG_AND_CONSOLE));
@@ -467,7 +467,7 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 					_smp::message_pool::getInstance().push(new message("[LoginManager::SQLDBResponse][Log] Enviando os pacotes principais do jogo para o player: " + std::to_string(pi->uid), CL_FILE_LOG_AND_CONSOLE));
 #endif
 			*/
-			//NormalManagerDB::add(2, new CmdMemberInfo(pi->uid), LoginManager::SQLDBResponse, task);
+			//snmdb::NormalManagerDB::getInstance().add(2, new CmdMemberInfo(pi->uid), LoginManager::SQLDBResponse, task);
 
 			// Troquei para o 2 por que lá tem uma parte critica que pode enviar login fail
 
@@ -509,7 +509,7 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 			}*/
 
 			// O Member info vai ser no  game server,aqui vai ser o user equip
-			//NormalManagerDB::add(3, new CmdUserEquip(pi->uid), LoginManager::SQLDBResponse, task);
+			//snmdb::NormalManagerDB::getInstance().add(3, new CmdUserEquip(pi->uid), LoginManager::SQLDBResponse, task);
 
 			auto pi = &task->getSession().m_pi;
 
@@ -517,13 +517,13 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 			//pi->ue = pangya_db::getUserEquip(pi->uid);
 
 			// São os itens equipáveis que carrega depois de carregar o UserEquip, chame eles primeiro que o restante
-			/*NormalManagerDB::add(12, new CmdCharacterInfo(task->getSession().m_pi.uid, CmdCharacterInfo::ALL), LoginManager::SQLDBResponse, task);
+			/*snmdb::NormalManagerDB::getInstance().add(12, new CmdCharacterInfo(task->getSession().m_pi.uid, CmdCharacterInfo::ALL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(13, new CmdCaddieInfo(task->getSession().m_pi.uid, CmdCaddieInfo::ALL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(13, new CmdCaddieInfo(task->getSession().m_pi.uid, CmdCaddieInfo::ALL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(14, new CmdMascotInfo(task->getSession().m_pi.uid, CmdMascotInfo::ALL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(14, new CmdMascotInfo(task->getSession().m_pi.uid, CmdMascotInfo::ALL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(15, new CmdWarehouseItem(task->getSession().m_pi.uid, CmdWarehouseItem::ALL), LoginManager::SQLDBResponse, task);*/
+			snmdb::NormalManagerDB::getInstance().add(15, new CmdWarehouseItem(task->getSession().m_pi.uid, CmdWarehouseItem::ALL), LoginManager::SQLDBResponse, task);*/
 			// fim de chamar os itens equipáveis
 
 			packet p;
@@ -534,35 +534,35 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 			packet_func::pacote1A9(p, &task->getSession(), ttl/*milliseconds*/);
 			packet_func::session_send(p, &task->getSession(), 0); // Tempo para enviar um pacote, ant Bot
 
-			NormalManagerDB::add(5, new CmdTutorialInfo(pi->uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(5, new CmdTutorialInfo(pi->uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(6, new CmdCouponGacha(pi->uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(6, new CmdCouponGacha(pi->uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(7, new CmdUserInfo(pi->uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(7, new CmdUserInfo(pi->uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(8, new CmdGuildInfo(pi->uid, 0), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(8, new CmdGuildInfo(pi->uid, 0), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(9, new CmdDolfiniLockerInfo(pi->uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(9, new CmdDolfiniLockerInfo(pi->uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(10, new CmdCookie(pi->uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(10, new CmdCookie(pi->uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(11, new CmdTrofelInfo(pi->uid, CmdTrofelInfo::CURRENT), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(11, new CmdTrofelInfo(pi->uid, CmdTrofelInfo::CURRENT), LoginManager::SQLDBResponse, task);
 
 			// Esses que estavam aqui coloquei no resposta do CmdUserEquip, por que eles precisam da resposta do User Equip
 
-			NormalManagerDB::add(16, new CmdMyRoomConfig(pi->uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(16, new CmdMyRoomConfig(pi->uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(18, new CmdCheckAchievement(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(18, new CmdCheckAchievement(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(20, new CmdDailyQuestInfoUser(pi->uid, CmdDailyQuestInfoUser::GET), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(20, new CmdDailyQuestInfoUser(pi->uid, CmdDailyQuestInfoUser::GET), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(21, new CmdCardInfo(pi->uid, CmdCardInfo::ALL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(21, new CmdCardInfo(pi->uid, CmdCardInfo::ALL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(22, new CmdCardEquipInfo(pi->uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(22, new CmdCardEquipInfo(pi->uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(23, new CmdTrophySpecial(pi->uid, CmdTrophySpecial::CURRENT, CmdTrophySpecial::NORMAL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(23, new CmdTrophySpecial(pi->uid, CmdTrophySpecial::CURRENT, CmdTrophySpecial::NORMAL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(24, new CmdTrophySpecial(pi->uid, CmdTrophySpecial::CURRENT, CmdTrophySpecial::GRAND_PRIX), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(24, new CmdTrophySpecial(pi->uid, CmdTrophySpecial::CURRENT, CmdTrophySpecial::GRAND_PRIX), LoginManager::SQLDBResponse, task);
 
 			break;
 		}
@@ -572,13 +572,13 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 			//pi->ue = pangya_db::getUserEquip(pi->uid);
 
 			// Colocar no Member Info - User Info esses aqui para chamar no case 2:
-			/*NormalManagerDB::add(12, new CmdCharacterInfo(task->getSession().m_pi.uid, CmdCharacterInfo::ALL), LoginManager::SQLDBResponse, task);
+			/*snmdb::NormalManagerDB::getInstance().add(12, new CmdCharacterInfo(task->getSession().m_pi.uid, CmdCharacterInfo::ALL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(13, new CmdCaddieInfo(task->getSession().m_pi.uid, CmdCaddieInfo::ALL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(13, new CmdCaddieInfo(task->getSession().m_pi.uid, CmdCaddieInfo::ALL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(14, new CmdMascotInfo(task->getSession().m_pi.uid, CmdMascotInfo::ALL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(14, new CmdMascotInfo(task->getSession().m_pi.uid, CmdMascotInfo::ALL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(15, new CmdWarehouseItem(task->getSession().m_pi.uid, CmdWarehouseItem::ALL), LoginManager::SQLDBResponse, task);*/
+			snmdb::NormalManagerDB::getInstance().add(15, new CmdWarehouseItem(task->getSession().m_pi.uid, CmdWarehouseItem::ALL), LoginManager::SQLDBResponse, task);*/
 
 			break;
 		}
@@ -633,21 +633,21 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 
 			pi->ui = reinterpret_cast<CmdUserInfo*>(&_pangya_db)->getInfo();	// cmd_ui.getInfo();
 
-			NormalManagerDB::add(26, new CmdMapStatistics(task->getSession().m_pi.uid, CmdMapStatistics::CURRENT, CmdMapStatistics::NORMAL, CmdMapStatistics::M_NORMAL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(26, new CmdMapStatistics(task->getSession().m_pi.uid, CmdMapStatistics::CURRENT, CmdMapStatistics::NORMAL, CmdMapStatistics::M_NORMAL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(27, new CmdMapStatistics(task->getSession().m_pi.uid, CmdMapStatistics::CURRENT, CmdMapStatistics::ASSIST, CmdMapStatistics::M_NORMAL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(27, new CmdMapStatistics(task->getSession().m_pi.uid, CmdMapStatistics::CURRENT, CmdMapStatistics::ASSIST, CmdMapStatistics::M_NORMAL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(28, new CmdMapStatistics(task->getSession().m_pi.uid, CmdMapStatistics::CURRENT, CmdMapStatistics::NORMAL, CmdMapStatistics::M_NATURAL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(28, new CmdMapStatistics(task->getSession().m_pi.uid, CmdMapStatistics::CURRENT, CmdMapStatistics::NORMAL, CmdMapStatistics::M_NATURAL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(29, new CmdMapStatistics(task->getSession().m_pi.uid, CmdMapStatistics::CURRENT, CmdMapStatistics::ASSIST, CmdMapStatistics::M_NATURAL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(29, new CmdMapStatistics(task->getSession().m_pi.uid, CmdMapStatistics::CURRENT, CmdMapStatistics::ASSIST, CmdMapStatistics::M_NATURAL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(30, new CmdMapStatistics(task->getSession().m_pi.uid, CmdMapStatistics::CURRENT, CmdMapStatistics::NORMAL, CmdMapStatistics::M_GRAND_PRIX), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(30, new CmdMapStatistics(task->getSession().m_pi.uid, CmdMapStatistics::CURRENT, CmdMapStatistics::NORMAL, CmdMapStatistics::M_GRAND_PRIX), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(31, new CmdMapStatistics(task->getSession().m_pi.uid, CmdMapStatistics::CURRENT, CmdMapStatistics::ASSIST, CmdMapStatistics::M_GRAND_PRIX), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(31, new CmdMapStatistics(task->getSession().m_pi.uid, CmdMapStatistics::CURRENT, CmdMapStatistics::ASSIST, CmdMapStatistics::M_GRAND_PRIX), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(36, new CmdChatMacroUser(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(36, new CmdChatMacroUser(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(38, new CmdFriendInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(38, new CmdFriendInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
 
 			break;
 		}
@@ -665,24 +665,24 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 		{
 			task->getSession().m_pi.cookie = reinterpret_cast<CmdCookie*>(&_pangya_db)->getCookie();	// cmd_cookie.getCookie();
 
-			//NormalManagerDB::add(32, new CmdMailBoxInfo(task->getSession().m_pi.uid, CmdMailBoxInfo::NAO_LIDO), LoginManager::SQLDBResponse, task);
-			NormalManagerDB::add(32, new CmdMailBoxInfo2(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
+			//snmdb::NormalManagerDB::getInstance().add(32, new CmdMailBoxInfo(task->getSession().m_pi.uid, CmdMailBoxInfo::NAO_LIDO), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(32, new CmdMailBoxInfo2(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(33, new CmdCaddieInfo(task->getSession().m_pi.uid, CmdCaddieInfo::FERIAS), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(33, new CmdCaddieInfo(task->getSession().m_pi.uid, CmdCaddieInfo::FERIAS), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(34, new CmdMsgOffInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(34, new CmdMsgOffInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(35, new CmdItemBuffInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(35, new CmdItemBuffInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(37, new CmdLastPlayerGameInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(37, new CmdLastPlayerGameInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(39, new CmdAttendanceRewardInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(39, new CmdAttendanceRewardInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(42, new CmdGrandPrixClear(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(42, new CmdGrandPrixClear(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(43, new CmdGrandZodiacPontos(task->getSession().m_pi.uid, CmdGrandZodiacPontos::eCMD_GRAND_ZODIAC_TYPE::CGZT_GET), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(43, new CmdGrandZodiacPontos(task->getSession().m_pi.uid, CmdGrandZodiacPontos::eCMD_GRAND_ZODIAC_TYPE::CGZT_GET), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(44, new CmdLegacyTikiShopInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(44, new CmdLegacyTikiShopInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
 
 			break;
 		}
@@ -690,13 +690,13 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 		{
 			task->getSession().m_pi.ti_current_season = reinterpret_cast<CmdTrofelInfo*>(&_pangya_db)->getInfo();	// cmd_ti.getInfo();
 
-			NormalManagerDB::add(12, new CmdCharacterInfo(task->getSession().m_pi.uid, CmdCharacterInfo::ALL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(12, new CmdCharacterInfo(task->getSession().m_pi.uid, CmdCharacterInfo::ALL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(13, new CmdCaddieInfo(task->getSession().m_pi.uid, CmdCaddieInfo::ALL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(13, new CmdCaddieInfo(task->getSession().m_pi.uid, CmdCaddieInfo::ALL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(14, new CmdMascotInfo(task->getSession().m_pi.uid, CmdMascotInfo::ALL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(14, new CmdMascotInfo(task->getSession().m_pi.uid, CmdMascotInfo::ALL), LoginManager::SQLDBResponse, task);
 
-			NormalManagerDB::add(15, new CmdWarehouseItem(task->getSession().m_pi.uid, CmdWarehouseItem::ALL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(15, new CmdWarehouseItem(task->getSession().m_pi.uid, CmdWarehouseItem::ALL), LoginManager::SQLDBResponse, task);
 
 			break;
 		}
@@ -971,7 +971,7 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 			}
 
 			// Premium Ticket Tem que ser chamado depois que o Warehouse Item ja foi carregado
-			NormalManagerDB::add(4, new CmdPremiumTicketInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(4, new CmdPremiumTicketInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
 
 			break;
 		}
@@ -980,7 +980,7 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 
 			task->getSession().m_pi.mrc = reinterpret_cast<CmdMyRoomConfig*>(&_pangya_db)->getMyRoomConfig();	// cmd_mrc.getMyRoomConfig();
 
-			NormalManagerDB::add(17, new CmdMyRoomItem(task->getSession().m_pi.uid, CmdMyRoomItem::ALL), LoginManager::SQLDBResponse, task);
+			snmdb::NormalManagerDB::getInstance().add(17, new CmdMyRoomItem(task->getSession().m_pi.uid, CmdMyRoomItem::ALL), LoginManager::SQLDBResponse, task);
 			break;
 		}
 		case 17:	// MyRoom Item Info
@@ -1008,7 +1008,7 @@ void LoginManager::SQLDBResponse(uint32_t _msg_id, pangya_db& _pangya_db, void* 
 
 			}else {
 
-				NormalManagerDB::add(19, new CmdAchievementInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
+				snmdb::NormalManagerDB::getInstance().add(19, new CmdAchievementInfo(task->getSession().m_pi.uid), LoginManager::SQLDBResponse, task);
 			}
 			break;
 		}

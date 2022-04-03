@@ -103,7 +103,7 @@ void AttendanceRewardSystem::initialize() {
 	// Carrega os Itens do Attendance Reward
 	CmdAttendanceRewardItemInfo cmd_aric(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_aric, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_aric, nullptr, nullptr);
 
 	cmd_aric.waitEvent();
 
@@ -314,7 +314,7 @@ void AttendanceRewardSystem::requestCheckAttendance(player& _session, packet *_p
 		_session.m_pi.ari.after.clear();
 
 		// Atualiza no banco de dados
-		NormalManagerDB::add(1, new CmdUpdateAttendanceReward(_session.m_pi.uid, _session.m_pi.ari), AttendanceRewardSystem::SQLDBResponse, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateAttendanceReward(_session.m_pi.uid, _session.m_pi.ari), AttendanceRewardSystem::SQLDBResponse, nullptr);
 
 	}else
 		_session.m_pi.ari.login = 1u;	// Ainda n�o passou 1 dia desde que ele logou no pangya
@@ -396,7 +396,7 @@ void AttendanceRewardSystem::requestUpdateCountLogin(player& _session, packet *_
 	_session.m_pi.ari.after.qntd = reward_item->qntd;
 
 	// Atualiza no Banco de dados
-	NormalManagerDB::add(1, new CmdUpdateAttendanceReward(_session.m_pi.uid, _session.m_pi.ari), AttendanceRewardSystem::SQLDBResponse, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateAttendanceReward(_session.m_pi.uid, _session.m_pi.ari), AttendanceRewardSystem::SQLDBResponse, nullptr);
 
 	// D� 3 Grand Prix Ticket, por que � a primeira vez que o player loga no dia
 	sendGrandPrixTicket(_session);

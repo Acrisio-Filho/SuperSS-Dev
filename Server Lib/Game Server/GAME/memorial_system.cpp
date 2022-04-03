@@ -173,7 +173,7 @@ void MemorialSystem::initialize() {
 	// Add os Itens Padr�es, para quando n�o ganha o rare item
 	CmdMemorialNormalItemInfo cmd_mnii(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_mnii, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_mnii, nullptr, nullptr);
 
 	cmd_mnii.waitEvent();
 
@@ -185,7 +185,7 @@ void MemorialSystem::initialize() {
 	// Levels
 	CmdMemorialLevelInfo cmd_mli(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_mli, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_mli, nullptr, nullptr);
 
 	cmd_mli.waitEvent();
 

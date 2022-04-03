@@ -120,7 +120,7 @@ void CubeCoinSystem::initialize() {
 
 	CmdCoinCubeInfo cmd_cci(true); // Waiter
 
-	NormalManagerDB::add(0, &cmd_cci, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_cci, nullptr, nullptr);
 
 	cmd_cci.waitEvent();
 
@@ -319,7 +319,7 @@ void CubeCoinSystem::CourseCtx::initialize() {
 
 	CmdCoinCubeLocationInfo cmd_ccli((unsigned char)course_id, true); // Waiter
 
-	NormalManagerDB::add(0, &cmd_ccli, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_ccli, nullptr, nullptr);
 
 	cmd_ccli.waitEvent();
 

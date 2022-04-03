@@ -240,7 +240,7 @@ void player::addCaddieExp(uint32_t _exp) {
 		}
 
 		// UPDATE ON DB
-		NormalManagerDB::add(1, new CmdUpdateCaddieInfo(m_pi.uid, *m_pi.ei.cad_info), player::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateCaddieInfo(m_pi.uid, *m_pi.ei.cad_info), player::SQLDBResponse, this);
 
 		// LOG
 		_smp::message_pool::getInstance().push(new message("[player::addCaddieExp][Log] player[UID=" + std::to_string(m_pi.uid) + "] add Exp para o Caddie[TYPEID=" 
@@ -284,7 +284,7 @@ void player::addMascotExp(uint32_t _exp) {
 		}
 
 		// UPDATE ON DB
-		NormalManagerDB::add(2, new CmdUpdateMascotInfo(m_pi.uid, *m_pi.ei.mascot_info), player::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateMascotInfo(m_pi.uid, *m_pi.ei.mascot_info), player::SQLDBResponse, this);
 
 		// LOG
 		_smp::message_pool::getInstance().push(new message("[player::addMascotExp][Log] player[UID=" + std::to_string(m_pi.uid) + "] add Exp para o Mascot[TYPEID="
@@ -308,7 +308,7 @@ void player::addExp(uint32_t _uid, uint32_t _exp) {
 
 		CmdPlayerInfo cmd_pi(_uid, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 		cmd_pi.waitEvent();
 
@@ -485,7 +485,7 @@ void player::saveCPLog(CPLog& _cp_log) {
 
 			CmdInsertCPLog cmd_icpl(m_pi.uid, _cp_log, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_icpl, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_icpl, nullptr, nullptr);
 
 			cmd_icpl.waitEvent();
 
@@ -501,7 +501,7 @@ void player::saveCPLog(CPLog& _cp_log) {
 
 				// Tem item(ns), salva o log do(s) item(ns)
 				for (auto& el : _cp_log.getItens())
-					NormalManagerDB::add(3, new CmdInsertCPLogItem(m_pi.uid/*Para Log, não usa no Proc do DB*/, log_id, el), player::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(3, new CmdInsertCPLogItem(m_pi.uid/*Para Log, não usa no Proc do DB*/, log_id, el), player::SQLDBResponse, this);
 			}
 		}
 	
@@ -526,7 +526,7 @@ void player::saveCPLog(uint32_t _uid, CPLog& _cp_log) {
 
 			CmdInsertCPLog cmd_icpl(_uid, _cp_log, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_icpl, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_icpl, nullptr, nullptr);
 
 			cmd_icpl.waitEvent();
 
@@ -542,7 +542,7 @@ void player::saveCPLog(uint32_t _uid, CPLog& _cp_log) {
 
 				// Tem item(ns), salva o log do(s) item(ns)
 				for (auto& el : _cp_log.getItens())
-					NormalManagerDB::add(3, new CmdInsertCPLogItem(_uid/*Para Log, não usa no Proc do DB*/, log_id, el), player::SQLDBResponse, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(3, new CmdInsertCPLogItem(_uid/*Para Log, não usa no Proc do DB*/, log_id, el), player::SQLDBResponse, nullptr);
 			}
 		}
 	
@@ -957,7 +957,7 @@ void player::checkCharacterAllItemEquiped(CharacterInfo& ci) {
 
 	// Atualiza os parts equipados do player no banco de dados, que tinha parts errados
 	if (ret)
-		NormalManagerDB::add(5, new CmdUpdateCharacterAllPartEquiped(m_pi.uid, ci), player::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(5, new CmdUpdateCharacterAllPartEquiped(m_pi.uid, ci), player::SQLDBResponse, this);
 }
 
 bool player::checkSkinEquiped(UserEquip& _ue) {
@@ -1609,28 +1609,28 @@ bool player::checkItemEquiped(UserEquip& _ue) {
 void player::checkAllItemEquiped(UserEquip& _ue) {
 
 	if (checkSkinEquiped(_ue))
-		NormalManagerDB::add(0, new CmdUpdateSkinEquiped(m_pi.uid, _ue), player::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateSkinEquiped(m_pi.uid, _ue), player::SQLDBResponse, this);
 
 	if (checkPosterEquiped(_ue))
-		NormalManagerDB::add(0, new CmdUpdatePosterEquiped(m_pi.uid, _ue), player::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdatePosterEquiped(m_pi.uid, _ue), player::SQLDBResponse, this);
 
 	if (checkCharacterEquiped(_ue))
-		NormalManagerDB::add(0, new CmdUpdateCharacterEquiped(m_pi.uid, _ue.character_id), player::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterEquiped(m_pi.uid, _ue.character_id), player::SQLDBResponse, this);
 
 	if (checkCaddieEquiped(_ue))
-		NormalManagerDB::add(0, new CmdUpdateCaddieEquiped(m_pi.uid, _ue.caddie_id), player::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCaddieEquiped(m_pi.uid, _ue.caddie_id), player::SQLDBResponse, this);
 
 	if (checkMascotEquiped(_ue))
-		NormalManagerDB::add(0, new CmdUpdateMascotEquiped(m_pi.uid, _ue.mascot_id), player::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateMascotEquiped(m_pi.uid, _ue.mascot_id), player::SQLDBResponse, this);
 
 	if (checkItemEquiped(_ue))
-		NormalManagerDB::add(0, new CmdUpdateItemSlot(m_pi.uid, (uint32_t*)_ue.item_slot), player::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateItemSlot(m_pi.uid, (uint32_t*)_ue.item_slot), player::SQLDBResponse, this);
 
 	if (checkClubSetEquiped(_ue))
-		NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(m_pi.uid, _ue.clubset_id), player::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(m_pi.uid, _ue.clubset_id), player::SQLDBResponse, this);
 
 	if (checkBallEquiped(_ue))
-		NormalManagerDB::add(0, new CmdUpdateBallEquiped(m_pi.uid, _ue.ball_typeid), player::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(m_pi.uid, _ue.ball_typeid), player::SQLDBResponse, this);
 }
 
 void player::equipDefaultCharacter(UserEquip& _ue) {
@@ -1754,7 +1754,7 @@ void player::equipDefaultClubSet(UserEquip& _ue) {
 					m_pi.ue.clubset_id = pWi->id;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(m_pi.uid, item_id), player::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(m_pi.uid, item_id), player::SQLDBResponse, this);
 
 				}else
 					throw exception("[player::equipDefaultClubSet][Log][WARNING] player[UID=" + std::to_string(m_pi.uid)
@@ -1835,7 +1835,7 @@ void player::equipDefaultBall(UserEquip& _ue) {
 					m_pi.ue.ball_typeid = pWi->_typeid;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateBallEquiped(m_pi.uid, item_id), player::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(m_pi.uid, item_id), player::SQLDBResponse, this);
 
 				}else
 					throw exception("[player::equipDefaultBall][Log][WARNING] player[UID=" + std::to_string(m_pi.uid) 
@@ -1883,7 +1883,7 @@ void player::equipDefaultBallPremiumUser(UserEquip& _ue) {
 
 		if (item._typeid != 0u)
 			// Update ON DB
-			NormalManagerDB::add(0, new CmdUpdateBallEquiped(m_pi.uid, item._typeid), player::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(m_pi.uid, item._typeid), player::SQLDBResponse, this);
 		else
 			_smp::message_pool::getInstance().push(new message("[player::equipDefaultBallPremiumUser][ERROR][WARNING] player[UID=" + std::to_string(m_pi.uid)
 					+ "] tentou trocar a Ball[TYPEID=" + std::to_string(tmp_typeid)

@@ -14,6 +14,7 @@
 #include <errno.h>
 #endif
 
+#include <memory.h>
 #include <cstdlib>
 #include <string>
 #include <sstream>
@@ -22,6 +23,36 @@
 
 #include "exception.h"
 #include "message_pool.h"
+
+#if defined(_WIN32)
+#define STRCPY_TO_MEMORY_FIXED_SIZE(_memory, _size, _str) \
+{ \
+	if ((_size) > 0 && (_str) != nullptr) { \
+\
+		if ((_str)[0] == '\0') { \
+			(_memory)[0] = '\0'; \
+		}else { \
+			int32_t len = (int32_t)strlen((_str)); \
+			len = (len > (_size) ? _size : len); \
+			memcpy_s((_memory), (_size), (_str), len); \
+		} \
+	} \
+}
+#elif defined(__linux__)
+#define STRCPY_TO_MEMORY_FIXED_SIZE(_memory, _size, _str) \
+{ \
+	if ((_size) > 0 && (_str) != nullptr) { \
+\
+		if ((_str)[0] == '\0') { \
+			(_memory)[0] = '\0'; \
+		}else { \
+			int32_t len = (int32_t)strlen((_str)); \
+			len = (len > (_size) ? _size : len); \
+			memcpy((_memory), (_str), len); \
+		} \
+	} \
+}
+#endif
 
 namespace stdA {
     

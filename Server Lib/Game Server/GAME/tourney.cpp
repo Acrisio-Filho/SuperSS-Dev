@@ -928,7 +928,7 @@ void Tourney::requestSaveTicketReport() {
 	// Adiciona o Ticket Report do Tourney
 	CmdInsertTicketReport cmd_itr(m_ri.trofel, RoomInfo::TIPO::TOURNEY, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_itr, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_itr, nullptr, nullptr);
 
 	cmd_itr.waitEvent();
 
@@ -956,7 +956,7 @@ void Tourney::requestSaveTicketReport() {
 		trd.trofel = el.second->trofel;	// Rank, Ouro, Prata e Bronze
 		trd.finish_time = el.second->time_finish;
 
-		NormalManagerDB::add(1, new CmdInsertTicketReportData(m_tri.id, trd), Tourney::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(1, new CmdInsertTicketReportData(m_tri.id, trd), Tourney::SQLDBResponse, this);
 
 		m_tri.v_dados.push_back(trd);
 	}

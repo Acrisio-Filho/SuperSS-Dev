@@ -126,7 +126,7 @@ inline int32_t MailBoxManager::_sendMessage(uint32_t _from_uid, uint32_t _to_uid
 	// cmd coloca msg no gift table
 	CmdAddMsgMail cmd_amm(_from_uid, _to_uid, _msg, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_amm, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_amm, nullptr, nullptr);
 
 	cmd_amm.waitEvent();
 
@@ -172,7 +172,7 @@ inline void MailBoxManager::putItemInMail(uint32_t _from_uid, uint32_t _to_uid, 
 	// Cmd add item
 	CmdPutItemMailBox cmd_pimb(_from_uid, _to_uid, _mail_id, _item, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_pimb, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_pimb, nullptr, nullptr);
 
 	cmd_pimb.waitEvent();
 
@@ -222,7 +222,7 @@ inline void MailBoxManager::putItemInMail(uint32_t _from_uid, uint32_t _to_uid, 
 	// Cmd add item
 	CmdPutItemMailBox cmd_pimb(_from_uid, _to_uid, _mail_id, _item, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_pimb, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_pimb, nullptr, nullptr);
 
 	cmd_pimb.waitEvent();
 
@@ -258,7 +258,7 @@ inline void MailBoxManager::putCommandNewMail(uint32_t _to_uid, int32_t _mail_id
 	
 	ci.target = 1;	// Todos os game server
 
-	NormalManagerDB::add(1, new CmdInsertCommand(ci), MailBoxManager::SQLDBResponse, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(1, new CmdInsertCommand(ci), MailBoxManager::SQLDBResponse, nullptr);
 
 }
 

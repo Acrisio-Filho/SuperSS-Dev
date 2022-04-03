@@ -10,37 +10,80 @@
 #include <vector>
 
 #include "../SOCKET/session.h"
+#include "../THREAD POOL/thread.h"
+
+#include "../TYPE/singleton.h"
 
 #define NUM_DB_THREAD   26ul
 
 namespace stdA {
     class NormalManagerDB {
+		public:
+			struct DownEvent {
+				public:
+#if defined(_WIN32)
+					typedef LONG _MY_LONG;
+#elif defined(__linux__)
+					typedef int32_t _MY_LONG;
+#endif
+				public:
+					DownEvent();
+
+					void set(_MY_LONG _value = 0);
+					bool isLive();
+
+				protected:
+					_MY_LONG volatile m_continue;
+			};
+
         public:
             NormalManagerDB();
             ~NormalManagerDB();
 
-            static void create(uint32_t _db_instance_num = NUM_DB_THREAD);
-			static void destroy();
+            void create(uint32_t _db_instance_num = NUM_DB_THREAD);
 
-			static void checkIsDeadAndRevive();
+			void init();
+			void destroy();
 
-			static int add(NormalDB::msg_t* _msg);
-			static int add(uint32_t _id, pangya_db *_pangya_db, callback_response _callback_response, void* _arg);
+			void checkIsDeadAndRevive();
+
+			int add(NormalDB::msg_t* _msg);
+			int add(uint32_t _id, pangya_db *_pangya_db, callback_response _callback_response, void* _arg);
+
+			void freeAllWaiting(std::string _msg);
 
         // Methods que o normal db faz para o server e o channel
         public:
-            static void insertLoginLog(session& _session, NormalDB::msg_t* _msg);
+            void insertLoginLog(session& _session, NormalDB::msg_t* _msg);
+
+		protected:
+#if defined(_WIN32)
+			static DWORD CALLBACK _Revive(LPVOID lpParameter);
+
+			DWORD Revive();
+#elif defined(__linux__)
+			static void* _Revive(void* lpParameter);
+
+			void* Revive();
+#endif
 
 		private:
-			inline static void checkDBInstanceNumAndFix();
+			inline void checkDBInstanceNumAndFix();
 
         protected:
-            static std::vector< NormalDB* > m_dbs;
+            std::vector< NormalDB* > m_dbs;
 
-            static bool m_state;
+            bool m_state;
 
-			static uint32_t m_db_instance_num;
+			uint32_t m_db_instance_num;
+
+            thread *m_pRevive;
+			DownEvent m_continue_revive;
     };
+
+	namespace snmdb {
+		typedef Singleton< NormalManagerDB > NormalManagerDB;
+	};
 }
 
 #endif // !_STDA_NORMAL_MANAGER_DB_HPP

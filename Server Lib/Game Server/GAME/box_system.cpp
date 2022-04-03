@@ -108,7 +108,7 @@ void BoxSystem::initialize() {
 	// Carrega as box do banco de dados
 	CmdBoxInfo cmd_bi(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_bi, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_bi, nullptr, nullptr);
 
 	cmd_bi.waitEvent();
 

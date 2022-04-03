@@ -40,11 +40,9 @@ PersonalShop::PersonalShop(player& _session)
 	
 #if defined(_WIN32)
 	InitializeCriticalSection(&m_cs);
-	InitializeCriticalSection(&m_i_cs);
 #elif defined(__linux__)
 	INIT_PTHREAD_MUTEXATTR_RECURSIVE;
 	INIT_PTHREAD_MUTEX_RECURSIVE(&m_cs);
-	INIT_PTHREAD_MUTEX_RECURSIVE(&m_i_cs);
 	DESTROY_PTHREAD_MUTEXATTR_RECURSIVE;
 #endif
 }
@@ -55,62 +53,73 @@ PersonalShop::~PersonalShop() {
 
 #if defined(_WIN32)
 	DeleteCriticalSection(&m_cs);
-	DeleteCriticalSection(&m_i_cs);
 #elif defined(__linux__)
 	pthread_mutex_destroy(&m_cs);
-	pthread_mutex_destroy(&m_i_cs);
 #endif
 }
 
 void PersonalShop::destroy() {
 
-#if defined(_WIN32)
-	EnterCriticalSection(&m_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_cs);
-#endif
+	Locker _locker(*this);
 
 	if (!v_open_shop_visit.empty()) {
 		v_open_shop_visit.clear();
 		v_open_shop_visit.shrink_to_fit();
 	}
-
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_cs);
-#endif
 }
 
 std::string& PersonalShop::getName() {
+
+	Locker _locker(*this);
+
 	return m_name;
 }
 
 uint32_t PersonalShop::getVisitCount() {
+	
+	Locker _locker(*this);
+
 	return m_visit_count;
 }
 
 uint64_t PersonalShop::getPangSale() {
+
+	Locker _locker(*this);
+
 	return m_pang_sale;
 }
 
 player& PersonalShop::getOwner() {
+
+	Locker _locker(*this);
+
 	return m_owner;
 }
 
 PersonalShop::STATE PersonalShop::getState() {
+
+	Locker _locker(*this);
+
 	return m_state;
 }
 
 uint32_t PersonalShop::getCountItem() {
+
+	Locker _locker(*this);
+
 	return (uint32_t)v_item.size();
 }
 
 std::vector< player* >& PersonalShop::getClients() {
+
+	Locker _locker(*this);
+
 	return v_open_shop_visit;
 }
 
 void PersonalShop::setName(std::string& _name) {
+
+	Locker _locker(*this);
 	
 	if (_name.empty())
 		throw exception("[PersonalShop::setName][Error] _name is empty", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 1, 0));
@@ -119,30 +128,25 @@ void PersonalShop::setName(std::string& _name) {
 }
 
 void PersonalShop::setState(STATE _state) {
+
+	Locker _locker(*this);
+
 	m_state = _state;
 }
 
 void PersonalShop::clearItem() {
 
-#if defined(_WIN32)
-	EnterCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_i_cs);
-#endif
+	Locker _locker(*this);
 
 	if (!v_item.empty()) {
 		v_item.clear();
 		v_item.shrink_to_fit();
 	}
-
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_i_cs);
-#endif
 }
 
 void PersonalShop::pushItem(PersonalShopItem& _psi) {
+
+	Locker _locker(*this);
 
 	// Verifica aqui se esse item por ser colocar no shop
 
@@ -208,30 +212,14 @@ void PersonalShop::pushItem(PersonalShopItem& _psi) {
 		}
 	}
 
-#if defined(_WIN32)
-	EnterCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_i_cs);
-#endif
-
 	v_item.push_back(_psi);
-
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_i_cs);
-#endif
 }
 
 void PersonalShop::deleteItem(PersonalShopItem& _psi) {
 
-	auto item = findItemIndexById(_psi.item.id);
+	Locker _locker(*this);
 
-#if defined(_WIN32)
-	EnterCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_i_cs);
-#endif
+	auto item = findItemIndexById(_psi.item.id);
 
 	if (v_item[item].item.id == _psi.item.id)
 		v_item.erase(v_item.begin() + item);
@@ -244,12 +232,6 @@ void PersonalShop::deleteItem(PersonalShopItem& _psi) {
 		}
 	}
 
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_i_cs);
-#endif
-
 #ifdef _DEBUG
 	_smp::message_pool::getInstance().push(new message("[PersonalShop::deleteItem][Log] Delete Item[TYPEID=" + std::to_string(_psi.item._typeid) 
 			+ "] do Personal Shop[Owner UID=" + std::to_string(m_owner.m_pi.uid) + "]", CL_FILE_LOG_AND_CONSOLE));
@@ -257,6 +239,8 @@ void PersonalShop::deleteItem(PersonalShopItem& _psi) {
 }
 
 void PersonalShop::putItemOnPacket(packet& _p) {
+
+	Locker _locker(*this);
 
 	if (v_item.size() == 0)
 		throw exception("[PersonalShop::putItemOnPacket][Error] size vector item shop is zero", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 2, 0));
@@ -271,14 +255,10 @@ PersonalShopItem* PersonalShop::findItemById(int32_t _id) {
 
 	if (_id <= 0)
 		throw exception("[PersonalShop::findItemById][Error] _id[value=" + std::to_string(_id) + "] is invalid", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 3, 0));
+
+	Locker _locker(*this);
 	
 	PersonalShopItem *psi = nullptr;
-
-#if defined(_WIN32)
-	EnterCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_i_cs);
-#endif
 
 	for (auto& el : v_item) {
 		if (el.item.id == _id) {
@@ -287,24 +267,14 @@ PersonalShopItem* PersonalShop::findItemById(int32_t _id) {
 		}
 	}
 
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_i_cs);
-#endif
-
 	return psi;
 }
 
 PersonalShopItem* PersonalShop::findItemByIndex(uint32_t _index) {
 
-	PersonalShopItem *psi = nullptr;
+	Locker _locker(*this);
 
-#if defined(_WIN32)
-	EnterCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_i_cs);
-#endif
+	PersonalShopItem *psi = nullptr;
 
 	for (auto& el : v_item) {
 		if (el.index == _index) {
@@ -313,24 +283,14 @@ PersonalShopItem* PersonalShop::findItemByIndex(uint32_t _index) {
 		}
 	}
 
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_i_cs);
-#endif
-
 	return psi;
 }
 
 int32_t PersonalShop::findItemIndexById(int32_t _id) {
 
-	int32_t index = -1;
+	Locker _locker(*this);
 
-#if defined(_WIN32)
-	EnterCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_i_cs);
-#endif
+	int32_t index = -1;
 
 	for (auto i = 0u; i < v_item.size(); ++i) {
 		if (v_item[i].item.id == _id) {
@@ -339,24 +299,14 @@ int32_t PersonalShop::findItemIndexById(int32_t _id) {
 		}
 	}
 
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_i_cs);
-#endif
-
 	return index;
 }
 
 player* PersonalShop::findClientByUID(uint32_t _uid) {
 
-	player* client = nullptr;
+	Locker _locker(*this);
 
-#if defined(_WIN32)
-	EnterCriticalSection(&m_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_cs);
-#endif
+	player* client = nullptr;
 
 	for (auto& el : v_open_shop_visit) {
 		if (el->m_pi.uid == _uid) {
@@ -365,24 +315,14 @@ player* PersonalShop::findClientByUID(uint32_t _uid) {
 		}
 	}
 
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_cs);
-#endif
-
 	return client;
 }
 
 int32_t PersonalShop::findClientIndexByUID(uint32_t _uid) {
 
-	int32_t index = -1;
+	Locker _locker(*this);
 
-#if defined(_WIN32)
-	EnterCriticalSection(&m_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_cs);
-#endif
+	int32_t index = -1;
 
 	for (auto i = 0u; i < v_open_shop_visit.size(); ++i) {
 		if (v_open_shop_visit[i]->m_pi.uid == _uid) {
@@ -391,16 +331,17 @@ int32_t PersonalShop::findClientIndexByUID(uint32_t _uid) {
 		}
 	}
 
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_cs);
-#endif
-
 	return index;
 }
 
 void PersonalShop::addClient(player& _session) {
+
+	Locker _locker(*this);
+
+	if (m_state != STATE::OPEN)
+		throw exception("[PersonalShop::addClient][Error] client[UID=" + std::to_string(_session.m_pi.uid) 
+				+ "] tentou entrar no shop do player[UID=" + std::to_string(m_owner.m_pi.uid) + "], mas ele nao esta aberto no momento. Hacker ou Bug.", 
+				STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 25, 0));
 
 	auto client = findClientByUID(_session.m_pi.uid);
 
@@ -413,22 +354,10 @@ void PersonalShop::addClient(player& _session) {
 				+ "] nao pode entrar no shop por que ja chegou ao limit de clientes ao mesmo tempo no Personal Shop do player[UID=" 
 				+ std::to_string(m_owner.m_pi.uid) + "]", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 6, 0));
 
-#if defined(_WIN32)
-	EnterCriticalSection(&m_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_cs);
-#endif
-
 	v_open_shop_visit.push_back(&_session);
 
 	// Add Contador de visitas
 	m_visit_count++;
-
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_cs);
-#endif
 
 #ifdef _DEBUG
 	_smp::message_pool::getInstance().push(new message("[PersonalShop::addClient][Log] Add client[UID=" + std::to_string(_session.m_pi.uid) 
@@ -438,17 +367,13 @@ void PersonalShop::addClient(player& _session) {
 
 void PersonalShop::deleteClient(player& _session) {
 
+	Locker _locker(*this);
+
 	auto client = findClientIndexByUID(_session.m_pi.uid);
 
 	if (client == -1)
 		throw exception("[PersonalShop::deleteClient][Error] client[UID=" + std::to_string(_session.m_pi.uid) + "] nao existe no vector de clientes do Personal Shop do player[UID=" 
 				+ std::to_string(m_owner.m_pi.uid) + "]. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 5, 0));
-
-#if defined(_WIN32)
-	EnterCriticalSection(&m_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_cs);
-#endif
 
 	if (v_open_shop_visit[client]->m_pi.uid == _session.m_pi.uid)
 		v_open_shop_visit.erase(v_open_shop_visit.begin() + client);
@@ -461,19 +386,20 @@ void PersonalShop::deleteClient(player& _session) {
 		}
 	}
 
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_cs);
-#endif
-
 #ifdef _DEBUG
-	_smp::message_pool::getInstance().push(new message("[PersonalShop::addClient][Log] Delete client[UID=" + std::to_string(_session.m_pi.uid) 
+	_smp::message_pool::getInstance().push(new message("[PersonalShop::deleteClient][Log] Delete client[UID=" + std::to_string(_session.m_pi.uid) 
 			+ "] do Personal Shop do player[UID=" + std::to_string(m_owner.m_pi.uid) + "]", CL_FILE_LOG_AND_CONSOLE));
 #endif
 }
 
 void PersonalShop::buyItem(player& _session, PersonalShopItem& _psi) {
+
+	Locker _locker(*this);
+
+	if (m_state != STATE::OPEN)
+		throw exception("[PersonalShop::buyItem][Error] client[UID=" + std::to_string(_session.m_pi.uid)
+				+ "] tentou comprar no shop do player[UID=" + std::to_string(m_owner.m_pi.uid) + "], mas ele nao esta aberto no momento. Hacker ou Bug.",
+				STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 25, 0));
 	
 	if (findClientByUID(_session.m_pi.uid) == nullptr)
 		throw exception("[PersonalShop::buyItem][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou comprar item[TYPEID=" + std::to_string(_psi.item._typeid) 
@@ -514,6 +440,12 @@ void PersonalShop::buyItem(player& _session, PersonalShopItem& _psi) {
 				+ std::to_string(psi_owner->item._typeid) + ", ID=" + std::to_string(psi_owner->item.id) + "] mas ele nao tem level suficiente, no Shop[Owner UID="
 				+ std::to_string(m_owner.m_pi.uid) + "]. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 16, 0));
 
+	if (_psi.item.qntd > psi_owner->item.qntd)
+		throw exception("[PersonalShop::buyItem][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou comprar item[TYPEID="
+				+ std::to_string(psi_owner->item._typeid) + ", ID=" + std::to_string(psi_owner->item.id) + ", QNTD=" 
+				+ std::to_string(psi_owner->item.qntd) + "] mas ele quer comprar uma quantidade(" 
+				+ std::to_string(_psi.item.qntd) + ") do item maior do que esta a venda. ", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 26, 0));
+
 	// Depois o Personal Shop vai poder vender card, ent�o tem que procurar nos card tbm
 	
 	uint64_t pang = psi_owner->item.pang * _psi.item.qntd;
@@ -534,19 +466,9 @@ void PersonalShop::buyItem(player& _session, PersonalShopItem& _psi) {
 		if (psi_owner->item.qntd == _psi.item.qntd)
 			deleteItem(_psi);
 		else {
-#if defined(_WIN32)
-			EnterCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-			pthread_mutex_lock(&m_i_cs);
-#endif
 
 			psi_owner->item.qntd -= _psi.item.qntd;
 
-#if defined(_WIN32)
-			LeaveCriticalSection(&m_i_cs);
-#elif defined(__linux__)
-			pthread_mutex_unlock(&m_i_cs);
-#endif
 		}
 
 		// ATUALIZA OS PANGS DO PLAYER NO DB, CHAMNANDO AS FUN��ES QUE J� CRIEI, MAS POR HORA S� VOU MEXER NO SERVER
@@ -681,25 +603,15 @@ void PersonalShop::buyItem(player& _session, PersonalShopItem& _psi) {
 					STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 19, 0));
 }
 
-inline void PersonalShop::shop_broadcast(packet& _p, session *_s, unsigned char _debug) {
-
-	if (_s == nullptr)
-		throw exception("[PersonalShop::][Error] Session *_s is nullptr", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 20, 0));
-
-	auto& clients = v_open_shop_visit;
-
-	// Envia para o dono do Personal Shop
-	packet_func::session_send(_p, &m_owner, 1);
-
+void PersonalShop::_lock() {
 #if defined(_WIN32)
 	EnterCriticalSection(&m_cs);
 #elif defined(__linux__)
 	pthread_mutex_lock(&m_cs);
 #endif
+}
 
-	for (auto& el : clients)
-		packet_func::session_send(_p, el, _debug);
-
+void PersonalShop::_unlock() {
 #if defined(_WIN32)
 	LeaveCriticalSection(&m_cs);
 #elif defined(__linux__)
@@ -707,29 +619,42 @@ inline void PersonalShop::shop_broadcast(packet& _p, session *_s, unsigned char 
 #endif
 }
 
+inline void PersonalShop::shop_broadcast(packet& _p, session *_s, unsigned char _debug) {
+
+	if (_s == nullptr)
+		throw exception("[PersonalShop::shop_broadcast][Error] Session *_s is nullptr", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 20, 0));
+
+	Locker _locker(*this);
+
+	auto& clients = v_open_shop_visit;
+
+	// Envia para o dono do Personal Shop
+	packet_func::session_send(_p, &m_owner, 1);
+
+	for (auto& el : clients)
+		packet_func::session_send(_p, el, _debug);
+}
+
 inline void PersonalShop::shop_broadcast(std::vector< packet* > _v_p, session *_s, unsigned char _debug) {
 
 	if (_s == nullptr)
-		throw exception("[PersonalShop::][Error] Session *_s is nullptr", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 20, 0));
+		throw exception("[PersonalShop::shop_broadcast][Error] Session *_s is nullptr", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 20, 0));
 
+	Locker _locker(*this);
 
 	auto& clients = v_open_shop_visit;
 
 	// Envia para o dono do Personal Shop
 	packet_func::session_send(_v_p, &m_owner, 1);
 
-#if defined(_WIN32)
-	EnterCriticalSection(&m_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_cs);
-#endif
-
 	for (auto& el : clients)
 		packet_func::session_send(_v_p, el, _debug);
+}
 
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_cs);
-#endif
+PersonalShop::Locker::Locker(PersonalShop& _shop) : m_shop(_shop) {
+	m_shop._lock();
+}
+
+PersonalShop::Locker::~Locker() {
+	m_shop._unlock();
 }

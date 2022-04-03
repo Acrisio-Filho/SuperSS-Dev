@@ -576,8 +576,8 @@ void auth_server::requestAuthenticPlayer(player& _session, packet *_packet) {
 #endif
 
 		CmdAuthServerKey cmd_ask(_session.m_pi.uid, true);	// Waiter
-
-		NormalManagerDB::add(0, &cmd_ask, nullptr, nullptr);
+		
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_ask, nullptr, nullptr);
 
 		cmd_ask.waitEvent();
 
@@ -594,7 +594,7 @@ void auth_server::requestAuthenticPlayer(player& _session, packet *_packet) {
 		ask.valid = 0;	// J� usou a chave atualiza no banco de dados
 
 		// Update Auth Server Key of Server
-		NormalManagerDB::add(2, new CmdUpdateAuthServerKey(ask), auth_server::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateAuthServerKey(ask), auth_server::SQLDBResponse, this);
 
 		// Logou com sucesso [Por Hora vou deixar assim]
 		_session.m_is_authorized = 1u;	// Autorizado a ficar connectado, por bastante tempo
@@ -671,7 +671,7 @@ void auth_server::onHeartBeat() {
 		// Check Commands
 		CmdCommandInfo cmd_ci(true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_ci, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_ci, nullptr, nullptr);
 
 		cmd_ci.waitEvent();
 
@@ -681,49 +681,43 @@ void auth_server::onHeartBeat() {
 		translateCmd(cmd_ci.getInfo());
 
 		// Guild Ranking Update
-		try {
 
-			// Verifica se j� pegou a hora do Guild Ranking se n�o pega no banco de dados
-			if (isEmpty(m_guild_ranking_time)) {
+		// Verifica se já pegou a hora do Guild Ranking se não pega no banco de dados
+		if (isEmpty(m_guild_ranking_time)) {
 
-				CmdGuildRankingUpdateTime cmd_grut(true);	// Waiter
+			CmdGuildRankingUpdateTime cmd_grut(true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_grut, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_grut, nullptr, nullptr);
 
-				cmd_grut.waitEvent();
+			cmd_grut.waitEvent();
 
-				if (cmd_grut.getException().getCodeError() != 0)
-					throw cmd_grut.getException();
+			if (cmd_grut.getException().getCodeError() != 0)
+				throw cmd_grut.getException();
 
-				m_guild_ranking_time = cmd_grut.getTime();
+			m_guild_ranking_time = cmd_grut.getTime();
 
-				// Log
-				_smp::message_pool::getInstance().push(new message("[auth_server::onHeartBeat][Log] Inicializou o Update Time do Guild Ranking[" 
-						+ _formatDate(m_guild_ranking_time) + "] com sucesso.", CL_FILE_LOG_AND_CONSOLE));
-			}
+			// Log
+			_smp::message_pool::getInstance().push(new message("[auth_server::onHeartBeat][Log] Inicializou o Update Time do Guild Ranking[" 
+					+ _formatDate(m_guild_ranking_time) + "] com sucesso.", CL_FILE_LOG_AND_CONSOLE));
+		}
 
-			// Local Time para verificar
-			GetLocalTime(&local);
+		// Local Time para verificar
+		GetLocalTime(&local);
 
-			// Verifica se � um novo dia e atualiza o Guild Ranking
-			if (m_guild_ranking_time.wYear < local.wYear || m_guild_ranking_time.wMonth < local.wMonth || m_guild_ranking_time.wDay < local.wDay) {
+		// Verifica se é um novo dia e atualiza o Guild Ranking
+		if (m_guild_ranking_time.wYear < local.wYear || m_guild_ranking_time.wMonth < local.wMonth || m_guild_ranking_time.wDay < local.wDay) {
 				
-				_smp::message_pool::getInstance().push(new message("[auth_server::onHearBeat][Log] Atualizando o Guild Ranking...", CL_FILE_LOG_AND_CONSOLE));
+			_smp::message_pool::getInstance().push(new message("[auth_server::onHearBeat][Log] Atualizando o Guild Ranking...", CL_FILE_LOG_AND_CONSOLE));
 
-				NormalManagerDB::add(3, new CmdUpdateGuildRanking(), auth_server::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(3, new CmdUpdateGuildRanking(), auth_server::SQLDBResponse, this);
 
-				// atualiza a hora do ranking do server
-				GetLocalTime(&m_guild_ranking_time);
-			}
-
-		}catch (exception& e) {
-
-			_smp::message_pool::getInstance().push(new message("[auth_server::onHeartBeat][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
+			// atualiza a hora do ranking do server
+			GetLocalTime(&m_guild_ranking_time);
 		}
 
 	}catch (exception& e) {
-		if (!STDA_ERROR_CHECK_SOURCE_AND_ERROR(e.getCodeError(), STDA_ERROR_TYPE::PANGYA_DB, 6))
-			throw;
+		
+		_smp::message_pool::getInstance().push(new message("[auth_server::onHeartBeat][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
 	}
 }
 
@@ -783,7 +777,7 @@ void auth_server::translateCmd(std::vector< CommandInfo >& _v_ci) {
 			{
 				CmdNoticeInfo cmd_ni(el.idx, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ni, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ni, nullptr, nullptr);
 
 				cmd_ni.waitEvent();
 
@@ -817,7 +811,7 @@ void auth_server::translateCmd(std::vector< CommandInfo >& _v_ci) {
 
 				CmdTickerInfo cmd_ti(el.idx, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ti, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ti, nullptr, nullptr);
 
 				cmd_ti.waitEvent();
 
@@ -879,7 +873,7 @@ void auth_server::translateCmd(std::vector< CommandInfo >& _v_ci) {
 			{
 				CmdNoticeInfo cmd_ni(el.idx, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_ni, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_ni, nullptr, nullptr);
 
 				cmd_ni.waitEvent();
 
@@ -915,7 +909,7 @@ void auth_server::translateCmd(std::vector< CommandInfo >& _v_ci) {
 				// Update Command on DB
 				el.valid = 0u;
 
-				NormalManagerDB::add(1, new CmdUpdateCommand(el), auth_server::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateCommand(el), auth_server::SQLDBResponse, this);
 
 				// Send New Mail Arrived in MailBox
 				packet p((unsigned short)0x8);
@@ -933,7 +927,7 @@ void auth_server::translateCmd(std::vector< CommandInfo >& _v_ci) {
 				// Update Command on DB
 				el.valid = 0u;
 
-				NormalManagerDB::add(1, new CmdUpdateCommand(el), auth_server::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateCommand(el), auth_server::SQLDBResponse, this);
 
 				// Send New Rate to Server
 				packet p((unsigned short)0x9);
@@ -950,7 +944,7 @@ void auth_server::translateCmd(std::vector< CommandInfo >& _v_ci) {
 				// Update Command on DB
 				el.valid = 0u;
 
-				NormalManagerDB::add(1, new CmdUpdateCommand(el), auth_server::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateCommand(el), auth_server::SQLDBResponse, this);
 
 				// Send Disconnect Player
 				packet p((unsigned short)0x6);
@@ -967,7 +961,7 @@ void auth_server::translateCmd(std::vector< CommandInfo >& _v_ci) {
 			{
 				CmdShutdownInfo cmd_si(el.idx, true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_si, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_si, nullptr, nullptr);
 
 				cmd_si.waitEvent();
 
@@ -1013,7 +1007,7 @@ void auth_server::translateCmd(std::vector< CommandInfo >& _v_ci) {
 				// Update Command on DB
 				el.valid = 0u;
 
-				NormalManagerDB::add(1, new CmdUpdateCommand(el), auth_server::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateCommand(el), auth_server::SQLDBResponse, this);
 
 				// Send Disconnect Player
 				packet p((unsigned short)0x0A);

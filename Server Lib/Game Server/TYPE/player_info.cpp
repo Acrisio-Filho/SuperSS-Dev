@@ -1574,7 +1574,7 @@ bool PlayerInfo::ownerMailBoxItem(unsigned _typeid) {
 
 	CmdFindMailBoxItem cmd_fmbi(uid, _typeid, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_fmbi, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_fmbi, nullptr, nullptr);
 
 	cmd_fmbi.waitEvent();
 
@@ -1638,7 +1638,7 @@ void PlayerInfo::consomeCookie(uint64_t _cookie) {
 
 		m_update_cookie_db.requestUpdateOnDB();
 
-		NormalManagerDB::add(2, new CmdUpdateCookie(uid, _cookie, CmdUpdateCookie::DECREASE), PlayerInfo::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateCookie(uid, _cookie, CmdUpdateCookie::DECREASE), PlayerInfo::SQLDBResponse, this);
 
 #if defined(_WIN32)
 		LeaveCriticalSection(&m_cs);
@@ -1690,7 +1690,7 @@ void PlayerInfo::consomePang(uint64_t _pang) {
 
 		m_update_pang_db.requestUpdateOnDB();
 
-		NormalManagerDB::add(1, new CmdUpdatePang(uid, _pang, CmdUpdatePang::DECREASE), PlayerInfo::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdatePang(uid, _pang, CmdUpdatePang::DECREASE), PlayerInfo::SQLDBResponse, this);
 
 #if defined(_WIN32)
 		LeaveCriticalSection(&m_cs);
@@ -1748,7 +1748,7 @@ void PlayerInfo::addCookie(uint64_t _cookie) {
 
 		m_update_cookie_db.requestUpdateOnDB();
 
-		NormalManagerDB::add(2, new CmdUpdateCookie(uid, _cookie, CmdUpdateCookie::INCREASE), PlayerInfo::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateCookie(uid, _cookie, CmdUpdateCookie::INCREASE), PlayerInfo::SQLDBResponse, this);
 
 #if defined(_WIN32)
 		LeaveCriticalSection(&m_cs);
@@ -1811,7 +1811,7 @@ void PlayerInfo::addPang(uint64_t _pang) {
 
 		m_update_pang_db.requestUpdateOnDB();
 
-		NormalManagerDB::add(1, new CmdUpdatePang(uid, _pang, CmdUpdatePang::INCREASE), PlayerInfo::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdatePang(uid, _pang, CmdUpdatePang::INCREASE), PlayerInfo::SQLDBResponse, this);
 
 #if defined(_WIN32)
 		LeaveCriticalSection(&m_cs);
@@ -1855,7 +1855,7 @@ void PlayerInfo::updateCookie() {
 
 		CmdCookie cmd_cp(uid, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_cp, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_cp, nullptr, nullptr);
 
 		cmd_cp.waitEvent();
 
@@ -1879,7 +1879,7 @@ void PlayerInfo::updatePang() {
 
 		CmdPang cmd_pang(uid, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_pang, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_pang, nullptr, nullptr);
 
 		cmd_pang.waitEvent();
 
@@ -1902,7 +1902,7 @@ void PlayerInfo::addPang(uint32_t _uid, uint64_t _pang) {
 	if ((int64_t)_pang <= 0)
 		throw exception("[PlayerInfo::addPang][Error] _pang valor invalido: " + std::to_string((int64_t)_pang), STDA_MAKE_ERROR(STDA_ERROR_TYPE::PLAYER_INFO, 21, 0));
 
-	NormalManagerDB::add(1, new CmdUpdatePang(_uid, _pang, CmdUpdatePang::INCREASE), PlayerInfo::SQLDBResponse, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdatePang(_uid, _pang, CmdUpdatePang::INCREASE), PlayerInfo::SQLDBResponse, nullptr);
 
 #ifdef _DEBUG
 	_smp::message_pool::getInstance().push(new message("[PlayerInfo::addPang][Log] Player: " + std::to_string(_uid) + ", ganhou " + std::to_string(_pang) + " Pang(s).", CL_FILE_LOG_AND_CONSOLE));
@@ -1916,7 +1916,7 @@ void PlayerInfo::addCookie(uint32_t _uid, uint64_t _cookie) {
 	if ((int64_t)_cookie <= 0)
 		throw exception("[PlayerInfo::addCookie][Error] _cookie valor invalido: " + std::to_string((int64_t)_cookie), STDA_MAKE_ERROR(STDA_ERROR_TYPE::PLAYER_INFO, 21, 0));
 
-	NormalManagerDB::add(2, new CmdUpdateCookie(_uid, _cookie, CmdUpdateCookie::INCREASE), PlayerInfo::SQLDBResponse, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateCookie(_uid, _cookie, CmdUpdateCookie::INCREASE), PlayerInfo::SQLDBResponse, nullptr);
 
 #ifdef _DEBUG
 	_smp::message_pool::getInstance().push(new message("[PlayerInfo::addCookie][Log] Player: " + std::to_string(_uid) + ", ganhou " + std::to_string(_cookie) + " Cookie Point(s).", CL_FILE_LOG_AND_CONSOLE));
@@ -1936,7 +1936,7 @@ void PlayerInfo::addUserInfo(UserInfoEx& _ui, uint64_t _total_pang_win_game) {
 
 void PlayerInfo::updateUserInfo() {
 
-	NormalManagerDB::add(3, new CmdUpdateUserInfo(uid, ui), PlayerInfo::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(3, new CmdUpdateUserInfo(uid, ui), PlayerInfo::SQLDBResponse, this);
 
 #ifdef _DEBUG
 	_smp::message_pool::getInstance().push(new message("[PlayerInfo::updateUserInfo][Log] Atualizou info do player[UID=" + std::to_string(uid) + "]", CL_FILE_LOG_AND_CONSOLE));
@@ -1951,7 +1951,7 @@ void PlayerInfo::updateUserInfo(uint32_t _uid, UserInfoEx& _ui) {
 	if (_uid == 0)
 		throw exception("[PlayerInfo::updateUserInfo][Error] _uid is invalid(zero)", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PLAYER_INFO, 300, 0));
 
-	NormalManagerDB::add(3, new CmdUpdateUserInfo(_uid, _ui), PlayerInfo::SQLDBResponse, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(3, new CmdUpdateUserInfo(_uid, _ui), PlayerInfo::SQLDBResponse, nullptr);
 
 #ifdef _DEBUG
 	_smp::message_pool::getInstance().push(new message("[PlayerInfo::updateUserInfo][Log] Atualizou info do player[UID=" + std::to_string(_uid) + "]", CL_FILE_LOG_AND_CONSOLE));
@@ -1985,7 +1985,7 @@ void PlayerInfo::updateTrofelInfo(uint32_t _trofel_typeid, unsigned char _trofel
 	// Update Trofel Info Atual (season atual)
 	ti_current_season.update(type, _trofel_rank);
 
-	NormalManagerDB::add(4, new CmdUpdateNormalTrofel(uid, ti_current_season), PlayerInfo::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(4, new CmdUpdateNormalTrofel(uid, ti_current_season), PlayerInfo::SQLDBResponse, this);
 };
 
 void PlayerInfo::updateTrofelInfo(uint32_t _uid, uint32_t _trofel_typeid, unsigned char _trofel_rank) {
@@ -2015,7 +2015,7 @@ void PlayerInfo::updateTrofelInfo(uint32_t _uid, uint32_t _trofel_typeid, unsign
 
 	CmdTrofelInfo cmd_ti(_uid, CmdTrofelInfo::CURRENT, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_ti, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_ti, nullptr, nullptr);
 
 	cmd_ti.waitEvent();
 
@@ -2027,7 +2027,7 @@ void PlayerInfo::updateTrofelInfo(uint32_t _uid, uint32_t _trofel_typeid, unsign
 	// Update Trofel Info Atual (season atual)
 	ti.update(type, _trofel_rank);
 
-	NormalManagerDB::add(4, new CmdUpdateNormalTrofel(_uid, ti), PlayerInfo::SQLDBResponse, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(4, new CmdUpdateNormalTrofel(_uid, ti), PlayerInfo::SQLDBResponse, nullptr);
 };
 
 void PlayerInfo::updateMedal(uMedalWin _medal_win) {
@@ -2056,7 +2056,7 @@ void PlayerInfo::updateMedal(uint32_t _uid, uMedalWin _medal_win) {
 	// Pega o Info do player para atualizar
 	CmdUserInfo cmd_ui(_uid, true);		// Waiter
 
-	NormalManagerDB::add(0, &cmd_ui, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_ui, nullptr, nullptr);
 
 	cmd_ui.waitEvent();
 
@@ -2127,7 +2127,7 @@ int PlayerInfo::addExp(uint32_t _exp) {
 					+ std::to_string(level) + ", EXP=" + std::to_string(ui.exp) + "]", CL_FILE_LOG_AND_CONSOLE));
 
 			// UPDATE ON DB, LEVEL AND EXP
-			NormalManagerDB::add(3, new CmdUpdateLevelAndExp(uid, (unsigned char)level, ui.exp), PlayerInfo::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(3, new CmdUpdateLevelAndExp(uid, (unsigned char)level, ui.exp), PlayerInfo::SQLDBResponse, this);
 		}
 
 #if defined(_WIN32)
@@ -2164,7 +2164,7 @@ void PlayerInfo::updateLocationDB() {
 		// Sincroniza para não ter valores inseridos errados no banco de dados
 		m_pl.requestUpdateOnDB();
 
-		NormalManagerDB::add(5, new CmdUpdatePlayerLocation(uid, m_pl), PlayerInfo::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(5, new CmdUpdatePlayerLocation(uid, m_pl), PlayerInfo::SQLDBResponse, this);
 
 	}catch (exception& e) {
 
@@ -2190,7 +2190,7 @@ bool PlayerInfo::updateGrandPrixClear(uint32_t _typeid, uint32_t _position) {
 		it = v_gpc.insert(v_gpc.end(), GrandPrixClear(_typeid, _position));
 
 		// Insere no Banco de dados
-		NormalManagerDB::add(6, new CmdInsertGrandPrixClear(uid, *it), PlayerInfo::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(6, new CmdInsertGrandPrixClear(uid, *it), PlayerInfo::SQLDBResponse, this);
 
 		// Update no Cliente
 		upt_client = true;
@@ -2204,7 +2204,7 @@ bool PlayerInfo::updateGrandPrixClear(uint32_t _typeid, uint32_t _position) {
 			it->position = _position;
 
 			// Update on DB
-			NormalManagerDB::add(7, new CmdUpdateGrandPrixClear(uid, *it), PlayerInfo::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(7, new CmdUpdateGrandPrixClear(uid, *it), PlayerInfo::SQLDBResponse, this);
 
 			// Update on Cliente
 			upt_client = true;
@@ -2222,7 +2222,7 @@ void PlayerInfo::addGrandZodiacPontos(uint64_t _pontos) {
 	grand_zodiac_pontos += _pontos;
 
 	// Update no Banco de dados
-	NormalManagerDB::add(8, new CmdGrandZodiacPontos(uid, grand_zodiac_pontos, CmdGrandZodiacPontos::eCMD_GRAND_ZODIAC_TYPE::CGZT_UPDATE), PlayerInfo::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(8, new CmdGrandZodiacPontos(uid, grand_zodiac_pontos, CmdGrandZodiacPontos::eCMD_GRAND_ZODIAC_TYPE::CGZT_UPDATE), PlayerInfo::SQLDBResponse, this);
 
 	// Log
 	_smp::message_pool::getInstance().push(new message("[PlayerInfo::addGrandZodiacPontos][Log] Player[UID=" + std::to_string(uid) 
@@ -2381,7 +2381,7 @@ bool PlayerInfo::checkAlterationCookieOnDB() {
 
 	CmdCookie cmd_cp(uid, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_cp, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_cp, nullptr, nullptr);
 
 	cmd_cp.waitEvent();
 
@@ -2395,7 +2395,7 @@ bool PlayerInfo::checkAlterationPangOnDB() {
 
 	CmdPang cmd_pang(uid, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_pang, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_pang, nullptr, nullptr);
 
 	cmd_pang.waitEvent();
 

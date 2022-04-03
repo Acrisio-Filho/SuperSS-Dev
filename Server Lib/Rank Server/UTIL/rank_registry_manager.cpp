@@ -770,7 +770,7 @@ void RankRegistryManager::initialize() {
 
 		CmdRankRegistryInfo cmd_rri(true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_rri, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_rri, nullptr, nullptr);
 
 		cmd_rri.waitEvent();
 
@@ -784,7 +784,7 @@ void RankRegistryManager::initialize() {
 
 		CmdRankRegistryCharacterInfo cmd_rrci(true); // Waiter
 
-		NormalManagerDB::add(0, &cmd_rrci, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_rrci, nullptr, nullptr);
 
 		cmd_rrci.waitEvent();
 

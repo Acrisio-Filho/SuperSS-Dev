@@ -29,6 +29,13 @@ namespace stdA {
 
 	struct Bot {
 		public:
+			enum eTYPE_SCORE : uint8_t {
+				MIN_SCORE,
+				MED_SCORE,
+				MAX_SCORE
+			};
+
+		public:
 			struct Hole {
 				Hole(uint32_t _ul = 0u) {
 					clear();
@@ -65,6 +72,7 @@ namespace stdA {
 				record = 0l;
 				max_record = 0l;
 				med_shot_per_hole = 0l;
+				type_score = eTYPE_SCORE::MIN_SCORE;
 
 				pi.clear();
 
@@ -83,6 +91,7 @@ namespace stdA {
 
 			int32_t			max_record;
 			int32_t			med_shot_per_hole;
+			eTYPE_SCORE		type_score;
 
 			// Player Game Info do Bot para usar na hora de classificação do rank
 			PlayerGameInfo pi;

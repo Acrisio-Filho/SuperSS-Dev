@@ -111,7 +111,7 @@ unsigned short Course::findHoleSeq(unsigned short _number) {
 	return (unsigned short)0;
 }
 
-std::pair< std::map< unsigned short, Hole >::iterator, std::map< unsigned short, Hole >::iterator > stdA::Course::findRange(unsigned short _number) {
+std::pair< std::map< unsigned short, Hole >::iterator, std::map< unsigned short, Hole >::iterator > Course::findRange(unsigned short _number) {
 
 	if ((short)_number >= 0) {
 

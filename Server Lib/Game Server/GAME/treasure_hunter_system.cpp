@@ -99,7 +99,7 @@ void TreasureHunterSystem::initialize() {
 
 	CmdTreasureHunterInfo cmd_thi(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_thi, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_thi, nullptr, nullptr);
 
 	cmd_thi.waitEvent();
 
@@ -121,7 +121,7 @@ void TreasureHunterSystem::initialize() {
 	// Item Treasure Hunter
 	CmdTreasureHunterItem cmd_thItem(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_thItem, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_thItem, nullptr, nullptr);
 
 	cmd_thItem.waitEvent();
 
@@ -516,7 +516,7 @@ void TreasureHunterSystem::updateCoursePoint(TreasureHunterInfo& _thi, int32_t _
 	else	// Increase
 		_thi.point = (_thi.point + _point > TREASURE_HUNTER_LIMIT_POINT_COURSE) ? TREASURE_HUNTER_LIMIT_POINT_COURSE : _thi.point + _point;
 
-	NormalManagerDB::add(1, new CmdUpdateTreasureHunterCoursePoint(_thi), TreasureHunterSystem::SQLDBResponse, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateTreasureHunterCoursePoint(_thi), TreasureHunterSystem::SQLDBResponse, nullptr);
 
 	LEAVE_CHECK;
 

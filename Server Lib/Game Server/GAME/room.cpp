@@ -67,17 +67,15 @@ using namespace stdA;
 
 room::room(unsigned char _channel_owner, RoomInfoEx _ri) 
 	: m_ri(_ri), m_pGame(nullptr), m_channel_owner(_channel_owner), m_teans(), m_weather_lounge(0u), 
-		m_destroying(false), m_bot_tourney(false), m_lock_spin_state(0l) {
+		m_destroying(false), m_bot_tourney(false), m_lock_spin_state(0l), m_personal_shop(m_ri) {
 
 #if defined(_WIN32)
 	InitializeCriticalSection(&m_cs);
-	InitializeCriticalSection(&m_ps_cs);
 
 	InitializeCriticalSection(&m_lock_cs);
 #elif defined(__linux__)
 	INIT_PTHREAD_MUTEXATTR_RECURSIVE;
 	INIT_PTHREAD_MUTEX_RECURSIVE(&m_cs);
-	INIT_PTHREAD_MUTEX_RECURSIVE(&m_ps_cs);
 
 	INIT_PTHREAD_MUTEX_RECURSIVE(&m_lock_cs);
 	DESTROY_PTHREAD_MUTEXATTR_RECURSIVE;
@@ -105,11 +103,9 @@ room::~room() {
 
 #if defined(_WIN32)
 	DeleteCriticalSection(&m_cs);
-	DeleteCriticalSection(&m_ps_cs);
 	DeleteCriticalSection(&m_lock_cs);
 #elif defined(__linux__)
 	pthread_mutex_destroy(&m_cs);
-	pthread_mutex_destroy(&m_ps_cs);
 	pthread_mutex_destroy(&m_lock_cs);
 #endif
 };
@@ -156,19 +152,7 @@ void room::destroy() {
 	pthread_mutex_unlock(&m_cs);
 #endif
 
-#if defined(_WIN32)
-	EnterCriticalSection(&m_ps_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_ps_cs);
-#endif
-
-	m_player_shop.clear();
-
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_ps_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_ps_cs);
-#endif
+	m_personal_shop.destroy();
 
 	// Destruindo a sala
 	try {
@@ -439,7 +423,7 @@ int room::leave(player& _session, int _option) {
 		_session.m_pi.place = 0u;
 
 		// Excluiu personal shop do player se ele estiver com shop aberto
-		clear_personal_shop(&_session);
+		m_personal_shop.destroyShop(_session);
 
 		updatePosition();
 
@@ -862,33 +846,7 @@ PlayerRoomInfoEx* room::getPlayerInfo(player *_session) {
 	return pri;
 };
 
-PersonalShop* room::getPlayerShop(player* _session) {
-	
-	if (_session == nullptr)
-		throw exception("[room::getPlayerShop][Error] _session is nullptr", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 7, 0));
-
-	PersonalShop *ps = nullptr;
-	std::map< player*, PersonalShop >::iterator i;
-
-#if defined(_WIN32)
-	EnterCriticalSection(&m_ps_cs);
-#elif defined(__linux__)
-	pthread_mutex_lock(&m_ps_cs);
-#endif
-
-	if ((i = m_player_shop.find(_session)) != m_player_shop.end())
-		ps = &i->second;
-
-#if defined(_WIN32)
-	LeaveCriticalSection(&m_ps_cs);
-#elif defined(__linux__)
-	pthread_mutex_unlock(&m_ps_cs);
-#endif
-
-	return ps;
-};
-
-std::vector< player* > room::getSessions(player *_session) {
+std::vector< player* > room::getSessions(player *_session, bool _with_invited) {
 	std::vector< player* > v_session;
 
 #if defined(_WIN32)
@@ -898,7 +856,8 @@ std::vector< player* > room::getSessions(player *_session) {
 #endif
 
 	for (auto& el : v_sessions)
-		if (el != nullptr && el->getState() && el->m_pi.mi.sala_numero != -1 && (_session == nullptr || _session != el))
+		if (el != nullptr && el->getState() && el->m_pi.mi.sala_numero != -1 
+				&& (_session == nullptr || _session != el) && (_with_invited || !isInvited(*el)))
 			v_session.push_back(el);
 
 #if defined(_WIN32)
@@ -908,6 +867,62 @@ std::vector< player* > room::getSessions(player *_session) {
 #endif
 
 	return v_session;
+};
+
+uint32_t room::getRealNumPlayersWithoutInvited() {
+	
+	uint32_t num = 0;
+
+#if defined(_WIN32)
+	EnterCriticalSection(&m_cs);
+#elif defined(__linux__)
+	pthread_mutex_lock(&m_cs);
+#endif
+
+	try {
+		
+		num = _getRealNumPlayersWithoutInvited();
+	
+	}catch (exception& e) {
+
+		_smp::message_pool::getInstance().push(new message("[room::getRealNumPlayerWithoutInvited][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
+	}
+
+#if defined(_WIN32)
+	LeaveCriticalSection(&m_cs);
+#elif defined(__linux__)
+	pthread_mutex_unlock(&m_cs);
+#endif
+
+	return num;
+};
+
+bool room::haveInvited() {
+	
+	bool question = false;
+
+#if defined(_WIN32)
+	EnterCriticalSection(&m_cs);
+#elif defined(__linux__)
+	pthread_mutex_lock(&m_cs);
+#endif
+
+	try {
+
+		question = _haveInvited();
+
+	}catch (exception& e) {
+
+		_smp::message_pool::getInstance().push(new message("[room::haveInvited][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
+	}
+
+#if defined(_WIN32)
+	LeaveCriticalSection(&m_cs);
+#elif defined(__linux__)
+	pthread_mutex_unlock(&m_cs);
+#endif
+
+	return question;
 };
 
 void room::setNome(std::string _nome) {
@@ -1062,23 +1077,7 @@ bool room::checkPass(std::string _pass) {
 };
 
 bool room::checkPersonalShopItem(player& _session, int32_t _item_id) {
-
-	// Sala não é Lounge, não tem como o player abrir um shop
-	if (m_ri.tipo != RoomInfo::TIPO::LOUNGE)
-		return false;
-
-	auto ps = getPlayerShop(&_session);
-
-	// Player não tem um shop aberto na sala
-	if (ps == nullptr)
-		return false;
-
-	// O item não está à venda no shop do player
-	if (ps->findItemById(_item_id) == nullptr)
-		return false;
-
-	// O item está à venda no shop do player
-	return true;
+	return m_personal_shop.isItemForSale(_session, _item_id);
 };
 
 bool room::isLocked() {
@@ -1231,20 +1230,7 @@ void room::updatePlayerInfo(player& _session) {
 	pri.location = { _session.m_pi.location.x, _session.m_pi.location.z, _session.m_pi.location.r };
 	
 	// Personal Shop
-	auto ps = getPlayerShop(&_session);
-
-	if (ps == nullptr || ps->getState() == PersonalShop::OPEN_EDIT)
-		pri.shop = { 0 };
-	else {
-		pri.shop.clear();
-
-		pri.shop.active = 1;
-#if defined(_WIN32)
-		memcpy_s(pri.shop.name, sizeof(pri.shop.name), ps->getName().c_str(), sizeof(pri.shop.name));
-#elif defined(__linux__)
-		memcpy(pri.shop.name, ps->getName().c_str(), sizeof(pri.shop.name));
-#endif
-	}
+	pri.shop = m_personal_shop.getPersonShop(_session);
 
 	if (_session.m_pi.ei.mascot_info != nullptr)
 		pri.mascot_typeid = _session.m_pi.ei.mascot_info->_typeid;
@@ -1717,7 +1703,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 				}
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, _cpir.caddie), room::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, _cpir.caddie), room::SQLDBResponse, this);
 
 			}else if (_session.m_pi.ue.caddie_id > 0 && _session.m_pi.ei.cad_info != nullptr) {	// Desequipa Caddie
 			
@@ -1760,7 +1746,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 				error = 0;
 
 				// Att No DB
-				NormalManagerDB::add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, _cpir.caddie), room::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, _cpir.caddie), room::SQLDBResponse, this);
 			}
 
 			packet_func::pacote04B(p, &_session, _cpir.type, error);
@@ -1782,7 +1768,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					_cpir.ball = _session.m_pi.ue.ball_typeid;
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
 
 			}else if (_cpir.ball == 0) { // Bola 0 coloca a bola padrão para ele, se for premium user coloca a bola de premium user
 
@@ -1795,7 +1781,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					_cpir.ball = _session.m_pi.ue.ball_typeid;
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
 
 			}else {
 
@@ -1816,7 +1802,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					error = 0;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
 			
 				}else {
 
@@ -1849,7 +1835,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 								error = 0;
 
 								// Update ON DB
-								NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
+								snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
 
 								// Update ON GAME
 								p.init_plain((unsigned short)0x216);
@@ -1920,7 +1906,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 							_cpir.clubset = _session.m_pi.ue.clubset_id;
 
 						// Update ON DB
-						NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+						snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 
 					}else {
 						
@@ -1957,7 +1943,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 							error = 0;
 
 							// Update ON DB
-							NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+							snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 			
 						}else {
 
@@ -2000,7 +1986,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 										error = 0;
 
 										// Update ON DB
-										NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+										snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 
 										// Update ON GAME
 										p.init_plain((unsigned short)0x216);
@@ -2065,7 +2051,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 						error = 0;
 
 						// Update ON DB
-						NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+						snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 			
 					}else {
 
@@ -2108,7 +2094,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 									error = 0;
 
 									// Update ON DB
-									NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+									snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 
 									// Update ON GAME
 									p.init_plain((unsigned short)0x216);
@@ -2172,7 +2158,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					error = 0;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 			
 				}else {
 
@@ -2215,7 +2201,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 								error = 0;
 
 								// Update ON DB
-								NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+								snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 
 								// Update ON GAME
 								p.init_plain((unsigned short)0x216);
@@ -2265,7 +2251,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 				_session.m_pi.ue.character_id = _cpir.character;
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, _cpir.character), room::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, _cpir.character), room::SQLDBResponse, this);
 
 				// Update Player Info Channel and Room
 				updatePlayerInfo(_session);
@@ -2317,7 +2303,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					error = 0;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, _cpir.character), room::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, _cpir.character), room::SQLDBResponse, this);
 
 					// Update Player Info Channel and Room
 					updatePlayerInfo(_session);
@@ -2471,7 +2457,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					}
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, _cpir.mascot), room::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, _cpir.mascot), room::SQLDBResponse, this);
 					
 				}else {
 
@@ -2489,7 +2475,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					_cpir.mascot = 0;
 
 					// Att No DB
-					NormalManagerDB::add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, _cpir.mascot), room::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, _cpir.mascot), room::SQLDBResponse, this);
 				}
 
 			}else if (_session.m_pi.ue.mascot_id > 0 && _session.m_pi.ei.mascot_info != nullptr) {	// Desequipa Mascot
@@ -2500,7 +2486,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 				_cpir.mascot = 0;
 
 				// Att No DB
-				NormalManagerDB::add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, _cpir.mascot), room::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, _cpir.mascot), room::SQLDBResponse, this);
 
 			} // else Não tem nenhum mascot equipado, para desequipar, então o cliente só quis atualizar o estado
 			
@@ -2624,7 +2610,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 				_session.m_pi.ue.character_id = _cpir.character;
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, _cpir.character), room::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, _cpir.character), room::SQLDBResponse, this);
 
 			}else {
 
@@ -2640,7 +2626,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					_cpir.character = _session.m_pi.ue.character_id = _session.m_pi.ei.char_info->id;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, _cpir.character), room::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, _cpir.character), room::SQLDBResponse, this);
 			
 				}else {
 
@@ -2737,7 +2723,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 				}
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, _cpir.caddie), room::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, _cpir.caddie), room::SQLDBResponse, this);
 
 			}else if (_session.m_pi.ue.caddie_id > 0 && _session.m_pi.ei.cad_info != nullptr) {	// Desequipa Caddie
 			
@@ -2777,7 +2763,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 				_cpir.caddie = 0;
 
 				// Att No DB
-				NormalManagerDB::add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, _cpir.caddie), room::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCaddieEquiped(_session.m_pi.uid, _cpir.caddie), room::SQLDBResponse, this);
 			}
 
 			// ClubSet
@@ -2808,7 +2794,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 							_cpir.clubset = _session.m_pi.ue.clubset_id;
 
 						// Update ON DB
-						NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+						snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 
 					}else {
 						
@@ -2841,7 +2827,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 							_cpir.clubset = _session.m_pi.ue.clubset_id = pWi->id;
 
 							// Update ON DB
-							NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+							snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 			
 						}else {
 
@@ -2881,7 +2867,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 										_session.m_pi.ue.clubset_id = pWi->id;
 
 										// Update ON DB
-										NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+										snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 
 										// Update ON GAME
 										p.init_plain((unsigned short)0x216);
@@ -2941,7 +2927,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 						_cpir.clubset = _session.m_pi.ue.clubset_id = pWi->id;
 
 						// Update ON DB
-						NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+						snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 			
 					}else {
 
@@ -2981,7 +2967,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 									_session.m_pi.ue.clubset_id = pWi->id;
 
 									// Update ON DB
-									NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+									snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 
 									// Update ON GAME
 									p.init_plain((unsigned short)0x216);
@@ -3042,7 +3028,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					_cpir.clubset = _session.m_pi.ue.clubset_id = pWi->id;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 			
 				}else {
 
@@ -3082,7 +3068,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 								_session.m_pi.ue.clubset_id = pWi->id;
 
 								// Update ON DB
-								NormalManagerDB::add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
+								snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateClubsetEquiped(_session.m_pi.uid, _cpir.clubset), room::SQLDBResponse, this);
 
 								// Update ON GAME
 								p.init_plain((unsigned short)0x216);
@@ -3129,7 +3115,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					_cpir.ball = _session.m_pi.ue.ball_typeid;
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
 
 			}else if (_cpir.ball == 0) { // Bola 0 coloca a bola padrão para ele, se for premium user coloca a bola de premium user
 
@@ -3142,7 +3128,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					_cpir.ball = _session.m_pi.ue.ball_typeid;
 
 				// Update ON DB
-				NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
 
 			}else {
 
@@ -3160,7 +3146,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					_cpir.ball = _session.m_pi.ue.ball_typeid = pWi->_typeid;
 
 					// Update ON DB
-					NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
 			
 				}else {
 
@@ -3190,7 +3176,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 								_session.m_pi.ue.ball_typeid = pWi->_typeid;
 
 								// Update ON DB
-								NormalManagerDB::add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
+								snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateBallEquiped(_session.m_pi.uid, _cpir.ball), room::SQLDBResponse, this);
 
 								// Update ON GAME
 								p.init_plain((unsigned short)0x216);
@@ -3236,7 +3222,7 @@ void room::requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _
 					_session.m_pi.ei.mascot_info = nullptr;
 					_session.m_pi.ue.mascot_id = 0;
 
-					NormalManagerDB::add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, 0/*Mascot_id == 0 not equiped*/), room::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateMascotEquiped(_session.m_pi.uid, 0/*Mascot_id == 0 not equiped*/), room::SQLDBResponse, this);
 
 					// Update on GAME se não o cliente continua com o mascot equipado
 					packet_func::pacote04B(p, &_session, ChangePlayerItemRoom::TYPE_CHANGE::TC_MASCOT, 0);
@@ -3272,81 +3258,12 @@ void room::requestOpenEditSaleShop(player& _session, packet *_packet) {
 
 	try {
 
-		if (m_ri.tipo != RoomInfo::TIPO::LOUNGE)
-			throw exception("[room::requestOpenEditSaleShop][Error][WARNING] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou abri um personal shop para venda em uma sala[TIPO=" 
-					+ std::to_string((unsigned short)m_ri.tipo) + ", NUMERO=" + std::to_string(m_ri.numero) + "] diferente de Lounge. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 100, 52001001));
-
-		if (_session.m_pi.block_flag.m_flag.stBit.personal_shop)
-			throw exception("[room::requestOpenEditSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou abrir um personal shop para vender na sala[NUMERO=" 
-					+ std::to_string(m_ri.numero) + "], mas ele nao pode. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 4, 0x790001));
-
-		// Verifica o level do player e bloquea se não tiver level Beginner E
-		if (_session.m_pi.level < _session.m_pi.enLEVEL::BEGINNER_E)
-			throw exception("[room::requestOpenEditSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + ", LEVEL=" + std::to_string(_session.m_pi.level)
-					+ "] tentou abrir um personal shop para vender na sala[NUMERO=" + std::to_string(m_ri.numero) + "], mas o level dele eh menor que Beginner E.", 
-					STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 3, 0));
-
-		if (m_player_shop.size() >= (uint32_t)(m_ri.max_player * 0.8f))
-			throw exception("[room::requestOpenEditSaleShop][Log] player[UID=" + std::to_string(_session.m_pi.uid) +"] chegou no limite de shop(s) permitidos na sala[NUMERO=" 
-					+ std::to_string(m_ri.numero) + "]", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 101, 5200102));
-
-		PersonalShop *ps = nullptr;
-
-		// Esse aqui não é para da esse erro por que o pacote que pede para editar a loja, é esse também
-		if ((ps = getPlayerShop(&_session)) != nullptr) {
-
-			//throw exception("[room::requestOpenEditSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou criar um shop novamente, ele ja tem um shop, na sala. Hacker ou Bug",
-				//	STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 102, 5200103));
-
-			ps->setState(PersonalShop::OPEN_EDIT);
-
-			_smp::message_pool::getInstance().push(new message("[Personal Shop::OpenEditSaleShop][Log] player[UID=" + std::to_string(_session.m_pi.uid) +"] Editando Personal Shop", CL_FILE_LOG_AND_CONSOLE));
-
-		}else {
-
-			// Cria um Personal Shop para o player, por que ele não tem 1
-			auto tmp_ps = PersonalShop(_session);
-
-#if defined(_WIN32)
-			EnterCriticalSection(&m_ps_cs);
-#elif defined(__linux__)
-			pthread_mutex_lock(&m_ps_cs);
-#endif
-
-			auto r = m_player_shop.insert(std::make_pair(&_session, tmp_ps));
-
-			ps = &r.first->second;
-
-#if defined(_WIN32)
-			LeaveCriticalSection(&m_ps_cs);
-#elif defined(__linux__)
-			pthread_mutex_unlock(&m_ps_cs);
-#endif
-		}
-
-		// Log
-		_smp::message_pool::getInstance().push(new message("[Personal Shop::OpenEditSaleShop][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] abriu Personal Shop[Owner UID=" 
-				+ std::to_string(ps->getOwner().m_pi.uid) + ", STATE=" + std::to_string(ps->getState()) + ", Name=" + ps->getName() + ", Item Count=" 
-				+ std::to_string(ps->getCountItem()) + ", Pang Sale=" + std::to_string(ps->getPangSale()) + "] para editar na sala[numero=" + std::to_string(m_ri.numero) + "]", CL_FILE_LOG_AND_CONSOLE));
-
-		p.init_plain((unsigned short)0xE5);
-
-		p.addUint32(1);
-
-		p.addString(_session.m_pi.nickname);
-		p.addUint32(_session.m_pi.uid);
-
-		packet_func::room_broadcast(*this, p, 1);
+		if (m_personal_shop.openShopToEdit(_session, p))
+			packet_func::room_broadcast(*this, p, 1);
 		
 	}catch (exception& e) {
 
 		_smp::message_pool::getInstance().push(new message("[room::requestOpenEditSaleShop][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
-
-		p.init_plain((unsigned short)0xE5);
-
-		p.addUint32((STDA_SOURCE_ERROR_DECODE(e.getCodeError()) == STDA_ERROR_TYPE::ROOM) ? STDA_SYSTEM_ERROR_DECODE(e.getCodeError()) : 5200100);
-
-		packet_func::session_send(p, &_session, 1);
 	}
 };
 
@@ -3357,52 +3274,12 @@ void room::requestCloseSaleShop(player& _session, packet *_packet) {
 
 	try {
 
-		// Verifica se o player tem um shop aberto
-		PersonalShop *ps = nullptr;
-
-		if ((ps = getPlayerShop(&_session)) == nullptr)
-			throw exception("[room::requestCloseSaleShop][Error] player nao tem um personal shop criado", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 150, 5200151));
-
-		_smp::message_pool::getInstance().push(new message("[Personal Shop::CloseSaleShop][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] fechou o Personal Shop[Owner UID=" 
-				+ std::to_string(ps->getOwner().m_pi.uid) + ", STATE=" + std::to_string(ps->getState()) + ", NAME=" + ps->getName() + ", Count Item=" 
-				+ std::to_string(ps->getCountItem()) + ", Pang Sale=" + std::to_string(ps->getPangSale()) + "] na sala[numero=" + std::to_string(m_ri.numero) + "]", CL_FILE_LOG_AND_CONSOLE));
-
-#if defined(_WIN32)
-		EnterCriticalSection(&m_ps_cs);
-#elif defined(__linux__)
-		pthread_mutex_lock(&m_ps_cs);
-#endif
-
-		// Teste só para ter uma ideia de como vai ser
-		m_player_shop.erase(&_session);
-
-#if defined(_WIN32)
-		LeaveCriticalSection(&m_ps_cs);
-#elif defined(__linux__)
-		pthread_mutex_unlock(&m_ps_cs);
-#endif
-
-		// Tem que excluir todos os players que estiver com esse shop aberto vendo ele
-		// O destrutor da classe Shop faz isso, ou tem que fazer
-
-		p.init_plain((unsigned short)0xE4);
-
-		p.addUint32(1);
-
-		p.addString(_session.m_pi.nickname);
-		p.addUint32(_session.m_pi.uid);
-
-		packet_func::room_broadcast(*this, p, 1);
+		if (m_personal_shop.closeShop(_session, p))
+			packet_func::room_broadcast(*this, p, 1);
 
 	}catch (exception& e) {
 
 		_smp::message_pool::getInstance().push(new message("[room::requestCloseSaleShop][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
-
-		p.init_plain((unsigned short)0xE5);
-
-		p.addUint32((STDA_SOURCE_ERROR_DECODE(e.getCodeError()) == STDA_ERROR_TYPE::ROOM) ? STDA_SYSTEM_ERROR_DECODE(e.getCodeError()) : 5200150);
-
-		packet_func::session_send(p, &_session, 1);
 	}
 };
 
@@ -3413,209 +3290,51 @@ void room::requestChangeNameSaleShop(player& _session, packet *_packet) {
 
 	try {
 
-		std::string name = _packet->readString();
-
-		if (name.empty())
-			throw exception("[room::requestChangeNameSaleShop][Error] name is empty, player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou trocar o no do shop mas enviou uma string vazia. Hacker ou Bug",
-					STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 200, 5200201));
-
-#if defined(_WIN32)
-		EnterCriticalSection(&m_ps_cs);
-#elif defined(__linux__)
-		pthread_mutex_lock(&m_ps_cs);
-#endif
-
-		// Verifica se esse nome de shop já existe na sala, tirando o dele é claro
-		for (auto ii = m_player_shop.begin(); ii != m_player_shop.end(); ++ii) {
-			if (ii->second.getOwner().m_pi.uid != _session.m_pi.uid && ii->second.getName().compare(name) == 0) {
-#if defined(_WIN32)
-				LeaveCriticalSection(&m_ps_cs);
-#elif defined(__linux__)
-				pthread_mutex_unlock(&m_ps_cs);
-#endif
-
-				throw exception("[room::requestChangeNameSaleShop][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou trocar o name[value=" 
-						+ name + "] do Personal Shop dele, but already exists on room.", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 201, 5200202));
-			}
-		}
-
-#if defined(_WIN32)
-		LeaveCriticalSection(&m_ps_cs);
-#elif defined(__linux__)
-		pthread_mutex_unlock(&m_ps_cs);
-#endif
-
-		PersonalShop *ps = nullptr;
-
-		if ((ps = getPlayerShop(&_session)) == nullptr)
-			throw exception("[room::requestChangeNameSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] nao tem um personal shop nessa sala. Hacker ou Bug",
-				STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 202, 5200203));
-
-		ps->setName(name);
-
-		_smp::message_pool::getInstance().push(new message("[Personal Shop::ChangeNameSaleShop][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] trocou o nome[VALUE=" + name + "] do seu Personal Shop com sucesso!", CL_FILE_LOG_AND_CONSOLE));
-
-		p.init_plain((unsigned short)0xE8);
-
-		p.addUint32(1);	// Ok
-
-		p.addString(ps->getName());
-
-		p.addUint32(_session.m_pi.uid);
-
-		p.addString(_session.m_pi.nickname);
-
-		packet_func::room_broadcast(*this, p, 1);
+		if (m_personal_shop.changeShopName(_session, _packet->readString(), p))
+			packet_func::room_broadcast(*this, p, 1);
 
 	}catch (exception& e) {
 
 		_smp::message_pool::getInstance().push(new message("[room::requestChangeNameSaleShop][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
-
-		p.init_plain((unsigned short)0xE8);
-
-		p.addUint32((STDA_SOURCE_ERROR_DECODE(e.getCodeError()) == STDA_ERROR_TYPE::ROOM) ? STDA_SYSTEM_ERROR_DECODE(e.getCodeError()) : 5200200);
-
-		packet_func::session_send(p, &_session, 1);
 	}
 };
 
 void room::requestOpenSaleShop(player& _session, packet *_packet) {
 	REQUEST_BEGIN("OpenSaleShop");
 
-	packet p;
-	PersonalShopItem psi{ 0 };
-
 	try {
 
-		uint32_t count = _packet->readUint32();
-
-		if (count > 6)
-			throw exception("[room::requestOpenSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou abrir Personal Shop com um numero[value=" 
-					+ std::to_string(count) + "] de itens eh maior que o permitido", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 250, 5200251));
-
-		PersonalShop *ps = nullptr;
-
-		if ((ps = getPlayerShop(&_session)) == nullptr)
-			throw exception("[room::requestOpenSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou abrir um Personal Shop que ele nao tem.",
-					STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 251, 5200252));
-
-		// Limpa os itens do Shop se tiver
-		ps->clearItem();
-
-		for (auto i = 0u; i < count; ++i) {
-			psi.clear();
-
-			_packet->readBuffer(&psi, sizeof(PersonalShopItem));
-
-			// Dentro do push ele verifica se é permitido esse item no Personal Shop
-			ps->pushItem(psi);
-		}
-
-		// Abre o Shop
-		ps->setState(PersonalShop::OPEN);
-
-		_smp::message_pool::getInstance().push(new message("[Personal Shop::OpenSaleShop][Log] player[UID=" + std::to_string(_session.m_pi.uid) + "] abriu o Personal Shop[NAME=" 
-				+ ps->getName() + ", Count Item=" + std::to_string(ps->getCountItem()) + ", Pang Sale=" + std::to_string(ps->getPangSale()) + "] ", CL_FILE_LOG_AND_CONSOLE));
-		
-		p.init_plain((unsigned short)0xEB);
-
-		p.addUint32(1);	// Ok
-
-		p.addBuffer(_session.m_pi.nickname, sizeof(_session.m_pi.nickname));
-
-		p.addUint32(_session.m_pi.uid);
-
-		ps->putItemOnPacket(p);
-
-		packet_func::session_send(p, &_session, 1);
+		m_personal_shop.openShop(_session, _packet);
 
 	}catch (exception& e) {
-		
-		if (STDA_ERROR_CHECK_SOURCE_AND_ERROR(e.getCodeError(), STDA_ERROR_TYPE::PERSONAL_SHOP, 23)) {
-
-			p.init_plain((unsigned short)0x40);	// Msg to Chat of player
-
-			p.addUint8(7);	// Notice
-
-			p.addString(_session.m_pi.nickname);
-			p.addString("Card price is outside the price range.");
-
-			packet_func::session_send(p, &_session, 1);
-		}
 
 		_smp::message_pool::getInstance().push(new message("[room::requestOpenSaleShop][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
-
-		p.init_plain((unsigned short)0xEB);
-
-		p.addUint32((STDA_SOURCE_ERROR_DECODE(e.getCodeError()) == STDA_ERROR_TYPE::ROOM) ? STDA_SYSTEM_ERROR_DECODE(e.getCodeError()) : 5200250);
-
-		packet_func::session_send(p, &_session, 1);
 	}
 };
 
 void room::requestVisitCountSaleShop(player& _session, packet *_packet) {
 	REQUEST_BEGIN("VisitCountSaleShop");
 
-	packet p;
-
 	try {
 
-		PersonalShop *ps = nullptr;
-
-		if ((ps = getPlayerShop(&_session)) == nullptr)
-			throw exception("[room::requestVisitCountSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou pedir visit count do Personal Shop, mas ele nao tem na sala. Hacker ou Bug", 
-					STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 300, 5200301));
-
-		p.init_plain((unsigned short)0xE9);
-
-		p.addUint32(1);	// OK
-
-		p.addUint32(ps->getVisitCount());
-
-		packet_func::session_send(p, &_session, 1);
+		m_personal_shop.visitCountShop(_session);
 
 	}catch (exception& e) {
 
 		_smp::message_pool::getInstance().push(new message("[room::requestVisitCount][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
-
-		p.init_plain((unsigned short)0xE9);
-
-		p.addUint32((STDA_SOURCE_ERROR_DECODE(e.getCodeError()) == STDA_ERROR_TYPE::ROOM) ? STDA_SYSTEM_ERROR_DECODE(e.getCodeError()) : 5200300);
-
-		packet_func::session_send(p, &_session, 1);
 	}
 };
 
 void room::requestPangSaleShop(player& _session, packet *_packet) {
 	REQUEST_BEGIN("PangSaleShop");
 
-	packet p;
-
 	try {
 
-		PersonalShop *ps = nullptr;
-
-		if ((ps = getPlayerShop(&_session)) == nullptr)
-			throw exception("[room::requestPangSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou pedir pang sale do Personal Shop, mas ele nao tem na sala. Hacker ou Bug",
-				STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 350, 5200351));
-
-		p.init_plain((unsigned short)0xEA);
-
-		p.addUint32(1);	// OK
-
-		p.addUint64(ps->getPangSale());
-
-		packet_func::session_send(p, &_session, 1);
+		m_personal_shop.pangShop(_session);
 
 	}catch (exception& e) {
 
 		_smp::message_pool::getInstance().push(new message("[room::requestPangSaleShop][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
-
-		p.init_plain((unsigned short)0xEA);
-
-		p.addUint32((STDA_SOURCE_ERROR_DECODE(e.getCodeError()) == STDA_ERROR_TYPE::ROOM) ? STDA_SYSTEM_ERROR_DECODE(e.getCodeError()) : 5200350);
-
-		packet_func::session_send(p, &_session, 1);
 	}
 };
 
@@ -3626,172 +3345,51 @@ void room::requestCancelEditSaleShop(player& _session, packet *_packet) {
 
 	try {
 
-		PersonalShop *ps = nullptr;
-
-		if ((ps = getPlayerShop(&_session)) == nullptr)
-			throw exception("[room::requestCancelEditSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou cancela edit Personal Shop, mas ele nao tem nenhum na sala. Hacker ou Bug",
-					STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 400, 5200401));
-
-		ps->setState(PersonalShop::OPEN);
-
-		p.init_plain((unsigned short)0xE3);
-
-		p.addUint32(1);	// OK
-
-		p.addString(_session.m_pi.nickname);
-
-		packet_func::room_broadcast(*this, p, 1);
+		if (m_personal_shop.cancelEditShop(_session, p))
+			packet_func::room_broadcast(*this, p, 1);
 
 	}catch (exception& e) {
 		
 		_smp::message_pool::getInstance().push(new message("[room::reuqestCancelEditSaleShop][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
-
-		p.init_plain((unsigned short)0xE3);
-
-		p.addUint32((STDA_SOURCE_ERROR_DECODE(e.getCodeError()) == STDA_ERROR_TYPE::ROOM) ? STDA_SYSTEM_ERROR_DECODE(e.getCodeError()) : 5200400);
-
-		packet_func::session_send(p, &_session, 1);
 	}
 };
 
 void room::requestViewSaleShop(player& _session, packet *_packet) {
 	REQUEST_BEGIN("ViewSaleShop");
 
-	packet p;
-
 	try {
 
-		uint32_t uid = _packet->readUint32();
-
-		auto owner = findSessionByUID(uid);
-
-		if (owner == nullptr)
-			throw exception("[room::requestViewSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou ver o Shop[Owner UID=" 
-					+ std::to_string(uid) + "], mas ele nao esta nessa sala[numero=" + std::to_string(m_ri.numero) + "]. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 450, 5200451));
-
-		PersonalShop *ps = nullptr;
-
-		if ((ps = getPlayerShop(owner)) == nullptr)
-			throw exception("[room::requestViewSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou ver o Shop[Owner UID="
-				+ std::to_string(uid) + "], mas ele nao tem um shop nesta nessa sala[numero=" + std::to_string(m_ri.numero) + "]. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 451, 5200452));
-
-		try {
-			// Add Client
-			ps->addClient(_session);
-		}catch (exception& e) {
-
-			if (STDA_ERROR_CHECK_SOURCE_AND_ERROR(e.getCodeError(), STDA_ERROR_TYPE::PERSONAL_SHOP, 6)) {
-
-				_smp::message_pool::getInstance().push(new message("[room::requestViewSaleShop][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
-
-				throw exception("[room::requestViewSaleShop][Log] " + e.getFullMessageError(), STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 452, 5200453));
-			}else
-				throw;
-		}
-
-		p.init_plain((unsigned short)0xE6);
-
-		p.addUint32(1);	// OK
-
-		p.addBuffer(ps->getOwner().m_pi.nickname, sizeof(PlayerInfo::nickname));
-
-		p.addString(ps->getName());
-
-		p.addUint32(ps->getOwner().m_pi.uid);
-
-		ps->putItemOnPacket(p);
-
-		packet_func::session_send(p, &_session, 1);
+		m_personal_shop.viewShop(_session, _packet->readUint32());
 
 	}catch (exception& e) {
 
 		_smp::message_pool::getInstance().push(new message("[room::requestViewSaleShop][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
-
-		p.init_plain((unsigned short)0xE6);
-
-		p.addUint32((STDA_SOURCE_ERROR_DECODE(e.getCodeError()) == STDA_ERROR_TYPE::ROOM) ? STDA_SYSTEM_ERROR_DECODE(e.getCodeError()) : 5200450);
-
-		packet_func::session_send(p, &_session, 1);
 	}
 };
 
 void room::requestCloseViewSaleShop(player& _session, packet *_packet) {
 	REQUEST_BEGIN("CloseViewSaleShop");
 
-	packet p;
-
 	try {
 
-		uint32_t uid = _packet->readUint32();
-
-		auto owner = findSessionByUID(uid);
-
-		if (owner == nullptr)
-			throw exception("[room::requestCloseViewSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou fechar o Shop[Owner UID="
-				+ std::to_string(uid) + "], mas ele nao esta nessa sala[numero=" + std::to_string(m_ri.numero) + "]. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 500, 5200501));
-
-		PersonalShop *ps = nullptr;
-
-		if ((ps = getPlayerShop(owner)) == nullptr)
-			throw exception("[room::requestCloseViewSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou fechar o Shop[Owner UID="
-				+ std::to_string(uid) + "], mas ele nao tem um shop nesta nessa sala[numero=" + std::to_string(m_ri.numero) + "]. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 501, 5200502));
-
-		ps->deleteClient(_session);
-
-		p.init_plain((unsigned short)0xE7);
-
-		p.addUint32(1);	// OK
-
-		packet_func::session_send(p, &_session, 1);
+		m_personal_shop.closeViewShop(_session, _packet->readUint32());
 
 	}catch (exception& e) {
 
 		_smp::message_pool::getInstance().push(new message("[room::requestCloseViewSaleShop][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
-
-		p.init_plain((unsigned short)0xE7);
-
-		p.addUint32((STDA_SOURCE_ERROR_DECODE(e.getCodeError()) == STDA_ERROR_TYPE::ROOM) ? STDA_SYSTEM_ERROR_DECODE(e.getCodeError()) : 5200500);
-
-		packet_func::session_send(p, &_session, 1);
 	}
 };
 
 void room::requestBuyItemSaleShop(player& _session, packet *_packet) {
 	REQUEST_BEGIN("BuyItemSaleShop");
 
-	packet p;
-
 	try {
 
-		uint32_t uid = _packet->readUint32();
-
-		PersonalShopItem psi{ 0 };
-
-		_packet->readBuffer(&psi, sizeof(PersonalShopItem));
-
-		auto owner = findSessionByUID(uid);
-
-		if (owner == nullptr)
-			throw exception("[room::requestBuyItemSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou comprar item[TYPEID=" + std::to_string(psi.item._typeid) + ", ID=" + std::to_string(psi.item.id) + "] no Shop[Owner UID="
-					+ std::to_string(uid) + "], mas ele nao esta nessa sala[numero=" + std::to_string(m_ri.numero) + "]. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 550, 5200551));
-
-		PersonalShop *ps = nullptr;
-
-		if ((ps = getPlayerShop(owner)) == nullptr)
-			throw exception("[room::requestBuyItemSaleShop][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou comprar item[TYPEID=" + std::to_string(psi.item._typeid) + ", ID=" + std::to_string(psi.item.id) + "] no Shop[Owner UID="
-					+ std::to_string(uid) + "], mas ele nao tem um shop nesta nessa sala[numero=" + std::to_string(m_ri.numero) + "]. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 551, 5200552));
-
-		ps->buyItem(_session, psi);
+		m_personal_shop.buyInShop(_session, _packet);
 
 	}catch (exception& e) {
 
 		_smp::message_pool::getInstance().push(new message("[room::requestBuyItemSaleShop][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
-
-		p.init_plain((unsigned short)0xEC);
-
-		p.addUint32((STDA_SOURCE_ERROR_DECODE(e.getCodeError()) == STDA_ERROR_TYPE::ROOM) ? STDA_SYSTEM_ERROR_DECODE(e.getCodeError()) : 5200550);
-
-		packet_func::session_send(p, &_session, 1);
 	}
 };
 
@@ -5958,20 +5556,7 @@ PlayerRoomInfoEx* room::makePlayerInfo(player& _session) {
 	pri.location = { _session.m_pi.location.x, _session.m_pi.location.z, _session.m_pi.location.r };
 	
 	// Personal Shop
-	auto ps = getPlayerShop(&_session);
-
-	if (ps == nullptr || ps->getState() == PersonalShop::OPEN_EDIT)
-		pri.shop = { 0 };
-	else {
-		pri.shop.clear();
-
-		pri.shop.active = 1;
-#if defined(_WIN32)
-		memcpy_s(pri.shop.name, sizeof(pri.shop.name), ps->getName().c_str(), sizeof(pri.shop.name));
-#elif defined(__linux__)
-		memcpy(pri.shop.name, ps->getName().c_str(), sizeof(pri.shop.name));
-#endif
-	}
+	pri.shop = m_personal_shop.getPersonShop(_session);
 
 	if (_session.m_pi.ei.mascot_info != nullptr)
 		pri.mascot_typeid = _session.m_pi.ei.mascot_info->_typeid;
@@ -6323,17 +5908,6 @@ void room::updateGuild(player& _session) {
 	m_teans[pri->state_flag.uFlag.stFlagBit.team].addPlayer(&_session);
 };
 
-void room::clear_personal_shop(player* _session) {
-
-	if (_session == nullptr)
-		throw exception("[room::cleae_personal_shop][Error] player* _session is nullptr", STDA_MAKE_ERROR(STDA_ERROR_TYPE::ROOM, 100, 0));
-
-	auto it = m_player_shop.find(_session);
-
-	if (it != m_player_shop.end())
-		m_player_shop.erase(it);
-};
-
 void room::clear_player_kicked() {
 
 	if (!m_player_kicked.empty())
@@ -6370,7 +5944,7 @@ bool room::isAllReady() {
 		return true;
 
 	// Se o master for GM então não precisar todos está ready(prontos)
-	if (master->m_pi.m_cap.stBit.game_master)
+	if (master->m_pi.m_cap.stBit.game_master && !_haveInvited())
 		return true;
 
 	auto count = std::count_if(v_sessions.begin(), v_sessions.end(), [&](auto& _el) {
@@ -6591,6 +6165,31 @@ void room::addBotVisual(player& _session) {
 
 bool room::isDropRoom() {
 	return true; // class room normal é sempre true
+};
+
+uint32_t room::_getRealNumPlayersWithoutInvited() {
+	return (uint32_t)std::count_if(v_sessions.begin(), v_sessions.end(), [this](auto _el) {
+
+		if (_el == nullptr)
+			return false;
+
+		auto it = m_player_info.find(_el);
+
+		return it != m_player_info.end() && !it->second.convidado;
+	});
+};
+
+bool room::_haveInvited() {
+	return std::find_if(v_sessions.begin(), v_sessions.end(), [this](auto _el) {
+		
+		// session invalid, pula ela
+		if (_el == nullptr)
+			return false;
+
+		auto it = m_player_info.find(_el);
+
+		return it != m_player_info.end() && it->second.convidado;
+	}) != v_sessions.end();
 };
 
 void room::calcRainLounge() {

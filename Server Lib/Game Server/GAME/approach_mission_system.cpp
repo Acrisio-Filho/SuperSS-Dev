@@ -83,7 +83,7 @@ void ApproachMissionSystem::initialize() {
 
 	CmdApproachMissions cmd_am(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_am, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_am, nullptr, nullptr);
 
 	cmd_am.waitEvent();
 

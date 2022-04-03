@@ -152,7 +152,7 @@ void message_server::requestLogin(player& _session, packet *_packet) {
 
 		CmdPlayerInfo cmd_pi(uid, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 		cmd_pi.waitEvent();
 
@@ -186,7 +186,7 @@ void message_server::requestLogin(player& _session, packet *_packet) {
 				// Bloquea todos os IP que o player logar e da error de que a area dele foi bloqueada
 
 				// Add o ip do player para a lista de ip banidos
-				NormalManagerDB::add(1, new CmdInsertBlockIP(_session.m_ip, "255.255.255.255"), message_server::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(1, new CmdInsertBlockIP(_session.m_ip, "255.255.255.255"), message_server::SQLDBResponse, this);
 
 				// Resposta
 				throw exception("[message_server::requestLogin][Log] Player[UID=" + std::to_string(_session.m_pi.uid) + ", IP=" + std::string(_session.m_ip)
@@ -197,7 +197,7 @@ void message_server::requestLogin(player& _session, packet *_packet) {
 				// Bloquea o MAC Address que o player logar e da error de que a area dele foi bloqueada
 
 				// Add o MAC Address do player para a lista de MAC Address banidos
-				//NormalManagerDB::add(2, new CmdInsertBlockMAC(mac_address), message_server::SQLDBResponse, this);
+				//snmdb::NormalManagerDB::getInstance().add(2, new CmdInsertBlockMAC(mac_address), message_server::SQLDBResponse, this);
 
 				// Resposta
 				throw exception("[message_server::requestLogin][Log] Player[UID=" + std::to_string(_session.m_pi.uid)
@@ -838,7 +838,7 @@ void message_server::requestCheckNickname(player& _session, packet *_packet) {
 
 		CmdVerifNick cmd_vn(nickname, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_vn, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_vn, nullptr, nullptr);
 
 		cmd_vn.waitEvent();
 
@@ -1027,7 +1027,7 @@ void message_server::requestBlockFriend(player& _session, packet *_packet) {
 
 			CmdPlayerInfo cmd_pi(uid, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 			cmd_pi.waitEvent();
 
@@ -1164,7 +1164,7 @@ void message_server::requestUnblockFriend(player& _session, packet *_packet) {
 
 			CmdPlayerInfo cmd_pi(uid, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 			cmd_pi.waitEvent();
 
@@ -1361,7 +1361,7 @@ void message_server::requestAddFriend(player& _session, packet *_packet) {
 
 			CmdPlayerInfo cmd_pi(uid, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 			cmd_pi.waitEvent();
 
@@ -1560,7 +1560,7 @@ void message_server::requestConfirmFriend(player& _session, packet *_packet) {
 
 			CmdPlayerInfo cmd_pi(uid, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 			cmd_pi.waitEvent();
 
@@ -1707,7 +1707,7 @@ void message_server::requestDeleteFriend(player& _session, packet *_packet) {
 
 			CmdPlayerInfo cmd_pi(uid, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 			cmd_pi.waitEvent();
 
@@ -1880,7 +1880,7 @@ void message_server::requestAcceptGuildMember(packet *_packet) {
 
 			CmdPlayerInfo cmd_pi(member_uid, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 			cmd_pi.waitEvent();
 
@@ -2168,7 +2168,7 @@ void message_server::requestMemberExitedFromGuild(packet *_packet) {
 
 			CmdPlayerInfo cmd_pi(member_uid, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 			cmd_pi.waitEvent();
 
@@ -2446,7 +2446,7 @@ void message_server::requestKickGuildMember(packet *_packet) {
 
 			CmdPlayerInfo cmd_pi(member_uid, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_pi, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_pi, nullptr, nullptr);
 
 			cmd_pi.waitEvent();
 
@@ -3205,7 +3205,7 @@ void message_server::config_init() {
 	// Recupera Valores de rate do server do banco de dados
 	CmdRateConfigInfo cmd_rci(m_si.uid, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_rci, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_rci, nullptr, nullptr);
 
 	cmd_rci.waitEvent();
 
@@ -3236,7 +3236,7 @@ void message_server::config_init() {
 		m_si.rate.club_mastery = 0u;
 
 		// Atualiza no banco de dados
-		NormalManagerDB::add(2, new CmdUpdateRateConfigInfo(m_si.uid, m_si.rate), message_server::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateRateConfigInfo(m_si.uid, m_si.rate), message_server::SQLDBResponse, this);
 	
 	}else {	// Conseguiu recuperar com sucesso os valores do server
 
@@ -3367,7 +3367,7 @@ void message_server::updateRateAndEvent(uint32_t _tipo, uint32_t _qntd) {
 		}
 
 		// Update no DB os server do server que foram alterados
-		NormalManagerDB::add(2, new CmdUpdateRateConfigInfo(m_si.uid, m_si.rate), message_server::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateRateConfigInfo(m_si.uid, m_si.rate), message_server::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[message_server::updateRateAndEvent][Log] New Rate[Tipo=" + std::to_string(_tipo) + ", QNTD="

@@ -175,7 +175,7 @@ void PlayerMailBox::update() {
 
 	CmdMailBoxInfo2 cmd_mbi2(m_uid, true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_mbi2, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_mbi2, nullptr, nullptr);
 
 	cmd_mbi2.waitEvent();
 
@@ -349,7 +349,7 @@ void PlayerMailBox::addNewEmailArrived(int32_t _id) {
 
 		CmdEmailInfo2 cmd_ei2(m_uid, _id, true); // Waiter
 
-		NormalManagerDB::add(0, &cmd_ei2, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_ei2, nullptr, nullptr);
 
 		cmd_ei2.waitEvent();
 
@@ -400,7 +400,7 @@ EmailInfo PlayerMailBox::getEmailInfo(int32_t _id, bool _ler) {
 			it->second.visit_count++;
 
 			// UPDATE ON DB
-			NormalManagerDB::add(3, new CmdUpdateEmail(m_uid, it->second), PlayerMailBox::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(3, new CmdUpdateEmail(m_uid, it->second), PlayerMailBox::SQLDBResponse, this);
 		}
 
 		// Copy
@@ -443,7 +443,7 @@ void PlayerMailBox::leftItensFromEmail(int32_t _id) {
 	}
 
 	// UPDATE ON DB
-	NormalManagerDB::add(1, new CmdItemLeftFromEmail(_id), PlayerMailBox::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(1, new CmdItemLeftFromEmail(_id), PlayerMailBox::SQLDBResponse, this);
 
 	LEAVE_CHECK;
 	CATCH_CHECK("leftItensFromEmail");
@@ -510,7 +510,7 @@ void PlayerMailBox::deleteEmail(int32_t* _a_id, uint32_t _count) {
 	}
 
 	// UPDATE ON DB
-	NormalManagerDB::add(2, new CmdDeleteEmail(m_uid, _a_id, _count), PlayerMailBox::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(2, new CmdDeleteEmail(m_uid, _a_id, _count), PlayerMailBox::SQLDBResponse, this);
 
 	LEAVE_CHECK;
 	CATCH_CHECK("deleteEmail");

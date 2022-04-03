@@ -173,7 +173,7 @@ server::server(session_manager& _session_manager, uint32_t _accept_thread_num, u
 #endif
 
 		// DB_NORMAL
-		NormalManagerDB::create(_db_instance_num);
+		snmdb::NormalManagerDB::getInstance().create(_db_instance_num);
 
 #if defined(_WIN32)
 		InterlockedExchange(&m_continue_monitor, 1);
@@ -244,7 +244,7 @@ server::~server() {
 
 	m_shutdown = nullptr;
 
-	NormalManagerDB::destroy();
+	snmdb::NormalManagerDB::getInstance().destroy();
 };
 
 #if defined(_WIN32)
@@ -358,8 +358,6 @@ void* server::monitor()
 				}catch (exception& e) {
 					_smp::message_pool::getInstance().push(new message("[server::Monitor][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
 				}
-
-				NormalManagerDB::checkIsDeadAndRevive();
 		
 				cmdUpdateServerList();	// Pega a Lista de servidores online
 
@@ -400,6 +398,10 @@ void* server::monitor()
 };
 
 void server::waitAllThreadFinish(DWORD dwMilleseconds) {
+
+	// Libera todos que estão esperando o pangya_db ser executado
+	snmdb::NormalManagerDB::getInstance().freeAllWaiting("[server::waitAllThreadFinish][Error] Libera todos que estao esperando pangya_db ser executado");
+
 	// Monitor Thread
 #if defined(_WIN32)
 	InterlockedDecrement(&m_continue_monitor);
@@ -1243,7 +1245,7 @@ void* server::registerServer()
 				m_si.curr_user = m_session_manager.getNumSessionOnline();
 
 				// Register Server
-				NormalManagerDB::add(0, new CmdRegisterServer(m_si), server::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(0, new CmdRegisterServer(m_si), server::SQLDBResponse, this);
 					
 			}catch (exception& e) {
 
@@ -1751,7 +1753,7 @@ uint32_t server::getBotTTL() {
 };
 
 void server::cmdUpdateServerList() {
-	NormalManagerDB::add(1, new CmdServerList(CmdServerList::GAME), server::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(1, new CmdServerList(CmdServerList::GAME), server::SQLDBResponse, this);
 	//m_server_list = pangya_base_db::getServerList();
 };
 
@@ -1836,7 +1838,7 @@ void server::cmdUpdateListBlock_IP_MAC() {
 	// List de IP Address Ban
 	CmdListIPBan cmd_lib(true);		// Waiter
 
-	NormalManagerDB::add(0, &cmd_lib, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_lib, nullptr, nullptr);
 
 	cmd_lib.waitEvent();
 
@@ -1848,7 +1850,7 @@ void server::cmdUpdateListBlock_IP_MAC() {
 	// List de Mac Address Ban
 	CmdListMacBan cmd_lmb(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_lmb, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_lmb, nullptr, nullptr);
 
 	cmd_lmb.waitEvent();
 

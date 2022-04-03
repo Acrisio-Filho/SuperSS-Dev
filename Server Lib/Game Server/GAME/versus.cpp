@@ -77,7 +77,7 @@ Versus::Versus(std::vector< player* >& _players, RoomInfoEx& _ri, RateValue _rv,
 		}
 
 		// Update ON DB
-		NormalManagerDB::add(1, new CmdUpdateLastPlayerGame(el->m_pi.uid, el->m_pi.l5pg), Versus::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateLastPlayerGame(el->m_pi.uid, el->m_pi.l5pg), Versus::SQLDBResponse, this);
 	}
 
 	m_versus_state = init_game();

@@ -1592,7 +1592,7 @@ void Game::requestFinishItemUsedGame(player& _session) {
 	}
 
 	// Update Item Equiped Slot ON DB
-	NormalManagerDB::add(25, new CmdUpdateItemSlot(_session.m_pi.uid, (uint32_t*)_session.m_pi.ue.item_slot), Game::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(25, new CmdUpdateItemSlot(_session.m_pi.uid, (uint32_t*)_session.m_pi.ue.item_slot), Game::SQLDBResponse, this);
 
 	// Se for o Master da sala e ele estiver com artefato tira o mana dele
 	// Antes tirava assim que começava o jogo, mas aí o cliente atualizava a sala tirando o artefact aí no final não tinha como ver se o frozen flame estava equipado
@@ -1652,7 +1652,7 @@ void Game::requestFinishItemUsedGame(player& _session) {
 			item.clubset_workshop.rank = pClub->clubset_workshop.rank;
 			item.clubset_workshop.recovery = pClub->clubset_workshop.recovery_pts;
 
-			NormalManagerDB::add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub, CmdUpdateClubSetWorkshop::F_TRANSFER_MASTERY_PTS/*Usa o transfere que é o mesmo que o add*/), Game::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(12, new CmdUpdateClubSetWorkshop(_session.m_pi.uid, *pClub, CmdUpdateClubSetWorkshop::F_TRANSFER_MASTERY_PTS/*Usa o transfere que é o mesmo que o add*/), Game::SQLDBResponse, this);
 
 			// Add Begin Vector
 			v_item.insert(v_item.begin(), item);
@@ -1870,7 +1870,7 @@ void Game::requestSaveRecordCourse(player& _session, int game, int option) {
 	//ms.course = pMs->course;
 
 	// UPDATE ON DB
-	NormalManagerDB::add(5, new CmdUpdateMapStatistics(_session.m_pi.uid, ms, pgi->assist_flag), Game::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(5, new CmdUpdateMapStatistics(_session.m_pi.uid, ms, pgi->assist_flag), Game::SQLDBResponse, this);
 
 	// UPDATE ON GAME, se ele fez record, e add 1000 para ele
 	if (make_record) {

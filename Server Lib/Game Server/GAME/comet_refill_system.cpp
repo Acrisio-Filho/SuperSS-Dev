@@ -90,7 +90,7 @@ void CometRefillSystem::initialize() {
 
 	CmdCometRefillInfo cmd_cri(true/*Waiter*/);
 
-	NormalManagerDB::add(0, &cmd_cri, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_cri, nullptr, nullptr);
 
 	cmd_cri.waitEvent();
 

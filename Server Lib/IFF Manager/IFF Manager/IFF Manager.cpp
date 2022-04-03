@@ -7,6 +7,7 @@
 #include <iostream>
 #include "../../Projeto IOCP/UTIL/message_pool.h"
 #include "../UTIL/iff_writer.hpp"
+#include "../../Projeto IOCP/UTIL/hex_util.h"
 
 #include "../../Projeto IOCP/TYPE/set_se_exception_with_mini_dump.h"
 
@@ -53,6 +54,7 @@ int main(int argc, char* argv[]) {
 					<< "12. Name itens gacha.\n"
 					<< "13. Habilita All Cutin Fate no shop.\n"
 					<< "14. Papel Shop Rare Number 28.\n"
+					<< "15. Gera Lista Grand Prix Data, Box Scores.\n"
 			;
 
 		int escolha = 0;
@@ -1446,6 +1448,18 @@ int main(int argc, char* argv[]) {
 			}
 
 			_smp::message_pool::getInstance().push(new message(insert_db, CL_ONLY_FILE_LOG_TEST));
+		
+		}else if (escolha == 15) {
+
+			for (auto& el : iff.getGrandPrixData()) {
+
+				_smp::message_pool::getInstance().push(new message("GP[TYPEID: 0x" + hex_util::ltoaToHex(el.second._typeid) 
+						+ ", QNTD_HOLE: " 
+						+ std::to_string(el.second.course_info.qntd_hole) + "] BOT SCORE [MIN: " 
+						+ std::to_string(el.second.bot.score_min) + ", MED: " 
+						+ std::to_string(el.second.bot.score_med) + ", MAX: "
+						+ std::to_string(el.second.bot.score_max) + "]", CL_ONLY_FILE_LOG_TEST));
+			}
 		}
 
 	}catch (exception& e) {

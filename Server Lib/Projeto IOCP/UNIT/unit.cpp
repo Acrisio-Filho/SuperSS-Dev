@@ -105,7 +105,7 @@ unit::unit(session_manager& _session_manager, uint32_t _db_instance_num, uint32_
 #endif
 
 		// DB_NORMAL
-		NormalManagerDB::create(_db_instance_num);
+		snmdb::NormalManagerDB::getInstance().create(_db_instance_num);
 
 #if defined(_WIN32)
 		InterlockedExchange(&m_continue_monitor, 1);
@@ -175,7 +175,7 @@ unit::~unit() {
 	EventAcceptConnection = nullptr;
 #endif
 
-	NormalManagerDB::destroy();
+	snmdb::NormalManagerDB::getInstance().destroy();
 };
 
 #if defined(_WIN32)
@@ -265,7 +265,7 @@ void* unit::monitor() {
 					m_si.curr_user = m_session_manager.getNumSessionOnline();
 
 					// Register Server
-					NormalManagerDB::add(0, new CmdRegisterServer(m_si), unit::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(0, new CmdRegisterServer(m_si), unit::SQLDBResponse, this);
 					
 				}catch (exception& e) {
 					
@@ -285,8 +285,6 @@ void* unit::monitor() {
 						throw;
 					}
 				}
-
-				NormalManagerDB::checkIsDeadAndRevive();
 		
 				cmdUpdateServerList();	// Pega a Lista de servidores online
 
@@ -325,6 +323,10 @@ void* unit::monitor() {
 };
 
 void unit::waitAllThreadFinish(DWORD dwMilleseconds) {
+
+	// Libera todos que estão esperando o pangya_db ser executado
+	snmdb::NormalManagerDB::getInstance().freeAllWaiting("[unit::waitAllThreadFinish][Error] Libera todos que estao esperando pangya_db ser executado");
+
 	// Monitor Thread
 #if defined(_WIN32)
 	InterlockedDecrement(&m_continue_monitor);
@@ -1059,7 +1061,7 @@ bool unit::DisconnectSession(session *_session) {
 };
 
 void unit::cmdUpdateServerList() {
-	NormalManagerDB::add(1, new CmdServerList(CmdServerList::GAME), unit::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(1, new CmdServerList(CmdServerList::GAME), unit::SQLDBResponse, this);
 	//m_server_list = pangya_base_db::getServerList();
 };
 

@@ -102,7 +102,7 @@ void LoginRewardSystem::initialize() {
 	// Carrega a lista de eventos
 	CmdLoginRewardInfo cmd_lri(true); // Waiter
 
-	NormalManagerDB::add(0, &cmd_lri, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_lri, nullptr, nullptr);
 
 	cmd_lri.waitEvent();
 
@@ -119,7 +119,7 @@ void LoginRewardSystem::initialize() {
 			el_e.is_end = true;
 
 			// Atualiza aqui no banco de dados o evento
-			NormalManagerDB::add(1, new CmdUpdateLoginReward(el_e.id, el_e.is_end), LoginRewardSystem::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateLoginReward(el_e.id, el_e.is_end), LoginRewardSystem::SQLDBResponse, this);
 		}
 	}
 
@@ -209,7 +209,7 @@ void LoginRewardSystem::checkRewardLoginAndSend(player& _session) {
 			el_e.is_end = true;
 
 			// Atualiza aqui no banco de dados o evento
-			NormalManagerDB::add(1, new CmdUpdateLoginReward(el_e.id, el_e.is_end), LoginRewardSystem::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateLoginReward(el_e.id, el_e.is_end), LoginRewardSystem::SQLDBResponse, this);
 
 			// Continua
 			continue;
@@ -218,7 +218,7 @@ void LoginRewardSystem::checkRewardLoginAndSend(player& _session) {
 		// Pega info do player no banco de dados
 		cmd_lrpi.setId(el_e.id);
 
-		NormalManagerDB::add(0, &cmd_lrpi, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_lrpi, nullptr, nullptr);
 
 		cmd_lrpi.waitEvent();
 
@@ -244,7 +244,7 @@ void LoginRewardSystem::checkRewardLoginAndSend(player& _session) {
 			// Add o player ao banco de dados aqui
 			CmdAddLoginRewardPlayer cmd_alrp(el_e.id, p, true); // Waiter
 
-			NormalManagerDB::add(0, &cmd_alrp, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_alrp, nullptr, nullptr);
 
 			cmd_alrp.waitEvent();
 
@@ -291,7 +291,7 @@ void LoginRewardSystem::checkRewardLoginAndSend(player& _session) {
 			GetLocalTime(&p.update_date);
 
 			// Atualiza aqui o state do player no banco de dados
-			NormalManagerDB::add(2, new CmdUpdateLoginRewardPlayer(p), LoginRewardSystem::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateLoginRewardPlayer(p), LoginRewardSystem::SQLDBResponse, this);
 		}
 
 		// Verifica quantas vezes tem que logar para receber o pr�mio
@@ -313,7 +313,7 @@ void LoginRewardSystem::checkRewardLoginAndSend(player& _session) {
 			p.count_days = 0u;
 
 		// Atualiza aqui o state do plauer no banco de dados
-		NormalManagerDB::add(2, new CmdUpdateLoginRewardPlayer(p), LoginRewardSystem::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateLoginRewardPlayer(p), LoginRewardSystem::SQLDBResponse, this);
 
 		// Log
 		_smp::message_pool::getInstance().push(new message("[LoginRewardSystem::checkRewardLoginAndSend][Log] Player[UID=" + std::to_string(_session.m_pi.uid) 
@@ -343,7 +343,7 @@ void LoginRewardSystem::updateLoginReward() {
 			el_e.is_end = true;
 
 			// Atualiza aqui no banco de dados o evento
-			NormalManagerDB::add(1, new CmdUpdateLoginReward(el_e.id, el_e.is_end), LoginRewardSystem::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateLoginReward(el_e.id, el_e.is_end), LoginRewardSystem::SQLDBResponse, this);
 		}
 	}
 

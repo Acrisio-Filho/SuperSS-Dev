@@ -211,7 +211,7 @@ void unit_auth_server_connect::requestFirstPacketKey(UnitPlayer& _session, packe
 
 		CmdNewAuthServerKey cmd_nask(_session.m_si.uid, true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_nask, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_nask, nullptr, nullptr);
 
 		cmd_nask.waitEvent();
 

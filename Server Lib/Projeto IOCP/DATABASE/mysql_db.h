@@ -47,6 +47,8 @@ namespace stdA {
             virtual void init() override;
 			virtual void destroy();
 
+			virtual bool hasGoneAway() override;
+
             virtual void connect() override;
 			virtual void connect(std::string _db_address, std::string _db_name, std::string _user_name, std::string _user_pass, unsigned short _db_port = 3306) override;
 			virtual void connect(std::wstring _db_address, std::wstring _db_name, std::wstring _user_name, std::wstring _user_pass, unsigned short _db_port = 3306) override;

@@ -248,7 +248,7 @@ int packet_func::packet007(void* _arg1, void* _arg2) {
 		if (nc == SUCCESS) {
 			CmdVerifNick cmd_vn(nick, true);	// Waiter
 
-			NormalManagerDB::add(0, &cmd_vn, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_vn, nullptr, nullptr);
 
 			cmd_vn.waitEvent();
 
@@ -262,7 +262,7 @@ int packet_func::packet007(void* _arg1, void* _arg2) {
 
 				CmdMemberInfo cmd_mi(cmd_vn.getUID(), true);	// Waiter
 
-				NormalManagerDB::add(0, &cmd_mi, nullptr, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(0, &cmd_mi, nullptr, nullptr);
 
 				cmd_mi.waitEvent();
 
@@ -1978,7 +1978,7 @@ int packet_func::packet08B(void* _arg1, void* _arg2) {
 		
 		CmdServerList cmd_sl(CmdServerList::MSN, true);	// waitable
 
-		NormalManagerDB::add(0, &cmd_sl, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_sl, nullptr, nullptr);
 
 		cmd_sl.waitEvent();
 
@@ -2997,7 +2997,7 @@ int packet_func::packet0FB(void* _arg1, void* _arg2) {
 		
 		CmdGeraWebKey cmd_gwk(pd._session.m_pi.uid, true);
 
-		NormalManagerDB::add(0, &cmd_gwk, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_gwk, nullptr, nullptr);
 
 		cmd_gwk.waitEvent();
 
@@ -6295,7 +6295,7 @@ void packet_func::lobby_broadcast(channel& _channel, packet& p, unsigned char _d
 
 void packet_func::room_broadcast(room& _room, packet& p, unsigned char _debug) {
 	
-	std::vector< player* > room_session = _room.getSessions();
+	std::vector< player* > room_session = _room.getSessions(nullptr, false/*without invited*/);
 
 	for (auto i = 0u; i < room_session.size(); ++i) {
 		MAKE_SEND_BUFFER(p, room_session[i]);
@@ -6315,7 +6315,7 @@ void packet_func::room_broadcast(room& _room, std::vector< packet* > v_p, unsign
 
 	for (auto i = 0u; i < v_p.size(); ++i) {
 		if (v_p[i] != nullptr) {
-			room_session = _room.getSessions();
+			room_session = _room.getSessions(nullptr, false/*without invited*/);
 
 			for (auto ii = 0u; ii < room_session.size(); ++ii) {
 				MAKE_SEND_BUFFER(*v_p[i], room_session[ii]);

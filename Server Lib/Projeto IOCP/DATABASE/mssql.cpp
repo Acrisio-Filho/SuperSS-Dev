@@ -79,6 +79,19 @@ mssql::~mssql() {
     destroy();
 };
 
+bool mssql::hasGoneAway() {
+
+	if (!m_state || !m_connected || m_ctx.hStmt == SQL_NULL_HANDLE)
+		return true;
+
+	if (!SQL_SUCCEEDED(SQLExecDirect(m_ctx.hStmt, (SQLWCHAR*)L"SELECT 1", SQL_NTS)))
+		return true;
+
+	SQLMoreResults(m_ctx.hStmt);
+
+	return false;
+};
+
 void mssql::init() {
     
 	try {

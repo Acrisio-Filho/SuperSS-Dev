@@ -136,7 +136,7 @@ void BotGMEvent::initialize() {
 
 		CmdBotGMEventInfo cmd_bgei(true);	// Waiter
 
-		NormalManagerDB::add(0, &cmd_bgei, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_bgei, nullptr, nullptr);
 
 		cmd_bgei.waitEvent();
 

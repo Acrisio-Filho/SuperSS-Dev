@@ -123,7 +123,7 @@ void CardSystem::initialize() {
 	// Load Card Pack Map
 	CmdCardPack cmd_cp(true);	// Waiter
 
-	NormalManagerDB::add(0, &cmd_cp, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_cp, nullptr, nullptr);
 
 	cmd_cp.waitEvent();
 

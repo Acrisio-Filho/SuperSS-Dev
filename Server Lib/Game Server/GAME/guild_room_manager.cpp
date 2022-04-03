@@ -345,7 +345,7 @@ void GuildRoomManager::saveGuildsData() {
 		gp.pang = el.getPangWin();
 		gp.win = (m_guild_win == GuildRoomManager::eGUILD_WIN::DRAW ? GuildPoints::eGUILD_WIN::DRAW : ((unsigned char)el.getTeam() == (unsigned char)m_guild_win ? GuildPoints::eGUILD_WIN::WIN : GuildPoints::eGUILD_WIN::LOSE));
 
-		NormalManagerDB::add(2, new CmdUpdateGuildPoints(gp), GuildRoomManager::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateGuildPoints(gp), GuildRoomManager::SQLDBResponse, this);
 	}
 
 #if defined(_WIN32)
@@ -384,7 +384,7 @@ void GuildRoomManager::saveGuildsData() {
 		pthread_mutex_unlock(&m_cs);
 #endif
 
-		NormalManagerDB::add(1, new CmdRegisterGuildMatch(match), GuildRoomManager::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(1, new CmdRegisterGuildMatch(match), GuildRoomManager::SQLDBResponse, this);
 	}
 }
 

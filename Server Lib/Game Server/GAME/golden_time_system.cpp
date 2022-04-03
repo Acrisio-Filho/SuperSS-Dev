@@ -105,7 +105,7 @@ void GoldenTimeSystem::initialize() {
 	// Carrega a lista de eventos
 	CmdGoldenTimeInfo cmd_gti(true); // Waiter
 
-	NormalManagerDB::add(0, &cmd_gti, nullptr, nullptr);
+	snmdb::NormalManagerDB::getInstance().add(0, &cmd_gti, nullptr, nullptr);
 
 	cmd_gti.waitEvent();
 
@@ -122,8 +122,8 @@ void GoldenTimeSystem::initialize() {
 		cmd_gt_item.setId(el_gt.id);
 		cmd_gt_round.setId(el_gt.id);
 
-		NormalManagerDB::add(0, &cmd_gt_item, nullptr, nullptr);
-		NormalManagerDB::add(0, &cmd_gt_round, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_gt_item, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_gt_round, nullptr, nullptr);
 
 		try {
 
@@ -369,7 +369,7 @@ void GoldenTimeSystem::updateGoldenTimeEnd() {
 
 	// Atualiza no banco de dados
 	if (m_current_golden_time->is_end)
-		NormalManagerDB::add(1, new CmdUpdateGoldenTime(m_current_golden_time->id, m_current_golden_time->is_end), GoldenTimeSystem::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateGoldenTime(m_current_golden_time->id, m_current_golden_time->is_end), GoldenTimeSystem::SQLDBResponse, this);
 }
 
 bool GoldenTimeSystem::findForever(stGoldenTime& _el) {

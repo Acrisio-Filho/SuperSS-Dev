@@ -446,7 +446,7 @@ inline void player_manager::checkCaddie(player& _session) {
 				_smp::message_pool::getInstance().push(new message("[player_manager::checkCaddie][Log] hex: " + hex_util::BufferToHexString((unsigned char*)&el.second, sizeof(CaddieInfoEx)), CL_FILE_LOG_AND_CONSOLE));
 #endif
 
-				NormalManagerDB::add(1, new CmdUpdateCaddieInfo(_session.m_pi.uid, el.second), player_manager::SQLDBResponse, nullptr);
+				snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateCaddieInfo(_session.m_pi.uid, el.second), player_manager::SQLDBResponse, nullptr);
 			}
 		}
 	}
@@ -542,7 +542,7 @@ inline void player_manager::checkWarehouse(player& _session) {
 							}
 
 							// Update no DB
-							NormalManagerDB::add(2, new CmdUpdateCharacterAllPartEquiped(_session.m_pi.uid, *ci), player_manager::SQLDBResponse, nullptr);
+							snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateCharacterAllPartEquiped(_session.m_pi.uid, *ci), player_manager::SQLDBResponse, nullptr);
 
 						}else
 							_smp::message_pool::getInstance().push(new message("[player_manager::checkWarehouse][Error][WARNING] player[UID=" + std::to_string(_session.m_pi.uid) 

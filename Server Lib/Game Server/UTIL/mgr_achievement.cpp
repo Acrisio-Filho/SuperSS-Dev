@@ -95,7 +95,7 @@ void MgrAchievement::initAchievement(bool _create) {
 
 		CmdCheckAchievement cmd_cAchieve(m_uid, true);	// waitable
 
-		NormalManagerDB::add(0, &cmd_cAchieve, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_cAchieve, nullptr, nullptr);
 
 		cmd_cAchieve.waitEvent();
 
@@ -125,7 +125,7 @@ void MgrAchievement::initAchievement(bool _create) {
 
 			CmdAchievementInfo cmd_ai(m_uid, true);	// waitable
 
-			NormalManagerDB::add(0, &cmd_ai, nullptr, nullptr);
+			snmdb::NormalManagerDB::getInstance().add(0, &cmd_ai, nullptr, nullptr);
 
 			cmd_ai.waitEvent();
 
@@ -209,7 +209,7 @@ void MgrAchievement::resetAchievement(std::multimap<uint32_t, AchievementInfoEx>
 			
 			el.second.value = 0l;
 
-			NormalManagerDB::add(4, new CmdUpdateCounterItem(m_uid, el.second), MgrAchievement::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(4, new CmdUpdateCounterItem(m_uid, el.second), MgrAchievement::SQLDBResponse, this);
 		}
 	}
 
@@ -220,14 +220,14 @@ void MgrAchievement::resetAchievement(std::multimap<uint32_t, AchievementInfoEx>
 
 			el.clear_date_unix = 0u;
 
-			NormalManagerDB::add(5, new CmdUpdateQuestUser(m_uid, el), MgrAchievement::SQLDBResponse, this);
+			snmdb::NormalManagerDB::getInstance().add(5, new CmdUpdateQuestUser(m_uid, el), MgrAchievement::SQLDBResponse, this);
 		}
 	}
 
 	// Atualiza o Achievement
 	_it->second.status = AchievementInfo::ACHIEVEMENT_STATUS::ACTIVED;
 
-	NormalManagerDB::add(6, new CmdUpdateAchievementUser(m_uid, _it->second), MgrAchievement::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(6, new CmdUpdateAchievementUser(m_uid, _it->second), MgrAchievement::SQLDBResponse, this);
 
 	// Log
 	_smp::message_pool::getInstance().push(new message("[MgrAchievement::resetAchievement][Log] player[UID=" + std::to_string(m_uid) + "] Resetou Achievement[TYPEID=" 
@@ -251,14 +251,14 @@ void MgrAchievement::removeAchievement(std::multimap< uint32_t, AchievementInfoE
 
 	// Delete Counter Item
 	if (!_it->second.map_counter_item.empty())
-		NormalManagerDB::add(1, new CmdDeleteCounterItem(m_uid, _it->second.map_counter_item), MgrAchievement::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(1, new CmdDeleteCounterItem(m_uid, _it->second.map_counter_item), MgrAchievement::SQLDBResponse, this);
 
 	// Delete Quest
 	if (!_it->second.v_qsi.empty())
-		NormalManagerDB::add(2, new CmdDeleteQuest(m_uid, _it->second.v_qsi), MgrAchievement::SQLDBResponse, this);
+		snmdb::NormalManagerDB::getInstance().add(2, new CmdDeleteQuest(m_uid, _it->second.v_qsi), MgrAchievement::SQLDBResponse, this);
 
 	// Delete Achievement
-	NormalManagerDB::add(3, new CmdDeleteAchievement(m_uid, _it->second.id), MgrAchievement::SQLDBResponse, this);
+	snmdb::NormalManagerDB::getInstance().add(3, new CmdDeleteAchievement(m_uid, _it->second.id), MgrAchievement::SQLDBResponse, this);
 
 	auto id = _it->second.id;
 
@@ -531,7 +531,7 @@ AchievementInfoEx MgrAchievement::createAchievement(uint32_t _uid, IFF::Achievem
 
         cmd_ca.setAchievement(_achievement._typeid, name, _status);
 
-		NormalManagerDB::add(0, &cmd_ca, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_ca, nullptr, nullptr);
 
 		cmd_ca.waitEvent();
 
@@ -551,7 +551,7 @@ AchievementInfoEx MgrAchievement::createAchievement(uint32_t _uid, IFF::Achievem
 
                     cmd_cq.setQuest(*qs, (_achievement.typeid_quest_index == 0 || _achievement.typeid_quest_index == _achievement.quest_typeid[i]) ? true : false);
 
-					NormalManagerDB::add(0, &cmd_cq, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_cq, nullptr, nullptr);
 
 					cmd_cq.waitEvent();
 
@@ -622,7 +622,7 @@ AchievementInfoEx MgrAchievement::createAchievement(uint32_t _uid, IFF::QuestIte
 
 		cmd_ca.setAchievement(_qi._typeid, name, _status);
 
-		NormalManagerDB::add(0, &cmd_ca, nullptr, nullptr);
+		snmdb::NormalManagerDB::getInstance().add(0, &cmd_ca, nullptr, nullptr);
 
 		cmd_ca.waitEvent();
 
@@ -642,7 +642,7 @@ AchievementInfoEx MgrAchievement::createAchievement(uint32_t _uid, IFF::QuestIte
 
                     cmd_cq.setQuest(*qs, (_status != AchievementInfo::PENDENTING) ? true : false);
 
-					NormalManagerDB::add(0, &cmd_cq, nullptr, nullptr);
+					snmdb::NormalManagerDB::getInstance().add(0, &cmd_cq, nullptr, nullptr);
 
 					cmd_cq.waitEvent();
 

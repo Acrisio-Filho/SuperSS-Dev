@@ -238,6 +238,9 @@ namespace stdA {
 			// get GrandPrixAIOptionalData
 			/*static*/ std::map< uint32_t, IFF::GrandPrixAIOptionalData >& getGrandPrixAIOptionalData();
 
+			// get GrandPrixData
+			/*static*/ std::map< uint32_t, IFF::GrandPrixData >& getGrandPrixData();
+
 			// get Ability
 			/*static*/ std::map< uint32_t, IFF::Ability >& getAbility();
 

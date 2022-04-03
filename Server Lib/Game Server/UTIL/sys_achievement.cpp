@@ -143,7 +143,7 @@ void SysAchievement::finish_and_update(player& _session) {
 				for (auto& el : map_cii_change) {
 
 					// Atualiza o Counter no banco de dados
-					NormalManagerDB::add(3, new CmdUpdateCounterItem(_session.m_pi.uid, el.second), SysAchievement::SQLDBResponse, this);	// Not Waitable
+					snmdb::NormalManagerDB::getInstance().add(3, new CmdUpdateCounterItem(_session.m_pi.uid, el.second), SysAchievement::SQLDBResponse, this);	// Not Waitable
 					
 					p.addUint8(2);	// Type
 					p.addInt32(el.second._typeid);
@@ -808,7 +808,7 @@ bool SysAchievement::checkAchievement(player& _session, AchievementInfoEx& _ai, 
 
 						CmdAddCounterItem cmd_aci(_session.m_pi.uid, pcii->_typeid, cii.value, true);	// waitable
 
-						NormalManagerDB::add(0, &cmd_aci, nullptr, nullptr);
+						snmdb::NormalManagerDB::getInstance().add(0, &cmd_aci, nullptr, nullptr);
 
 						cmd_aci.waitEvent();
 
@@ -857,7 +857,7 @@ bool SysAchievement::checkAchievement(player& _session, AchievementInfoEx& _ai, 
 				// Finalizar a quest no db colocar a data que ela foi conclu�da
 				el.clear_date_unix = (uint32_t)GetLocalTimeAsUnix();
 
-				NormalManagerDB::add(1, new CmdUpdateQuestUser(_session.m_pi.uid, el), SysAchievement::SQLDBResponse, this);
+				snmdb::NormalManagerDB::getInstance().add(1, new CmdUpdateQuestUser(_session.m_pi.uid, el), SysAchievement::SQLDBResponse, this);
 
 				// Quest Conclu�da
 				v_quest_clear.push_back({ _ai._typeid, el._typeid });
@@ -871,7 +871,7 @@ bool SysAchievement::checkAchievement(player& _session, AchievementInfoEx& _ai, 
 					_ai.status = AchievementInfo::CONCLUEDED;
 
 					// Atualiza no banco de dados
-					NormalManagerDB::add(2, new CmdUpdateAchievementUser(_session.m_pi.uid, _ai), SysAchievement::SQLDBResponse, this);
+					snmdb::NormalManagerDB::getInstance().add(2, new CmdUpdateAchievementUser(_session.m_pi.uid, _ai), SysAchievement::SQLDBResponse, this);
 
 					_smp::message_pool::getInstance().push(new message("[SysAchievement::checkAchievement][Log] Achievement[TYPEID=" + std::to_string(_ai._typeid) + ", ID=" + std::to_string(_ai.id) + "] concluido. do player: " 
 							+ std::to_string(_session.m_pi.uid), CL_FILE_LOG_AND_CONSOLE));
