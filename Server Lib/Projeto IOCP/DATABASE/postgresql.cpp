@@ -143,7 +143,7 @@ bool postgresql::hasGoneAway() {
 	if (!m_state || !m_connected || m_ctx.hStmt == SQL_NULL_HANDLE)
 		return true;
 
-	if (!SQL_SUCCEEDED(SQLExecDirect(m_ctx.hStmt, (SQLWCHAR*)L"SELECT 1", SQL_NTS)))
+	if (!SQL_SUCCEEDED(SQLExecDirectA(m_ctx.hStmt, (SQLCHAR*)"SELECT 1", SQL_NTS)))
 		return true;
 
 	SQLMoreResults(m_ctx.hStmt);
