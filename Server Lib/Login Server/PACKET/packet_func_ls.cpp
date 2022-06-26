@@ -59,6 +59,8 @@
 
 #include "../../Projeto IOCP/UTIL/md5.hpp"
 
+#include "../../Projeto IOCP/UTIL/util_time.h"
+
 #define MAKE_SEND_BUFFER(_packet, _session) (_packet).makeFull((_session)->m_key); \
 											WSABUF mb = (_packet).getMakedBuf(); \
 											try { \
@@ -546,9 +548,13 @@ int packet_func::pacote001(packet& p, player *_session, int option) {
 		p.addString(_session->m_pi.id);
 		p.addInt32(_session->m_pi.uid);
 		p.addInt32(_session->m_pi.m_cap);
-		p.addInt16(_session->m_pi.level);
-		p.addInt32(0);
-		p.addInt32(0);
+		p.addInt16(_session->m_pi.level);			// 1 level, 1 pc bang(ACHO), com base no S4
+		p.addInt32(0);								// valor 0 Unknown
+		p.addInt32(5);								// valor 5 Unknown
+		p.addFixedString(formatDateLocal(0), 19);	// Time Build Login Server (ACHO)							- JP S9 ler mais ignora ele
+		p.addString("302540");						// Alguma AuthKey aleatória para minha conta que eu não sei - JP S9 ler mais ignora ele
+		p.addUint32(0);								// Unknown valor - JP S9 ler mais ignora ele
+		p.addUint32(0);								// Unknown valor - JP S9 ler mais ignora ele
 		p.addString(_session->m_pi.nickname);
 		p.addInt16(0);
 	}else if (option == 1)
@@ -624,6 +630,7 @@ int packet_func::pacote00E(packet& p, player *_session, std::wstring nick, int o
 	return 0;
 };
 
+// Mensagem do Tutorial
 int packet_func::pacote00F(packet& p, player *_session, int option) {
 
 	p.init_plain((unsigned short)0x0F);
@@ -631,6 +638,11 @@ int packet_func::pacote00F(packet& p, player *_session, int option) {
 	p.addInt8(option);
 	
 	p.addString(_session->m_pi.id);
+
+	p.addUint32(0);								// valor 0 Unknown
+	p.addUint32(5);								// valor 5 Unknown
+	p.addFixedString(formatDateLocal(0), 19);	// Time Build Login Server (ACHO)								- JP S9 ler mais ignora ele
+	p.addString("302540");						// Alguma AuthKey aleatória para minha conta que eu não sei		- JP S9 ler mais ignora ele
 
 	return 0;
 };

@@ -1,6 +1,6 @@
 // Aquivo iff_writer.hpp
 // Criado em 03/06/2019 as 19:44 por Acrisio
-// Definição da classe iff_writer
+// Definiï¿½ï¿½o da classe iff_writer
 
 #pragma once
 #ifndef _STDA_IFF_WRITER_HPP
@@ -30,6 +30,49 @@ namespace stdA {
 			void saveSetItem();
 			void saveSkin();
 			void saveCadieMagicBox();
+			void saveAchievement();
+			void saveQuestItem();
+			void saveQuestStuff();
+			void saveCounterItem();
+			void saveCadieMagicBoxRandom();
+			void saveCharacterMastery();
+			void saveClub();
+			void saveClubSetWorkShopLevelUpLimit();
+			void saveClubSetWorkShopLevelUpProb();
+			void saveClubSetWorkShopRankUpExp();
+			void saveCourse();
+			void saveCutinInfomation();
+			void saveEnchant();
+			void saveFurniture();
+			void saveMatch();
+			void saveAbility();
+			void saveDesc();
+			void saveGrandPrixAIOptionalData();
+			void saveGrandPrixConditionEquip();
+			void saveGrandPrixData();
+			void saveGrandPrixRankReward();
+			void saveGrandPrixSpecialHole();
+			void saveMemorialShopCoinItem();
+			void saveMemorialShopRareItem();
+			void saveAddonPart();
+			void saveArtifactManaInfo();
+			void saveCaddieVoiceTable();
+			void saveErrorCodeInfo();
+			void saveFurnitureAbility();
+			void saveHoleCupDropItem();
+			void saveLevelUpPrizeItem();
+			void saveNonVisibleItemTable();
+			void savePointShop();
+			void saveShopLimitItem();
+			void saveSpecialPrizeItem();
+			void saveSubscriptionItemTable();
+			void saveSetEffectTable();
+			void saveTikiPointTable();
+			void saveTikiRecipe();
+			void saveTikiSpecialTable();
+			void saveTimeLimitItem();
+			void saveTwinsItemTable();
+
 	};
 }
 

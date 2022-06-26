@@ -244,8 +244,95 @@ namespace stdA {
 			// get Ability
 			/*static*/ std::map< uint32_t, IFF::Ability >& getAbility();
 
-			// get Set Effect Table
+			// get SetEffectTable
 			/*static*/ std::map< uint32_t, IFF::SetEffectTable >& getSetEffectTable();
+
+			// get QuestStuff
+			/*static */std::map< uint32_t, IFF::QuestStuff >& getQuestStuff();
+
+			// get Club
+			/*static */std::map< uint32_t, IFF::Club >& getClub();
+
+			// get ClubSetWorkShopLevelUpProb
+			/*static */std::map< uint32_t, IFF::ClubSetWorkShopLevelUpProb >& getClubSetWorkShopLevelUpProb();
+
+			// get ClubSetWorkShopRankUpExp
+			/*static */std::map< uint32_t, IFF::ClubSetWorkShopRankUpExp >& getClubSetWorkShopRankUpExp();
+
+			// get CutinInfomation
+			/*static */std::map< uint32_t, IFF::CutinInfomation >& getCutinInfomation();
+
+			// get Enchant
+			/*static */std::map< uint32_t, IFF::Enchant >& getEnchant();
+
+			// get Furniture
+			/*static */std::map< uint32_t, IFF::Furniture >& getFurniture();
+
+			// get Match
+			/*static */std::map< uint32_t, IFF::Match >& getMatch();
+
+			// get GrandPrixConditionEquip
+			/*static */std::map< uint32_t, IFF::GrandPrixConditionEquip >& getGrandPrixConditionEquip();
+
+			// get ArtifactManaInfo
+			/*static */std::map< uint32_t, IFF::ArtifactManaInfo >& getArtifactManaInfo();
+
+			// get ErrorCodeInfo
+			/*static */std::map< uint32_t, IFF::ErrorCodeInfo >& getErrorCodeInfo();
+
+			// get HoleCupDropItem
+			/*static */std::map< uint32_t, IFF::HoleCupDropItem >& getHoleCupDropItem();
+
+			// get NonVisibleItemTable
+			/*static */std::map< uint32_t, IFF::NonVisibleItemTable >& getNonVisibleItemTable();
+
+			// get PointShop
+			/*static */std::map< uint32_t, IFF::PointShop >& getPointShop();
+
+			// get ShopLimitItem
+			/*static */std::map< uint32_t, IFF::ShopLimitItem >& getShopLimitItem();
+
+			// get SpecialPrizeItem
+			/*static */std::map< uint32_t, IFF::SpecialPrizeItem >& getSpecialPrizeItem();
+
+			// get SubscriptionItemTable
+			/*static */std::map< uint32_t, IFF::SubscriptionItemTable >& getSubscriptionItemTable();
+
+			// get TikiPointTable
+			/*static */std::map< uint32_t, IFF::TikiPointTable >& getTikiPointTable();
+
+			// get TikiRecipe
+			/*static */std::map< uint32_t, IFF::TikiRecipe >& getTikiRecipe();
+
+			// get TikiSpecialTable
+			/*static */std::map< uint32_t, IFF::TikiSpecialTable >& getTikiSpecialTable();
+
+			// get AddonPart
+			/*static */std::vector< IFF::AddonPart >& getAddonPart();
+
+			// get CadieMagicBoxRandom
+			/*static */std::vector< IFF::CadieMagicBoxRandom >& getCadieMagicBoxRandom();
+
+			// get CharacterMastery
+			/*static */std::vector< IFF::CharacterMastery >& getCharacterMastery();
+
+			// get ClubSetWorkShopLevelUpLimit
+			/*static */std::vector< IFF::ClubSetWorkShopLevelUpLimit >& getClubSetWorkShopLevelUpLimit();
+
+			// get GrandPrixRankReward
+			/*static */std::vector< IFF::GrandPrixRankReward >& getGrandPrixRankReward();
+
+			// get GrandPrixSpecialHole
+			/*static */std::vector< IFF::GrandPrixSpecialHole >& getGrandPrixSpecialHole();
+
+			// get CaddieVoiceTable
+			/*static */std::vector< IFF::CaddieVoiceTable >& getCaddieVoiceTable();
+
+			// get FurnitureAbility
+			/*static */std::vector< IFF::FurnitureAbility >& getFurnitureAbility();
+
+			// get TwinsItemTable
+			/*static */std::vector< IFF::TwinsItemTable >& getTwinsItemTable();
 
 		private:
 			// Achievement

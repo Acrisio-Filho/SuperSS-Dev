@@ -251,7 +251,10 @@ namespace stdA {
     
 			void addString(const std::string string);
 			void addString(const std::wstring string);
-    
+
+			void addFixedString(const std::string string, uint32_t size);
+			void addFixedString(const std::wstring string, uint32_t size);
+
             void readBuffer(void* buffer, size_t size);
             void readQWord(void* qword);
             void readDWord(void* dword);

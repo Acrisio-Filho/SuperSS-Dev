@@ -542,7 +542,7 @@ uint32_t iff::getItemTitleNum(uint32_t _typeid) {
 
 uint32_t iff::getMatchTypeIdentity(uint32_t _typeid) {
 	return (uint32_t)((_typeid & ~0xFC000000) >> 16);
-}
+};
 
 uint32_t iff::getCaddieItemType(uint32_t _typeid) {
 	return (uint32_t)((_typeid & 0x0000FF00) >> 13);
@@ -1465,7 +1465,7 @@ std::vector< IFF::ClubSet > iff::findClubSetOriginal(uint32_t _typeid) {
 	return v_clubset;
 };
 
-std::map<uint32_t, IFF::Achievement>& iff::getAchievement() {
+std::map< uint32_t, IFF::Achievement >& iff::getAchievement() {
 	return m_achievement;
 };
 
@@ -1561,7 +1561,7 @@ std::map< uint32_t, IFF::GrandPrixAIOptionalData >& iff::getGrandPrixAIOptionalD
 	return m_grand_prix_ai_optinal_data;
 };
 
-std::map<uint32_t, IFF::GrandPrixData>& iff::getGrandPrixData() {
+std::map< uint32_t, IFF::GrandPrixData >& iff::getGrandPrixData() {
 	return m_grand_prix_data;
 };
 
@@ -1571,4 +1571,120 @@ std::map< uint32_t, IFF::Ability >& iff::getAbility() {
 
 std::map< uint32_t, IFF::SetEffectTable >& iff::getSetEffectTable() {
 	return m_set_effect_table;
+};
+
+std::map< uint32_t, IFF::QuestStuff >& iff::getQuestStuff() {
+	return m_quest_stuff;
+};
+
+std::map< uint32_t, IFF::Club >& iff::getClub() {
+	return m_club;
+};
+
+std::map< uint32_t, IFF::ClubSetWorkShopLevelUpProb >& iff::getClubSetWorkShopLevelUpProb() {
+	return m_club_set_work_shop_level_up_prob;
+};
+
+std::map< uint32_t, IFF::ClubSetWorkShopRankUpExp >& iff::getClubSetWorkShopRankUpExp() {
+	return m_club_set_work_shop_rank_exp;
+};
+
+std::map< uint32_t, IFF::CutinInfomation >& iff::getCutinInfomation() {
+	return m_cutin_infomation;
+};
+
+std::map< uint32_t, IFF::Enchant >& iff::getEnchant() {
+	return m_enchant;
+};
+
+std::map< uint32_t, IFF::Furniture >& iff::getFurniture() {
+	return m_furniture;
+};
+
+std::map< uint32_t, IFF::Match >& iff::getMatch() {
+	return m_match;
+};
+
+std::map< uint32_t, IFF::GrandPrixConditionEquip >& iff::getGrandPrixConditionEquip() {
+	return m_grand_prix_condition_equip;
+};
+
+std::map< uint32_t, IFF::ArtifactManaInfo >& iff::getArtifactManaInfo() {
+	return m_artifact_mana_info;
+};
+
+std::map< uint32_t, IFF::ErrorCodeInfo >& iff::getErrorCodeInfo() {
+	return m_error_code_info;
+};
+
+std::map< uint32_t, IFF::HoleCupDropItem >& iff::getHoleCupDropItem() {
+	return m_hole_cup_drop_item;
+};
+
+std::map< uint32_t, IFF::NonVisibleItemTable >& iff::getNonVisibleItemTable() {
+	return m_non_visible_item_table;
+};
+
+std::map< uint32_t, IFF::PointShop >& iff::getPointShop() {
+	return m_point_shop;
+};
+
+std::map< uint32_t, IFF::ShopLimitItem >& iff::getShopLimitItem() {
+	return m_shop_limit_item;
+};
+
+std::map< uint32_t, IFF::SpecialPrizeItem >& iff::getSpecialPrizeItem() {
+	return m_special_prize_item;
+};
+
+std::map< uint32_t, IFF::SubscriptionItemTable >& iff::getSubscriptionItemTable() {
+	return m_subscription_item_table;
+};
+
+std::map< uint32_t, IFF::TikiPointTable >& iff::getTikiPointTable() {
+	return m_tiki_point_table;
+};
+
+std::map< uint32_t, IFF::TikiRecipe >& iff::getTikiRecipe() {
+	return m_tiki_recipe;
+};
+
+std::map< uint32_t, IFF::TikiSpecialTable >& iff::getTikiSpecialTable() {
+	return m_tiki_special_table;
+};
+
+std::vector< IFF::AddonPart >& iff::getAddonPart() {
+	return m_addon_part;
+};
+
+std::vector< IFF::CadieMagicBoxRandom >& iff::getCadieMagicBoxRandom() {
+	return m_cadie_magic_box_random;
+};
+
+std::vector< IFF::CharacterMastery >& iff::getCharacterMastery() {
+	return m_character_mastery;
+};
+
+std::vector< IFF::ClubSetWorkShopLevelUpLimit >& iff::getClubSetWorkShopLevelUpLimit() {
+	return m_club_set_work_shop_level_up_limit;
+};
+
+std::vector< IFF::GrandPrixRankReward >& iff::getGrandPrixRankReward() {
+	return m_grand_prix_rank_reward;
+};
+
+std::vector< IFF::GrandPrixSpecialHole >& iff::getGrandPrixSpecialHole() {
+	return m_grand_prix_special_hole;
+};
+
+std::vector< IFF::CaddieVoiceTable >& iff::getCaddieVoiceTable() {
+	return m_caddie_voice_table;
+};
+
+std::vector< IFF::FurnitureAbility >& iff::getFurnitureAbility() {
+	return m_furniture_ability;
+};
+
+std::vector< IFF::TwinsItemTable >& iff::getTwinsItemTable() {
+	return m_twins_item_table;
 };

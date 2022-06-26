@@ -759,6 +759,26 @@ void packet::addString(const std::wstring string) {
 	addString(WcToMb(string));
 };
 
+void packet::addFixedString(const std::string string, uint32_t size) {
+	addInt16((unsigned short)size);
+
+	if (string.size() >= size)
+		add_plain(string.c_str(), size);
+	else {
+
+		add_plain(string.c_str(), string.size());
+
+		auto diff = size - string.size();
+
+		if ((int32_t)diff > 0)
+			addZeroByte(diff);
+	}
+};
+
+void packet::addFixedString(const std::wstring string, uint32_t size) {
+	addFixedString(WcToMb(string), size);
+};
+
 void packet::readBuffer(void* buffer, size_t size) {
     if (buffer == nullptr)
         throw exception("Error arguments invalid, _buf is nullptr em packet::readBuffer()", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PACKET, 2, 0));

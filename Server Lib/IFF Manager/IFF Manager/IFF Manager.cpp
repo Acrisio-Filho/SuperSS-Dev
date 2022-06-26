@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
 					<< "12. Name itens gacha.\n"
 					<< "13. Habilita All Cutin Fate no shop.\n"
 					<< "14. Papel Shop Rare Number 28.\n"
-					<< "15. Gera Lista Grand Prix Data, Box Scores.\n"
+					<< "15. Gera Lista Grand Prix Data, Bot Scores.\n"
 			;
 
 		int escolha = 0;
