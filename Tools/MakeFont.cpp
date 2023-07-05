@@ -10,6 +10,7 @@
 #include <fstream>
 #include <vector>
 #include <cmath>
+#include <memory>
 
 #include <stdarg.h>
 
@@ -22,8 +23,9 @@
 // Timeapi
 #pragma comment (lib,"Winmm.lib")
 
-constexpr unsigned long ANTIALIASING_WORK_FONT_SIZE = 18ul;
-constexpr unsigned long MIN_FONT_SIZE = 4ul; //11
+constexpr unsigned long ANTIALIASING_WORK_FONT_SIZE = 22ul; // 21 é o mínino, mas vou deixar número par
+constexpr unsigned long MIN_FONT_SIZE = 4ul; // 11
+constexpr unsigned long START_LETTER_CODE_POINT = 0x20ul;
 
 constexpr auto DEFAULT_FONT = "Arial";
 
@@ -34,8 +36,13 @@ BOOL		bAntialiased = FALSE;
 
 wchar_t		fontname[256];
 int			pointsize = MIN_FONT_SIZE;
+float		scale_size = 1.f;
+int			paddingLeft = 0;
 
-WCHAR		start_letter = 0x20;
+WCHAR		start_letter = START_LETTER_CODE_POINT;
+
+// Teste, gera um bitmap do primeiro caracter
+BOOL		bOneLetter = FALSE;
 
 // GDI+
 ULONG_PTR m_gdiplusToken = NULL;
@@ -148,30 +155,14 @@ void Error(const char *error, ...)
 	exit(1);
 }
 
-// Com format String
-#define WITH_STRING_FORMAT 0
+unsigned char* makeMyFont(const wchar_t* _font_family, unsigned long _size, float _scale, int _paddingLeft, bool _italic, bool _underline, bool _bold, bool _antialiased, bool _one_letter, size_t* _outsize) {
 
-// Teste, gera um bitmap do primeiro caracter
-#define ONE_LETTER_TEST 0
+	Gdiplus::Status status;
 
-unsigned char* makeMyFont(const wchar_t* _font_family, unsigned long _size, bool _italic, bool _underline, bool _bold, bool _antialiased, size_t* _outsize) {
-
-	Gdiplus::RectF rc(0.f, 0.f, _size * 1.f, _size * 1.f);
-
-#if WITH_STRING_FORMAT == 0
-	Gdiplus::PointF pf(-2.f, -1.f);
-#else
-	Gdiplus::RectF pf(0.f, 0.f, _size * 1.f + 1, _size * 1.f + 2);
+	Gdiplus::RectF rc(0, 0, (float)_size * _scale, (float)_size * _scale);
+	Gdiplus::RectF pwf;
 
 	Gdiplus::StringFormat sf;
-
-	sf.SetAlignment(Gdiplus::StringAlignmentNear);
-	sf.SetLineAlignment(Gdiplus::StringAlignmentCenter);
-#endif
-	
-	Gdiplus::RectF widf;
-
-	float font_scale_antialiasing = 1.f;
 
 	Gdiplus::BitmapData btd;
 
@@ -179,8 +170,7 @@ unsigned char* makeMyFont(const wchar_t* _font_family, unsigned long _size, bool
 	Gdiplus::Bitmap *mono = nullptr;
 
 	Gdiplus::Graphics g(img);
-
-	float font_size = (float)(_size < MIN_FONT_SIZE ? MIN_FONT_SIZE - 2 : _size - 2);
+	float font_size = (float)_size;
 
 	if (_antialiased) {
 
@@ -190,9 +180,9 @@ unsigned char* makeMyFont(const wchar_t* _font_family, unsigned long _size, bool
 
 		if (_size < ANTIALIASING_WORK_FONT_SIZE) {
 
-			font_scale_antialiasing = _size / (float)ANTIALIASING_WORK_FONT_SIZE;
+			_scale *= _size / (float)ANTIALIASING_WORK_FONT_SIZE;
 
-			font_size = (float)(ANTIALIASING_WORK_FONT_SIZE - 2);
+			font_size = (float)ANTIALIASING_WORK_FONT_SIZE;
 		}
 
 	}else {
@@ -202,18 +192,50 @@ unsigned char* makeMyFont(const wchar_t* _font_family, unsigned long _size, bool
 		g.SetInterpolationMode(Gdiplus::InterpolationModeDefault);
 	}
 
+	const Gdiplus::PointF pointF(_paddingLeft / _scale, 0.f);
+	Gdiplus::RectF layoutF(0.f, 0.f, font_size, font_size);
+
 	Gdiplus::FontFamily fm(_font_family);
 	
 	// !@ MAKE LANG ID
 	//fm.GetFamilyName((LPWSTR)_font_family, MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN));
 	
-	Gdiplus::Font f(&fm, font_size, Gdiplus::FontStyleRegular, Gdiplus::UnitPoint);
+	Gdiplus::Font f(&fm, font_size, Gdiplus::FontStyleRegular, Gdiplus::Unit::UnitPixel);
 
 	Gdiplus::SolidBrush brush(Gdiplus::Color(255, 255, 255, 255));
 
+	Gdiplus::Region region;
+	Gdiplus::CharacterRange charRange;
+
+	charRange.First = 0;
+	charRange.Length = 1;
+
+	status = sf.SetMeasurableCharacterRanges(1, &charRange);
+
+	status = sf.SetLineAlignment(Gdiplus::StringAlignment::StringAlignmentFar);
+	status = sf.SetAlignment(Gdiplus::StringAlignment::StringAlignmentNear);
+	status = sf.SetTrimming(Gdiplus::StringTrimming::StringTrimmingNone);
+	status = sf.SetFormatFlags(
+		Gdiplus::StringFormatFlags::StringFormatFlagsNoClip | Gdiplus::StringFormatFlags::StringFormatFlagsNoFitBlackBox
+	);
+
+#define FontUnitToPixel(_f_, _fm_, _value_) (float)((_f_).GetSize() * (_value_) / (_fm_).GetEmHeight(Gdiplus::FontStyleRegular))
+#define MyFontUnitToPixel(_value_) FontUnitToPixel(f, fm, _value_)
+
+	float ascentF = MyFontUnitToPixel(fm.GetCellAscent(Gdiplus::FontStyleRegular));
+	float descentF = MyFontUnitToPixel(fm.GetCellDescent(Gdiplus::FontStyleRegular));
+	float lineSpaceingF = MyFontUnitToPixel(fm.GetLineSpacing(Gdiplus::FontStyleRegular));
+
+	printf("Font info, Asc: %f, Desc: %f, LineSpacing: %f, Size: %f\n",
+		ascentF,
+		descentF,
+		lineSpaceingF,
+		font_size
+	);
+
 	constexpr unsigned long limit_char = (1 << (sizeof(WCHAR) * 8)) - 1;
 
-	unsigned long bytesPerRow = (unsigned long)((_antialiased ? 4 : 1) * rc.Width + 7) >> 3;
+	unsigned long bytesPerRow = (unsigned long)((_antialiased ? 4 : 1) * (unsigned long)rc.Width + 7) >> 3;
 	unsigned long bytesPerChar = bytesPerRow * (unsigned long)rc.Height + 2;
 
 	WCHAR letter = start_letter; //start_char; //'0'; //0xBCC; //0x9ED1;
@@ -229,7 +251,7 @@ unsigned char* makeMyFont(const wchar_t* _font_family, unsigned long _size, bool
 	unsigned long offset = 0, bits = 0, bestWidth = 0;
 
 	*(uint32_t*)dst = 0x544e4657; // WFNT
-	*(uint32_t*)(dst + 4) = _size;
+	*(uint32_t*)(dst + 4) = (uint32_t)rc.Width; // _size
 	*(uint32_t*)(dst + 8) = _antialiased ? 1 : 0;
 	*(uint32_t*)(dst + 12) = 0; // Reserved
 
@@ -239,36 +261,28 @@ unsigned char* makeMyFont(const wchar_t* _font_family, unsigned long _size, bool
 		offset = (letter - start_letter) * bytesPerChar + 16/*Header*/;
 
 		// Reset
-		g.ResetTransform();
+		status = g.ResetTransform();
 
-		if (_antialiased)
-			g.ScaleTransform(font_scale_antialiasing, font_scale_antialiasing);
+		if (_scale != 1.f)
+			status = g.ScaleTransform(_scale, _scale);
 
-//		/*!@*/
-//#if WITH_STRING_FORMAT == 0
-//		if (g.MeasureString(&letter, 1, &f, pf, &widf) == Gdiplus::Status::Ok) {
-//#else
-//		if (g.MeasureString(&letter, 1, &f, pf, &sf, &widf) == Gdiplus::Status::Ok) {
-//#endif
-//
-//			// !@
-//			std::ofstream ofe("log.txt", std::ofstream::binary);
-//
-//			if (ofe.is_open()) {
-//
-//				ofe << "X: " << widf.X << "\nY: " << widf.Y << "\nWidth: " << widf.Width << "\nHeight: " << widf.Height << std::endl;
-//			}
-//
-//			ofe.close();
-//		}
+		layoutF.X = pointF.X;
+		layoutF.Y = pointF.Y;
 
-		g.Clear(Gdiplus::Color(0, 0, 0));
+		if ((status = g.MeasureCharacterRanges(&letter, 1, &f, layoutF, &sf, 1, &region)) == Gdiplus::Status::Ok) {
 
-#if WITH_STRING_FORMAT == 0
-		g.DrawString(&letter, 1, &f, pf, &brush);
-#else
-		g.DrawString(&letter, 1, &f, pf, &sf, &brush);
-#endif
+			if ((status = region.GetBounds(&pwf, &g)) != Gdiplus::Status::Ok)
+				printf("fail region get bounds(%d)", (long)status);
+
+			layoutF.X -= pwf.X - layoutF.X;
+			layoutF.Y += (lineSpaceingF - pwf.Height) + descentF;
+		}
+
+		// Clear
+		status = g.Clear(Gdiplus::Color(0, 0, 0));
+
+		// Draw
+		status = g.DrawString(&letter, 1, &f, layoutF, &sf, &brush);
 
 		mono = (Gdiplus::Bitmap*)img;
 
@@ -282,7 +296,7 @@ unsigned char* makeMyFont(const wchar_t* _font_family, unsigned long _size, bool
 		}
 
 		// Save only bits
-		mono->LockBits(NULL, Gdiplus::ImageLockModeRead, _antialiased ? PixelFormat4bppIndexed : PixelFormat1bppIndexed, &btd);
+		status = mono->LockBits(NULL, Gdiplus::ImageLockModeRead, _antialiased ? PixelFormat4bppIndexed : PixelFormat1bppIndexed, &btd);
 
 		src = (unsigned char*)btd.Scan0;
 		pqdata = dst + offset;
@@ -304,9 +318,10 @@ unsigned char* makeMyFont(const wchar_t* _font_family, unsigned long _size, bool
 				}
 
 				// Clear
-				pqdata[bits >> 3] &= ~((1 << (bits & 7)) - 1);
+				pqdata[bits >> 3] &= ~((1 << (7 - bits & 7)) - 1);
 
-			}else {
+			}
+			else {
 
 				while (bits < btd.Width) {
 
@@ -319,39 +334,53 @@ unsigned char* makeMyFont(const wchar_t* _font_family, unsigned long _size, bool
 				}
 
 				// Clear
-				pqdata[bits >> 3] &= ~((1 << (bits & 7)) - 1);
+				pqdata[bits >> 3] &= ~((1 << (7 - bits & 7)) - 1);
 			}
 
 			src += btd.Stride;
 			pqdata += bytesPerRow;
 		}
 
-		*(unsigned short*)pqdata = (unsigned short)(bestWidth == 0 ? btd.Width / 2 + 2 : bestWidth);
+		*(unsigned short*)pqdata = (unsigned short)(bestWidth == 0
+			? btd.Width / 2 + 2
+			: (_antialiased ? bestWidth / 4 : bestWidth));
 
-		mono->UnlockBits(&btd);
+		status = mono->UnlockBits(&btd);
 
-#if ONE_LETTER_TEST == 1
-		// Teste
-		if (mono != nullptr) {
-			CLSID clsid_bmp;
-			GetEncoderClsid(L"image/bmp", &clsid_bmp);
-			mono->Save(L"letter3.bmp", &clsid_bmp);
+		// Uma letra teste
+		if (_one_letter) {
 
-			if (_antialiased)
-				delete mono;
+			// Teste
+			if (mono != nullptr) {
+				CLSID clsid_bmp;
+				GetEncoderClsid(L"image/bmp", &clsid_bmp);
+				status = mono->Save(L"letter3.bmp", &clsid_bmp);
 
-			mono = (Gdiplus::Bitmap*)img;
+				if (_antialiased)
+					delete mono;
+
+				mono = (Gdiplus::Bitmap*)img;
+			}
+
+			// Only a letter
+			break;
 		}
-
-		// Only a letter
-		break;
-#endif
 
 		// Clear Antialiasing
 		if (_antialiased && mono != nullptr)
 			delete mono;
 
 	} while (++letter < limit_char);
+
+	// last letter measure text
+	std::ofstream ofe("log.txt", std::ofstream::binary);
+
+	if (ofe.is_open()) {
+
+		ofe << "X: " << pwf.X << "\nY: " << pwf.Y << "\nWidth: " << pwf.Width << "\nHeight: " << pwf.Height << std::endl;
+	}
+
+	ofe.close();
 
 	// Clear
 	if (img != nullptr)
@@ -452,13 +481,44 @@ int _tmain(int argc, wchar_t* argv[]) {
 			bAntialiased = TRUE;
 			printf("antialiasing set\n");
 		}
+		else if (!_tcscmp(argv[i], L"-one")) {
+			bOneLetter = TRUE;
+			printf("One Letter Print\n");
+		}
 		else if (!_tcscmp(argv[i], L"-startletter")) {
 
 			if (i + 1 >= argc) {
 
 				Error("Makefont: Insufficient start letter specified\n");
 			}
+			
 			start_letter = _ttoi(argv[i + 1]);
+			
+			if (start_letter < START_LETTER_CODE_POINT)
+				start_letter = START_LETTER_CODE_POINT;
+			
+			i += 1;
+		}
+		else if (!_tcscmp(argv[i], L"-scale")) {
+
+			if (i + 1 >= argc) {
+
+				Error("Makefont: Insuficient scale specified\n");
+			}
+
+			scale_size = (float)_ttoi(argv[i + 1]);
+
+			i += 1;
+		}
+		else if (!_tcscmp(argv[i], L"-paddingleft")) {
+
+			if (i + 1 >= argc) {
+
+				Error("Makefont: Insuficient paddingleft specified\n");
+			}
+
+			paddingLeft = _ttoi(argv[i + 1]);
+
 			i += 1;
 		}
 		else if ( argv[i][0] == '-' )
@@ -471,15 +531,20 @@ int _tmain(int argc, wchar_t* argv[]) {
 
 	if ( i != argc - 1 )
 	{
-		Error ("usage: makefont [-font \"fontname\"] [-italic] [-underline] [-bold] [-antialiazing] [-startletter letter] [-pointsize size] outfile");
+		Error ("usage: makefont [-font \"fontname\"] [-italic] [-underline] [-bold] [-antialiasing] [-startletter letter] [-pointsize size] [-scale size] [paddingleft size] [-one] outfile");
 	}
 
-	wprintf( L"Creating %i point %s fonts\n", pointsize, fontname );
+	if (scale_size == -1.f || scale_size == 0.f)
+		scale_size = 1.f;
+	else if (scale_size > 1.f)
+		scale_size = scale_size / (float)pointsize;
+
+	wprintf( L"Creating %i point %.02f scale %s fonts\n", pointsize, scale_size, fontname );
 
 	start = timeGetTime();
 
 	// Create the fonts
-	font = makeMyFont(fontname, pointsize, bItalic, bUnderline, bBold, bAntialiased, &outsize);
+	font = makeMyFont(fontname, pointsize, scale_size, paddingLeft, bItalic, bUnderline, bBold, bAntialiased, bOneLetter, &outsize);
 
 	if (font != nullptr) {
 
