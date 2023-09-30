@@ -266,6 +266,7 @@
     <ClCompile Include="..\GAME\pang_battle.cpp" />
     <ClCompile Include="..\GAME\papel_shop_system.cpp" />
     <ClCompile Include="..\GAME\personal_shop.cpp" />
+    <ClCompile Include="..\GAME\personal_shop_manager.cpp" />
     <ClCompile Include="..\GAME\player_mail_box.cpp" />
     <ClCompile Include="..\GAME\practice.cpp" />
     <ClCompile Include="..\GAME\premium_system.cpp" />
