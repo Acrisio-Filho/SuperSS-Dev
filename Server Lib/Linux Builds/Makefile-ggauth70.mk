@@ -2,7 +2,7 @@
 .DEFAULT_GOAL := all
 
 # Compiler and linker
-CXX := g++-10
+CXX := g++
 
 # Debug
 DEBUG_CXXFLAGS := -Og -D _DEBUG -ggdb

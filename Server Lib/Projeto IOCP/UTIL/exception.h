@@ -8,6 +8,7 @@
 
 #include <string>
 #include <exception>
+#include <cstdint>
 
 #define STDA_SOURCE_ERROR_ENCODE(source_error) (int)(((source_error) << 24) & 0xFF000000)
 #define STDA_SOURCE_ERROR_DECODE(err_code) (int)(((err_code) >> 24) & 0x000000FF)

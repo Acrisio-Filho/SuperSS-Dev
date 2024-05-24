@@ -2,7 +2,7 @@
 .DEFAULT_GOAL := all
 
 # Compiler and linker
-CXX := g++-10
+CXX := g++
 AR := ar
 
 # Debug

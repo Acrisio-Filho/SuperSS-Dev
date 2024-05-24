@@ -759,7 +759,7 @@ std::vector< RoomInfo > RoomManager::getRoomsInfo(bool _without_practice_room) {
 #endif
 
 	for (auto i = 0u; i < v_rooms.size(); ++i)
-		if (v_rooms[i] != nullptr && (!_without_practice_room || (v_rooms[i]->getInfo()->tipo != RoomInfo::eTIPO::PRACTICE && v_rooms[i]->getInfo()->tipo != RoomInfo::eTIPO::GRAND_ZODIAC_PRACTICE)))
+		if (v_rooms[i] != nullptr && (!_without_practice_room || (v_rooms[i]->getInfo()->tipo != RoomInfo::TIPO::PRACTICE && v_rooms[i]->getInfo()->tipo != RoomInfo::TIPO::GRAND_ZODIAC_PRACTICE)))
 			v_ri.push_back(*(RoomInfo*)v_rooms[i]->getInfo());
 
 #if defined(_WIN32)
