@@ -5,9 +5,6 @@ const { logDate } = require('../util')
 // Perfix command
 const prefix = '!';
 
-// Channel name
-const CHANNEL_CHAT_HISTORY_ID = 'Seu canal id';
-
 // Class
 class Bot {
 
@@ -87,7 +84,7 @@ class Bot {
 
     sendMessageToChannelChatHistory(message) {
 
-        this.client.channels.fetch(CHANNEL_CHAT_HISTORY_ID)
+        this.client.channels.fetch(config.CHANNEL_CHAT_HISTORY_ID)
         .then(channel => {
 
             channel.send(message);
