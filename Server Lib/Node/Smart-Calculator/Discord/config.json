@@ -1,3 +1,4 @@
 {
-    "BOT_TOKEN": "Seu Token"
+    "BOT_TOKEN": "Seu Token",
+    "CHANNEL_CHAT_HISTORY_ID": "Seu canal id"
 }
