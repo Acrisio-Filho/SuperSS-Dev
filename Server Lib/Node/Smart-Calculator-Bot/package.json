@@ -10,6 +10,6 @@
   "author": "Acrisio SuperSS Dev",
   "license": "GPL-3.0",
   "dependencies": {
-    "discord.js": "^12.5.3"
+    "discord.js": "^13.14.0"
   }
 }
