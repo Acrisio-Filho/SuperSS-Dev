@@ -566,6 +566,9 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
         else
             base_dir = directory_name;
 
+	if (std::filesystem::path(directory_name).parent_path().empty())
+		base_dir = "";
+
         // Primeiro
         l_directory.push_back(std::make_pair(true, directory_name));
 
