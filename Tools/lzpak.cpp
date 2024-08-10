@@ -1132,7 +1132,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 
 		if (!in.good()) {
 			
-			printf("Falha ao ler o arquivo, não conseguiu ler o File Entry no offset: 0x%08X\n", (uint32_t)(sLZPakFileEntry::calcule_size(file_entry_header) - sizeof(sLZPakFileEntryHeader)));
+			printf("Falha ao ler o arquivo, não conseguiu ler o File Entry no offset: 0x%08X\n", (uint32_t)in.tellg());
 
 			return 7;
 		}
