@@ -943,8 +943,8 @@ struct NodeV72 : public NodeBase {
     }
 };
 
-struct ElementV71 {
-    union {
+struct ElementV70 {
+	union {
         uint32_t ul_option;
         struct {
             // ele não está distribuidos assim pelo que vi no s4 qa
@@ -959,12 +959,11 @@ struct ElementV71 {
     Matrix matrix1;
     Matrix matrix2;
     uint32_t course_type; // type[0], type[1] (1 - Blue Lagoon, 2 - Blue Water)
-    char class_name[32];
-    void clear() {
-        memset(this, 0, sizeof(ElementV71));
-    };
-    std::string toString() {
-        return "u_option: " + std::to_string(u_option.ul_option)
+	void clear() {
+		memset(this, 0, sizeof(ElementV70));
+	};
+	std::string toString() {
+		return "u_option: " + std::to_string(u_option.ul_option)
             + " ("
                 + std::to_string(u_option.bit_fileds.unknown1)
                 + ", " + std::to_string(u_option.bit_fileds.unknown2)
@@ -975,7 +974,17 @@ struct ElementV71 {
             + "\nname: " + std::string(name)
             + "\nmatrix1: " + matrix1.toString()
             + "\nmatrix2: " + matrix2.toString()
-            + "\ncourse_type: " + std::to_string(course_type)
+            + "\ncourse_type: " + std::to_string(course_type);
+	}
+};
+
+struct ElementV71 : public ElementV70 {
+    char class_name[32];
+    void clear() {
+        memset(this, 0, sizeof(ElementV71));
+    };
+    std::string toString() {
+        return ElementV70::toString()
             + "\nclass_name: " + std::string(class_name);
     }
 };
@@ -1315,8 +1324,12 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
 
         sLog << "Loading Base Element";
 
-        if (!_fo.read((char *)&_gbin.element_base, sizeof(ElementV71)))
+        if (!_fo.read((char *)&_gbin.element_base, sizeof(ElementV70)))
             return false;
+		
+		if (_gbin.header.version > 0x70
+				&& !_fo.read((char*)(&_gbin.element_base) + sizeof(ElementV70), sizeof(ElementV71) - sizeof(ElementV70)))
+			return false;
 
         if (_gbin.header.version > 0x71
                 && !_fo.read((char *)(&_gbin.element_base) + sizeof(ElementV71), sizeof(ElementV72) - sizeof(ElementV71)))
@@ -1326,7 +1339,7 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
 
         // Load Element base map color vtx
         if (_gbin.header.version < 0x72) {
-            sLog << "Loading Element base map color vtx v71(" << _gbin.element_base.vtxNum << ")";
+            sLog << "Loading Element base map color vtx v70,v71(" << _gbin.element_base.vtxNum << ")";
 
             MapColorVtx map_color_vtx;
 
@@ -1400,8 +1413,12 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
     for (i = 0u; i < (_gbin.header.num_element_global + _gbin.header.num_element_type[0] + _gbin.header.num_element_type[1]); i++) {
         element.clear();
 
-        if (!_fo.read((char*)&element, sizeof(ElementV71)))
+        if (!_fo.read((char*)&element, sizeof(ElementV70)))
             return false;
+		
+		if (_gbin.header.version > 0x70
+				&& !_fo.read((char*)(&element) + sizeof(ElementV70), sizeof(ElementV71) - sizeof(ElementV70)))
+			return false;
 
         if (_gbin.header.version > 0x71
                 && !_fo.read((char*)(&element) + sizeof(ElementV71), sizeof(ElementV72) - sizeof(ElementV71)))
