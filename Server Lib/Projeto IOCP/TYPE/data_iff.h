@@ -49,8 +49,8 @@ namespace stdA {
 				memset(this, 0, sizeof(ShopDados));
 			};
 			unsigned int  price;
-			unsigned int  desconto;
-			unsigned int  condition;           // Aqui é a condição do angel wing seu valor é 6, as outras angel wings do outros characters variam entre 1, 5, 6 e 0 (acho que seja a sexta condição de quit rate menor que 3%)
+			unsigned int  sale_price;			// By TH S4 - (Sale Price) Desconto (price - sale_price) = Desconto
+			unsigned int  sell_price;			// By TH S4 - (Used Price) Preço de revenda do item, porém foi feito no beta do season 1, e depois desativado
 			struct FlagShop {
 				struct _8bits {
 					unsigned char bit0 : 1;
@@ -186,7 +186,7 @@ namespace stdA {
 			unsigned int  tipo_item;
 			char mpet[40];
 			short c[5];			// esse aqui, quando o item é por tempo, aqui é o preço dos dias, 1, 7, 15, 30 e 365 dias
-			short sunknown;		// Aqui é o No Limit time preço, mas quando compra ele passa o preço de -1, mas no visual ele mostra o valor que está aqui
+			short point;		// By TH S4 - (Point) Aqui é o No Limit time preço, mas quando compra ele passa o preço de -1, mas no visual ele mostra o valor que está aqui
 		};
 
 		// Achievment IFF
@@ -252,24 +252,25 @@ namespace stdA {
 
 		// Part IFF
 		struct Part : public Base {
-			enum TYPE : unsigned int  {
-				TOP,
-				BOTTOM,
-				HEAD,
-				CLOVE,
-				SHOE,
-				ACESSORY_OR_BASE,
-				SUB_LEG,
-				UCC_BLANK = 8,
-				UCC_COPY,
+			// By S4 TH - (Category)
+			enum PART_TYPE : unsigned int  {
+				TOP,				// By TH S4 - (UPPER)
+				BOTTOM,				// By TH S4 - (LOWER)
+				HEAD,				// By TH S4 - (HEAD)
+				ARM,				// By TH S4 - (ARM == braço) CLOVE
+				FOOT,				// By TH S4 - (FOOT == pé) SHOE
+				ETC,				// By TH S4 - (ETC) ACESSORY_OR_BASE
+				HAIR,				// By TH S4 - (HAIR) SUB_LEG
+				UCC,				// By TH S4 - (UCC)
+				UCC_BLANK,			// By TH S4 - (UCC_DRAW_ONLY)
+				UCC_COPY,			// By TH S4 - (UCC_COPY_ONLY)
 			};
 			void clear() {
 				memset(this, 0, sizeof(Part));
 			};
 			char mpet[40];
-			unsigned int  type_item;		// o tipo do item, 0, 2 normal, 8 e 9 UCC, 5 acho que é base ou commom Item
-			//unsigned int  part_type;		// AQUI VAI SER STRUCT DE BIT // slot numero que desequipa para equipar esse set
-			union {
+			PART_TYPE type_item;				// By S4 TH - (Category) o tipo do item, 0, 2 normal, 8 e 9 UCC, 5 acho que é base ou commom Item
+			union u_part_type {
 				unsigned int  ul_part_type;
 				struct {
 					unsigned char slot0 : 1;
@@ -351,15 +352,19 @@ namespace stdA {
 						return -1;
 					}
 				};
-			} part_type;
-			unsigned int  ul_unknown;		// Acho que esse pode ser continuação do part_type
-			char texture[6][40];			// 6 Textura
-			unsigned short c[5];			// C = Stats[Control, Power, Spin e etc]
-			unsigned short slot[5];			// O mesmo que C, só que esse é slot
-			unsigned char uc_unknown48[48];
-			unsigned short us_unknown;
-			unsigned short flag_caddie_card_slot;	// Terceiro Caddie Card Slot
-			unsigned int  ul_unknown2;
+			};
+			u_part_type position_mask;				// By S4 TH - (PosMask) Position Mask
+			u_part_type hide_mask;					// By S4 TH - (HideMask) Esconde os outros parts do slots
+			char texture[3][40];					// 3 Textura
+			char texture_org[3][40];				// By S4 TH - (OrgTex) 3 Org Textura(Original)
+			unsigned short c[5];					// C = Stats[Control, Power, Spin e etc]
+			unsigned short slot[5];					// O mesmo que C, só que esse é slot
+			unsigned char equippable_with[40];		// By TH S4
+			unsigned int sub_part[2];				// By TH S4
+			unsigned short character_slot;			// By TH S4
+			unsigned short flag_caddie_card_slot;	// By TH S4 - (caddie_slot) Terceiro Caddie Card Slot
+			unsigned short npc_slot;
+			unsigned short point;
 			unsigned int  valor_rental;
 			unsigned int  ul_unknown3;
 			std::string toString() {
@@ -367,37 +372,63 @@ namespace stdA {
 				return "Typeid: " + std::to_string(_typeid)
 					+ "(0x" + hex_util::ltoaToHex(_typeid) + ")"
 					+ "\r\nType: " + std::to_string(type_item)
-					+ "\r\nSlot	1	2	3	4	5	6	7	8	9	10	11	12"
-					+ "\r\n		"	+ std::to_string((unsigned short)part_type._slots.slot0) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot1) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot2) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot3) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot4) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot5) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot6) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot7) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot8) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot9) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot10) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot11) + "	"
-					+ "\r\nSlot	13	14	15	16	17	18	16	20	21	22	23	24"
-					+ "\r\n		"	+ std::to_string((unsigned short)part_type._slots.slot12) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot13) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot14) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot15) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot16) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot17) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot18) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot19) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot20) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot21) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot22) + "	"
-								+ std::to_string((unsigned short)part_type._slots.slot23) + "	"
+					+ "\r\nPosition Slot	1	2	3	4	5	6	7	8	9	10	11	12"
+					+ "\r\n		"	+ std::to_string((unsigned short)position_mask._slots.slot0) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot1) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot2) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot3) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot4) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot5) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot6) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot7) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot8) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot9) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot10) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot11) + "	"
+					+ "\r\nPosition Slot	13	14	15	16	17	18	16	20	21	22	23	24"
+					+ "\r\n		"	+ std::to_string((unsigned short)position_mask._slots.slot12) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot13) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot14) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot15) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot16) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot17) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot18) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot19) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot20) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot21) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot22) + "	"
+								+ std::to_string((unsigned short)position_mask._slots.slot23) + "	"
+					+ "\r\nHide Slot	1	2	3	4	5	6	7	8	9	10	11	12"
+					+ "\r\n		"	+ std::to_string((unsigned short)hide_mask._slots.slot0) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot1) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot2) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot3) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot4) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot5) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot6) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot7) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot8) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot9) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot10) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot11) + "	"
+					+ "\r\nHide Slot	13	14	15	16	17	18	16	20	21	22	23	24"
+					+ "\r\n		"	+ std::to_string((unsigned short)hide_mask._slots.slot12) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot13) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot14) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot15) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot16) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot17) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot18) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot19) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot20) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot21) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot22) + "	"
+								+ std::to_string((unsigned short)hide_mask._slots.slot23) + "	"
 					+ "\r\nC:	" + std::to_string(c[0]) + "	" + std::to_string(c[1]) + "	"
 							+ std::to_string(c[2]) + "	" + std::to_string(c[3]) + "	" + std::to_string(c[4])
 					+ "\r\nSlot:	" + std::to_string(slot[0]) + "	" + std::to_string(slot[1]) + "	"
 							+ std::to_string(slot[2]) + "	" + std::to_string(slot[3]) + "	" + std::to_string(slot[4]) 
-					+ "\r\nCondition Shop: " + std::to_string(shop.condition)
+					+ "\r\nSell Shop: " + std::to_string(shop.sell_price)
 					+ "\r\nFlag Shop	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	16"
 					+ "\r\n			" + std::to_string((unsigned short)shop.flag_shop.uFlagShop.stFlagShop.is_cash) + "	"
 										+ std::to_string((unsigned short)shop.flag_shop.uFlagShop.stFlagShop.can_send_mail_and_personal_shop) + "	"
@@ -435,8 +466,8 @@ namespace stdA {
 		* 0x(24DFC0~24DFDF) Item Active
 		* 0x(24DFE0~24DFFF) Item Passive
 		*
-		* 0x(24DF00~24DFBF) Não sei
-		* 0x(24E0~24FF) Não sei
+		* 0x(24DF00~24DFBF) Caddie
+		* 0x(24E0~24FF) Caddie
 		*
 		* 0x(2500~251F) Card e Card Pack
 		* 0x(2520~253F) Anel
@@ -444,16 +475,36 @@ namespace stdA {
 		*/
 		struct SetItem : public Base {
 			enum SUB_TYPE : unsigned char {
-				UNKNOWN_0,
-				CHARACTER_SET,
-				CHARACTER_SET_NEW,
-				UNKNOWN_3,
-				CLUB_SET,
-				BALL,
-				CHARACTER_SET_DUP_AND_ITEM_PASSIVE_AND_ACTIVE,
-				UNKNOWN_7,
-				CARD,
-				AUXPART,	// Anel
+				COMMON,					// By TH S4 - (COMMON)
+				CHARACTER,				// By TH S4 - (CHARACTER) CHARACTER_SET
+				PARTS,					// By TH S4 - (PARTS) CHARACTER_SET_NEW
+				CLUBSET = 4,			// By TH S4 - (CLUBSET)
+				BALL,					// By TH S4 - (BALL)
+				ITEM,					// By TH S4 - (ITEM) CHARACTER_SET_DUP_AND_ITEM_PASSIVE_AND_ACTIVE
+				CADDIE,					// By TH S4 - (CADDIE)
+				CARD,					// By TH S4 - (CARD)
+				AUXPART,				// Anel
+			};
+			// By S4 TH
+			enum SUB_TYPE_CHAR : unsigned char {
+				NURI,
+				HANA,
+				AZER,
+				CECILIA,
+				MAX,
+				KOOH,
+				ARIN,
+				KAZ,
+				LUCIA,
+				NELL,
+				SPIKA,
+				NURI_R,
+				HANA_R,
+				AZER_R,
+				CECILIA_R,
+				STC_CARD = 0xFD,
+				EQUIP_ITEM,
+				NOEQUIP_ITEM,
 			};
 			void clear() { memset(this, 0, sizeof(SetItem)); };
 			struct Packege {
@@ -462,7 +513,8 @@ namespace stdA {
 				unsigned short item_qntd[10];
 			};
 			Packege packege;
-			unsigned char cBlank[12];
+			unsigned short c[5];			// By TH S4 - (COM[5])
+			unsigned short point;
 		};
 
 		// Mascot IFF
@@ -544,12 +596,12 @@ namespace stdA {
 			void clear() { memset(this, 0, sizeof(Ball)); };
 			unsigned int  ulUnknown;
 			char mpet[40];
-			unsigned int  ulUnknown2;
-			unsigned int  ulUnknown3;
-			char seq[7][40];
-			char fx[7][40];
+			unsigned int  bound;			// By TH S4 - (Bound)
+			unsigned int  roll;				// By TH S4 - (Roll)
+			char seq[7][40];				// By TH S4 - (Fx)
+			char fx[7][40];					// By TH S4 - (FxBone)
 			unsigned short c[5];
-			unsigned short usUnknown;
+			unsigned short point;
 			std::string toString() {
 #ifdef _DEBUG
 				return "Typeid: " + std::to_string(_typeid)
@@ -570,7 +622,7 @@ namespace stdA {
 			unsigned int  valor_mensal;
 			char mpet[40];
 			unsigned short c[5];
-			unsigned short usUnknown;
+			unsigned short point;
 		};
 
 		// CaddieItem IFF
@@ -582,10 +634,10 @@ namespace stdA {
 				UPGRADE
 			};
 			void clear() { memset(this, 0, sizeof(CaddieItem)); };
-			char mpet[40];
-			char textura[40];
-			unsigned short price[4];
-			unsigned int  unit_power_guage_start;	// unit start power guage que começa o jogo
+			char mpet[40];							// By TH S4 - (FaceTex)
+			char textura[40];						// By TH S4 - (BodyTex)
+			unsigned short price[5];				// By TH S4 - (COM[5])
+			unsigned short unit_power_guage_start;	// unit start power guage que começa o jogo
 		};
 
 		// CadieMagicBox IFF
@@ -636,18 +688,18 @@ namespace stdA {
 				T_NPC,
 			};
 			unsigned char tipo;
-			char mpet[41];	// era 40, mas acho que esse 1 de baixo seja o valor \0(final da string)
-			//unsigned char ucUnknown;
+			// era 40, mas acho que esse 1 de baixo seja o valor \0(final da string)
+			char mpet[41];				// By TH S4 - (Image)
 			unsigned short c[5];
 			struct Efeito {
 				unsigned short type;
 				unsigned short qntd;
 			};
 			Efeito efeito;
-			char textura[3][40];
-			unsigned short tempo;		// Os Cards especial que tem tempo
-			unsigned short volume;		// Book
-			unsigned int  position;		// Slot
+			char textura[3][40];		// By TH S4 - (SubIcon[40], SlotImg[40], BuffImg[40])
+			unsigned short tempo;		// By TH S4 - (UseTime) Os Cards especial que tem tempo
+			unsigned short volume;		// By TH S4 - (Volume) Book
+			unsigned int  position;		// By TH S4 - (CardIndex) Slot
 			unsigned int  flag1;		// !@flag que guarda alguns valores de de N, R, SR, SC e etc
 			unsigned int  flag2;		// flag que guarda alguns valores de de N, R, SR, SC e etc
 			std::string toString() {
@@ -667,14 +719,14 @@ namespace stdA {
 		struct Character : public Base {
 			void clear() { memset(this, 0, sizeof(Character)); };
 			char mpet[40];
-			char textura[3][40];
+			char textura[3][40];				// By TH S4 - (HairTex[40], ShirtsTex[40], FaceTex[40])
 			unsigned short c[5];
-			unsigned char ucUnknown;
-			unsigned char ucUnknown2;
-			unsigned int  ulUnknown;
-			float scale_club_set;
-			unsigned char c_stat[5];
-			char camera[43];		// Textura, Animação ou Câmera
+			unsigned char num_parts;			// By TH S4 - (nParts)
+			unsigned char num_accessorios;		// By TH S4 - (nAcsries)
+			unsigned int  club_type;			// By TH S4 - (ClubType)
+			float scale_club_set;				// By TH S4 - (ClubScale)
+			unsigned char c_stat[5];			// By TH S4 - (PCL)
+			char camera[43];					// By TH S4 - (Mtn30sWinner == Motion Tourney Winner) Textura, Animação ou Câmera
 		};
 
 		// CharacterMastery IFF
@@ -747,22 +799,22 @@ namespace stdA {
 		struct Course : public Base {
 			void clear() { memset(this, 0, sizeof(Course)); };
 			char mpet[40];
-			char gbin[40];
+			char gbin[40];									// By TH S4 - (AmbiendSnd)
 			struct Star {
 				union {
 					unsigned char ucStar;
 					struct StarMask {
-						unsigned char star_num : 4;
-						unsigned char star_size : 4;
+						unsigned char star_num : 4;			// By TH S4 - (Difficulty)
+						unsigned char star_size : 4;		// By TH S4 - (DiffFlag)
 					};
 					StarMask star_mask;
 				} uStarMask;
 			};
 			Star star;
-			char xml[43];
-			float rate_pang;
-			char seq[40];
-			unsigned int  ulUnknown[12];
+			char xml[43];									// By TH S4 - (TexProp)
+			float rate_pang;								// By TH S4 - (Slope)
+			char seq[40];									// By TH S4 - (SkyFx)
+			unsigned int  ulUnknown[12];					// pode ser unsigned short COM[5], unsigned short point
 			struct ParScore {
 				unsigned char par_hole[18];
 				unsigned char min_score_hole[18];
@@ -774,20 +826,32 @@ namespace stdA {
 
 		// CutinInfomation IFF
 		struct CutinInfomation {
+			// union Condition
+			union uCondition {
+				uCondition(uint32_t _ul = 0u) : ulCondition(_ul) {};
+				void clear() { ulCondition = 0u; };
+				uint32_t ulCondition;
+				struct {
+					uint32_t power_shot : 1;			// By TH S4
+					uint32_t double_power_short : 1;	// By TH S4
+					uint32_t power_shot_failed : 1;		// By TH S4
+					uint32_t chipin : 1, : 0;			// By TH S4
+				}stBit;
+			};
 			void clear() { memset(this, 0, sizeof(CutinInfomation)); };
 			unsigned int  active;
-			unsigned int  _typeid;
-			unsigned int  ulUnknown;
-			unsigned int  ulUnknown2;
-			unsigned int  tipo;						// 1= 1PS, 2= 2PS, 4= Erro Pangya com especial(Toma, Spike Cobra)
-			unsigned int  sector;
-			unsigned int  character_id;				// 0 Nuri, 1 Hana, 2 Azer e etc
+			unsigned int  _typeid;						// By TH S4 - (NormalTypeid)
+			unsigned int  rare_typeid;					// By TH S4 - (RareTypeid)
+			unsigned int  rarity;						// By TH S4 - (Rarity)
+			uCondition	  tipo;							// By TH S4 - (Condition) 1= 1PS, 2= 2PS, 4= Erro Pangya com especial(Toma, Spike Cobra)
+			unsigned int  sector;						// By TH S4 - (Img_Pos)
+			unsigned int  character_id;					// By TH S4 - (CharIndex) 0 Nuri, 1 Hana, 2 Azer e etc
 			struct Img {
-				char sprite[40];
-				unsigned int  tipo;
+				char sprite[40];						// By TH S4 - (Tex)
+				unsigned int  tipo;						// By TH S4 - (Ani)
 			};
-			Img img[4];
-			unsigned int  tempo;
+			Img img[4];									// By TH S4 - (Char, Bg, Patter, Text)
+			unsigned int  tempo;						// By TH S4 - (Out_Ani)
 		};
 
 		// Enchant IFF
@@ -802,11 +866,11 @@ namespace stdA {
 		struct Furniture : public Base {
 			void clear() { memset(this, 0, sizeof(Furniture)); };
 			char mpet[40];
-			unsigned short flag;
-			unsigned short flag2;
-			unsigned short tipo1;		// 5 Poster
-			unsigned short tipo2;		// 0x62 Poster B, 0x63 Poster A
-			unsigned int  ulUnknown;
+			unsigned short num;				// By TH S4 - (Num)
+			unsigned short is_own;			// By TH S4 - (IsOwn)
+			unsigned short is_move;			// By TH S4 - (IsMove) 5 Poster
+			unsigned short is_function;		// By TH S4 - (IsFunction)  0x62 Poster B, 0x63 Poster A
+			unsigned int  etc;				// By TH S4 - (Etc)
 			struct Location {
 				float x;
 				float y;
@@ -814,15 +878,17 @@ namespace stdA {
 				float r;
 			};
 			Location location;
-			char textura[6][40];
-			unsigned char ucUnknown[12];
+			char textura[3][40];			// By TH S4 - (Tex)
+			char textura_org[3][40];		// By TH S4 - (OrgTex)
+			unsigned short c[5];			// By TH S4 - (COM[5])
+			unsigned short use_time;		// By TH S4 - (UseTime)
 		};
 
 		// HairStyle IFF
 		struct HairStyle : public Base {
 			void clear() { memset(this, 0, sizeof(HairStyle)); };
-			unsigned char cor;
-			unsigned char character;
+			unsigned char cor;				// By TH S4 - (HairID)
+			unsigned char character;		// By TH S4 - (CharID)
 			unsigned short usUnknown;
 		};
 
@@ -832,8 +898,8 @@ namespace stdA {
 			unsigned int  active;
 			unsigned int  _typeid;
 			char name[80];
-			unsigned char ucUnknown;	// Não sei o que é, mas em todos é 10(0x0A)
-			char trophy[6][40];
+			unsigned char level;			// By TH S4 - (Level) Não sei o que é, mas em todos é 10(0x0A)
+			char trophy[6][40];				// By TH S4 - (icon[6][40])
 			unsigned char ucUnknown2[3];
 		};
 
@@ -841,7 +907,8 @@ namespace stdA {
 		struct Skin : public Base {
 			void clear() { memset(this, 0, sizeof(Skin)); };
 			char mpet[40];
-			unsigned short flag_roll;			// 256 efeito de rolagem vertical
+			unsigned char horizontal_scroll;	// By TH S4 - (HScroll)
+			unsigned char vertical_scroll;		// By TH S4 - (VScroll) 256 efeito de rolagem vertical
 			unsigned short price[5];
 		};
 
@@ -1285,32 +1352,64 @@ namespace stdA {
 
 		// FurnitureAbility IFF
 		struct FurnitureAbility {
+			// union uAbilityType
+			union uAbilityType {
+				uAbilityType(uint32_t _ul = 0u) : ulAbilityType(_ul) {};
+				void clear() { ulAbilityType = 0u; };
+				uint32_t ulAbilityType;
+				struct {
+					uint32_t buff : 1, : 0;			// By TH S4
+				}stBit;
+			};
+			union uSuccessType {
+				uSuccessType(uint16_t _ul = 0u) : ulSuccessType(_ul) {};
+				void clear() { ulSuccessType = 0u; };
+				uint16_t ulSuccessType;
+				struct {
+					uint16_t stay : 1;			// By TH S4
+					uint16_t putin : 1;			// By TH S4
+					uint16_t putout : 1, : 0;	// By TH S4
+				}stBit;
+			};
+			union uEffectType {
+				uEffectType(uint16_t _ul = 0u) : ulEffectType(_ul) {};
+				void clear() { ulEffectType = 0u; };
+				uint16_t ulEffectType;
+				struct {
+					uint16_t me : 1;			// By TH S4
+					uint16_t _friend : 1;		// By TH S4
+					uint16_t guild : 1;			// By TH S4
+					uint16_t all : 1, : 0;		// By TH S4
+				}stBit;
+			};
 			void clear() { memset(this, 0, sizeof(FurnitureAbility)); };
 			unsigned int  active;
 			unsigned int  _typeid;
-			unsigned int  type;
-			unsigned int  ulUnknown;
-			unsigned int  self;				// 0 Seu Furniture, 3 Furniture de outra pessoa
-			int char_type;					// Acho
-			unsigned int  max_qntd;			// O maximo de item que pode ganhar
-			SYSTEMTIME date;				// Date Inicio
-			unsigned int  ulUnknown2;
+			uAbilityType  type;					// By TH S4 - (btAbilityType)
+			unsigned int  stay_time;			// By TH S4 - (iStayTime)
+			uSuccessType success_type;			// By TH S4 - (btSuccessType)
+			uEffectType  effect_type;			// By TH S4 - (btEffectType) 0 Seu Furniture, 3 Furniture de outra pessoa
+			unsigned int  set_in_typeid;		// By TH S4 - (dwSetInTID)
+			unsigned int  max_qntd;				// By TH S4 - (iMaxCountAtFurniture) O maximo de item que pode ganhar
+			SYSTEMTIME    date;					// Date Inicio
+			unsigned int  during_time;			// By TH S4 - (dwDuringTime)
 			struct Item {
 				unsigned int  _typeid;
 				unsigned int  probability;
 			};
 			Item item;
-			unsigned int  flag;
+			unsigned int  max_count_by_user;	// By TH S4 - (iMaxCountAtUser)
 			std::string toString() {
 #ifdef _DEBUG
 				return "Typeid: " + std::to_string(_typeid) + "(0x" + hex_util::ltoaToHex(_typeid) + ")"
-					+ "\r\nType: " + std::to_string(type)
-					+ "\r\nCharacter Type(ACHO): " + std::to_string(char_type)
+					+ "\r\nType: " + std::to_string(type.ulAbilityType)
+					+ "\r\nSetInTypeid): " + std::to_string(set_in_typeid)
 					+ "\r\nMax Qntd: " + std::to_string(max_qntd)
-					+ "\r\nSelf: " + std::to_string(self)
-					+ "\r\nFlag: " + std::to_string(flag)
-					+ "\r\nulUnknown(s): " + std::to_string(ulUnknown)
-						+ ", " + std::to_string(ulUnknown2)
+					+ "\r\nSuccessType: " + std::to_string(success_type.ulSuccessType)
+					+ "\r\nEffectType: " + std::to_string(effect_type.ulEffectType)
+					+ "\r\nMaxCountByUser: " + std::to_string(max_count_by_user)
+					+ "\r\nStayTime: " + std::to_string(stay_time)
+					+ "\r\nDuringTime " + std::to_string(during_time)
 					+ "\r\nDate Start: " + _formatDate(date);
 #else
 				return "Typeid: " + std::to_string(_typeid) + "(0x" + hex_util::ltoaToHex(_typeid) + ")";
@@ -1360,7 +1459,7 @@ namespace stdA {
 			unsigned int  _typeid;
 			unsigned int  point;		// Qntd de pontos que vai trocar pelo itens
 			unsigned int  qntd;			// Qntd de itens que vai trocar pelos pontos
-			unsigned int  flag;
+			unsigned int  flag;			// pode ser rate
 		};
 
 		// ScratchRewardSetting IFF(No JP não tem nenhum para eu ter de exemplo), depois procuro no KR
