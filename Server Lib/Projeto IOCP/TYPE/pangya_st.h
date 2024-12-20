@@ -699,7 +699,7 @@ namespace stdA {
 
 			for (auto i = 0u; i < (sizeof(parts_typeid) / sizeof(parts_typeid[0])); ++i) {
 
-				if (_part->part_type.getSlot(i) == 1) {	// Coloca Def Parts
+				if (_part->position_mask.getSlot(i) == 1) {	// Coloca Def Parts
 
 					unsigned int  def_part = ((i | (unsigned int )(_typeid << 5)) << 13) | 0x8000400;
 

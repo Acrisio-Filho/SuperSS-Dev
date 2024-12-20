@@ -91,7 +91,7 @@ using namespace stdA;
 							_item._typeid = _bi._typeid; \
 							_item.date = *(stItem::stDate*)&item->date; \
 							_item.price = item->shop.price; \
-							_item.desconto = item->shop.desconto; \
+							_item.desconto = item->shop.sale_price; \
 							_item.qntd = (uint32_t)_bi.qntd; \
 							_item.is_cash = item->shop.flag_shop.uFlagShop.stFlagShop.is_cash; \
  \
@@ -103,7 +103,7 @@ using namespace stdA;
 							_item._typeid = _bi._typeid; \
 							_item.date = *(stItem::stDate*)&item->date; \
 							_item.price = item->shop.price; \
-							_item.desconto = item->shop.desconto; \
+							_item.desconto = item->shop.sale_price; \
 							_item.qntd = (uint32_t)_bi.qntd; \
 							_item.is_cash = item->shop.flag_shop.uFlagShop.stFlagShop.is_cash; \
  \

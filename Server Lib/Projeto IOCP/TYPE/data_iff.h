@@ -608,7 +608,7 @@ namespace stdA {
 					+ "(0x" + hex_util::ltoaToHex(_typeid) + ")"
 					+ "\r\nC[]: [C0=" + std::to_string((unsigned short)c[0]) + ", C1=" + std::to_string((unsigned short)c[1]) + ", C2="
 							+ std::to_string((unsigned short)c[2]) + ", C3=" + std::to_string((unsigned short)c[3]) + ", C4=" + std::to_string((unsigned short)c[4]) + "]"
-					+ "\r\nusUnknown: " + std::to_string(usUnknown) + "\r\n"; 
+					+ "\r\nPoint: " + std::to_string(point) + "\r\n"; 
 #else
 				return "Typeid: " + std::to_string(_typeid)
 					+ "(0x" + hex_util::ltoaToHex(_typeid) + ")";

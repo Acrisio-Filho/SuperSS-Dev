@@ -1347,7 +1347,7 @@ bool iff::IsCanOverlapped(uint32_t _typeid) {
 		auto tipo_set_item = getItemSubGroupIdentify21(_typeid);
 		
 		if (tipo_set_item == IFF::SetItem::SUB_TYPE::BALL 
-				|| tipo_set_item == IFF::SetItem::SUB_TYPE::CHARACTER_SET_DUP_AND_ITEM_PASSIVE_AND_ACTIVE
+				|| tipo_set_item == IFF::SetItem::SUB_TYPE::ITEM
 				|| tipo_set_item == IFF::SetItem::SUB_TYPE::CARD)
 			return true;
 		
