@@ -1,6 +1,18 @@
 #.gitignore
 .gitattributes
 
+# Linux Builds
+*.o
+*.o.d
+*.a
+*.so
+
+Server Lib/Linux Builds/*/auth
+Server Lib/Linux Builds/*/game
+Server Lib/Linux Builds/*/login
+Server Lib/Linux Builds/*/msn
+Server Lib/Linux Builds/*/rank
+
 *.filters
 *.user
 

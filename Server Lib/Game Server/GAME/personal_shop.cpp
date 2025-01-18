@@ -418,6 +418,14 @@ void PersonalShop::buyItem(player& _session, PersonalShopItem& _psi) {
 				+ std::to_string(psi_owner->item._typeid) + ", ID=" + std::to_string(psi_owner->item.id) + "] invalido no Shop[Owner UID="
 				+ std::to_string(m_owner.m_pi.uid) + "]. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::PERSONAL_SHOP, 12, 0));
 
+	if (_psi.item.qntd == 0u) {
+		_psi.item.qntd = 1u;
+
+		_smp::message_pool::getInstance().push(new message("[PersonalShop::buyItem][WARNING] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou comprar item[TYPEID="
+					+ std::to_string(psi_owner->item._typeid) + ", ID=" + std::to_string(psi_owner->item.id) + "] com a quantidade de zero no _psi, no Shop[Owner UID="
+					+ std::to_string(m_owner.m_pi.uid) + "]", CL_FILE_LOG_AND_CONSOLE));
+	}
+
 	auto base = sIff::getInstance().findCommomItem(psi_owner->item._typeid);
 
 	if (base == nullptr)

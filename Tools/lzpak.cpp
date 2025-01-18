@@ -2,6 +2,15 @@
 // Criado em 12/04/2024 as 06:38 por Acrisio
 // Arquivo principal da ferramenta LZPak
 
+// Compilação g++:
+//	g++ lzpak.cpp -o lzpak.exe
+// Compilação MSVC
+//	cl /EHsc /std:c++17 lzpak.cpp /Fe:lzpak.exe
+
+#if defined(_MSC_VER)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 // C libs in C++
 #include <cstdint>
 #include <cstdio>
@@ -16,6 +25,8 @@
 #include <regex>
 #include <vector>
 #include <string>
+#include <iostream>
+#include <algorithm>
 
 #pragma pack(push, 1)
 struct sLZPakHeader {
@@ -66,6 +77,12 @@ struct sLZPakFileEntry : public sLZPakFileEntryHeader {
 		return sizeof(sLZPakFileEntry) + _file_entry_header.name_length + (size_t)((
 			_file_entry_header.version < LZPFEV_3 || _file_entry_header.version == LZPFEV_RAW
 		) & 1u);
+	}
+	const std::string getName() const {
+		auto s = std::string(name, name + name_length);
+		// replace to separator that work in Win/Unix
+		std::replace(s.begin(), s.end(), '\\', '/');
+		return s;
 	}
 	uint32_t	offset;
 	uint32_t	compress_size;
@@ -215,7 +232,7 @@ void LZ77_Compress(std::vector< uint8_t >& _destination, uint8_t* _source, uint3
 
     std::function<std::pair< uint16_t, uint8_t* >()> findBestMatch = [&]() -> std::pair< uint16_t, uint8_t* > {
 
-        std::pair< uint16_t, uint8_t* > match(0u, nullptr);
+        std::pair< uint16_t, uint8_t* > match((uint16_t)0u, nullptr);
 
         if (s_index <= 2u || (s_index + 3u) > _size)
             return match;
@@ -286,7 +303,7 @@ void LZ77_Compress(std::vector< uint8_t >& _destination, uint8_t* _source, uint3
                     return;
                 }
 
-                *(uint16_t*)&_destination[d_index] = ((best_match.first - 2u) << 0xCu) | (&_source[s_index] - best_match.second);
+                *(uint16_t*)&_destination[d_index] = (uint16_t)(((best_match.first - 2u) << 0xCu) | (&_source[s_index] - best_match.second));
 
                 d_index += 2u;
                 s_index += best_match.first;
@@ -404,7 +421,7 @@ void LZ772_Compress(std::vector< uint8_t >& _destination, uint8_t* _source, uint
 
     std::function<std::pair< uint16_t, uint8_t* >()> findBestMatch = [&]() -> std::pair< uint16_t, uint8_t* > {
 
-        std::pair< uint16_t, uint8_t* > match(0u, nullptr);
+        std::pair< uint16_t, uint8_t* > match((uint16_t)0u, nullptr);
 
         if (s_index <= 2u || (s_index + 3u) > _size)
             return match;
@@ -475,7 +492,7 @@ void LZ772_Compress(std::vector< uint8_t >& _destination, uint8_t* _source, uint
                     return;
                 }
 
-                *(uint16_t*)&_destination[d_index] = ((best_match.first - 2u) << 0xCu) | (&_source[s_index] - best_match.second);
+                *(uint16_t*)&_destination[d_index] = (uint16_t)(((best_match.first - 2u) << 0xCu) | (&_source[s_index] - best_match.second));
 
                 pMask8bitPtr[bits] = &_destination[d_index];
 
@@ -554,17 +571,20 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
 
         std::string directory_name = _name;
 
-        auto dpos = directory_name.find_last_of('/');
+        auto dpos = directory_name.find_last_of("/\\");
 
         if (dpos != std::string::npos && (dpos + 1u) == directory_name.length())
             directory_name.pop_back();
 
-        dpos = directory_name.find_last_of('/');
+        dpos = directory_name.find_last_of("/\\");
 
         if (dpos != std::string::npos && dpos != 0u)
             base_dir = directory_name.substr(0u, dpos + 1u);
         else
             base_dir = directory_name;
+
+	if (std::filesystem::path(directory_name).parent_path().empty())
+		base_dir = "";
 
         // Primeiro
         l_directory.push_back(std::make_pair(true, directory_name));
@@ -572,7 +592,7 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
         try {
 
             for (auto const& dir_entry : std::filesystem::recursive_directory_iterator(directory_name))
-                l_directory.push_back(std::make_pair(std::filesystem::is_directory(dir_entry.status()), dir_entry.path().c_str()));
+                l_directory.push_back(std::make_pair(std::filesystem::is_directory(dir_entry.status()), dir_entry.path().string().c_str()));
 
         }catch (std::filesystem::filesystem_error const& fs_error) {
 
@@ -594,7 +614,7 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
 
         base_dir = _name;
 
-        const auto dpos = base_dir.find_last_of('/');
+        const auto dpos = base_dir.find_last_of("/\\");
 
         if (dpos != std::string::npos && dpos != 0u)
             base_dir = base_dir.substr(0u, dpos + 1u);
@@ -602,7 +622,7 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
 
     std::ifstream in;
     std::ofstream out;
-    size_t length;
+    uint64_t length;
 
     const char* name = nullptr;
     size_t name_len = 0u;
@@ -611,11 +631,11 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
     std::list< std::unique_ptr< sLZPakFileEntry > > l_file_entry;
 
     // Número de arquivos e diretórios
-    header.num_file_entry = l_directory.size();
+    header.num_file_entry = (uint32_t)l_directory.size();
 
-    std::string out_file_name = std::filesystem::current_path().c_str();
+    std::string out_file_name = std::filesystem::current_path().string().c_str();
 
-    const auto tpos = out_file_name.find_last_of('/');
+    const auto tpos = out_file_name.find_last_of("/\\");
 
     if (tpos != std::string::npos && (tpos + 1u) != out_file_name.length())
         out_file_name += "/";
@@ -739,9 +759,7 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
                 break;
             case 6: {
 
-                char *line = nullptr;
-                size_t line_len = 0u;
-                ssize_t nread;
+				std::string line;
 
                 do {
 
@@ -749,19 +767,18 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
 
                     do {
 
-                        if ((nread = getline(&line, &line_len, stdin)) == -1) {
+						std::getline(std::cin, line);
 
-                            printf("Falha ao ler uma linha do buffer de entrada do console, errno: %d, %s\n", errno, strerror(errno));
+                        if (std::cin.fail()) {
+
+                            printf("Falha ao ler uma linha do buffer de entrada do console.\n");
 
                             return;
                         }
 
-                    } while (line == nullptr || (nread < 9 && line[0] == '\n'));
+                    } while ((line.length() < 9 && line[0] == '\n'));
 
-                } while (sscanf(line, "%08x,%08x,%08x,%08x", &gLocationCustomKeys[0], &gLocationCustomKeys[1], &gLocationCustomKeys[2], &gLocationCustomKeys[3]) != 4);
-
-                if (line != nullptr)
-                    free(line);
+                } while (sscanf(line.c_str(), "%08x,%08x,%08x,%08x", &gLocationCustomKeys[0], &gLocationCustomKeys[1], &gLocationCustomKeys[2], &gLocationCustomKeys[3]) != 4);
 
                 gLocationKeys = gLocationCustomKeys;
                 break;
@@ -786,7 +803,7 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
                     new(name_len_by_version) sLZPakFileEntry
                     );
 
-            pFileEntry->name_length = (_version == LZPFEV_3 ? name_len_by_version : name_len);
+            pFileEntry->name_length = (uint8_t)(_version == LZPFEV_3 ? name_len_by_version : name_len);
             pFileEntry->version = _version;
             pFileEntry->type = LZPFET_DIRECTORY;
             pFileEntry->offset = 0u;
@@ -857,11 +874,11 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
                 new(name_len_by_version) sLZPakFileEntry
                 );
 
-        pFileEntry->name_length = (_version == LZPFEV_3 ? name_len_by_version : name_len);
+        pFileEntry->name_length = (uint8_t)(_version == LZPFEV_3 ? name_len_by_version : name_len);
         pFileEntry->version = _version;
         pFileEntry->type = _type;
         pFileEntry->offset = (uint32_t)out.tellp();
-        pFileEntry->size = length;
+        pFileEntry->size = (uint32_t)length;
         pFileEntry->compress_size = 0u;
 
         memset(&pFileEntry->name, 0, name_len_by_version);
@@ -873,13 +890,13 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
                     || strcmp(&directory.second[epos], ".mp3") == 0))
             pFileEntry->type = LZPFET_RAW;
 
-        source.resize(length);
+        source.resize((uint32_t)length);
 
         in.read((char*)source.data(), source.size());
 
         if (!in.good()) {
 
-            printf("Falha ao ler o arquivo: \"%s\", size: 0x%08X.\n", directory.second.c_str(), source.size());
+            printf("Falha ao ler o arquivo: \"%s\", size: 0x%08X.\n", directory.second.c_str(), (uint32_t)source.size());
 
             return;
         }
@@ -901,7 +918,7 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
 
                     last_time = current_time;
 
-                    printf("Progresso da compressão do arquivo \"%s\": %d%%.\n", directory.second.c_str(), (_processed * 100u) / _total);
+                    printf("Progresso da compressão do arquivo \"%s\": %d%%.\n", directory.second.c_str(), (int32_t)((_processed * 100u) / _total));
                 }
             };
 
@@ -918,7 +935,7 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
             }
 
             printf("Comprimiu o arquivo: \"%s\", size: 0x%08X, compress_size: 0x%08X, Taxa de compressão: %d%%.\n",
-                    directory.second.c_str(), source.size(), destination.size(), 100u - (destination.size() * 100u) / source.size());
+                    directory.second.c_str(), (uint32_t)source.size(), (uint32_t)destination.size(), (int32_t)(100u - (destination.size() * 100u) / source.size()));
         }
 
         pFileEntry->compress_size = (uint32_t)destination.size();
@@ -955,7 +972,7 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
         if (!out.good()) {
 
             printf("Falha ao escrever o arquivo no LZPak: \"%s\" > \"%s\", size: 0x%08X.\n",
-                    directory.second.c_str(), out_file_name.c_str(), destination.size());
+                    directory.second.c_str(), out_file_name.c_str(), (uint32_t)destination.size());
 
             return;
         }
@@ -974,7 +991,7 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
 
         if (!out.good()) {
 
-            printf("Falha ao escrever o autor no LZPak: \"%s\" > \"%s\", length: 0x%08X,\n", header.author.c_str(), out_file_name.c_str(), header.author.length());
+            printf("Falha ao escrever o autor no LZPak: \"%s\" > \"%s\", length: 0x%08X,\n", header.author.c_str(), out_file_name.c_str(), (uint32_t)header.author.length());
 
             return;
         }
@@ -998,7 +1015,7 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
         if (!out.good()) {
 
             printf("Falha ao escrever o File Entry no LZPak: 0x%016llX > \"%s\", size: 0x%08X.\n",
-                    file_entry.get(), out_file_name.c_str(), sLZPakFileEntry::calcule_size(*file_entry));
+                    (uint64_t)file_entry.get(), out_file_name.c_str(), (uint32_t)sLZPakFileEntry::calcule_size(*file_entry));
 
             return;
         }
@@ -1009,7 +1026,7 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
     if (!out.good()) {
 
         printf("Falha ao escrever o LZPak Header no LZPak: 0x%016llX > \"%s\", size: 0x%08X.\n",
-                &header, out_file_name.c_str(), sizeof(sLZPakHeader));
+                (uint64_t)&header, out_file_name.c_str(), (uint32_t)sizeof(sLZPakHeader));
 
         return;
     }
@@ -1045,18 +1062,18 @@ int32_t main(int32_t _argc, char* _argv[]) {
 
 	in.seekg(0, std::ios_base::end);
 
-	size_t len = in.tellg();
+	uint64_t len = in.tellg();
 
 	if (len < sizeof(sLZPakHeader)) {
 		
-		printf("LZPak inválido, o arquivo tem o tamanho de 0x%016llX, mas o header do LZPak é de 0x%016llX.\n", len, sizeof(sLZPakHeader));
+		printf("LZPak inválido, o arquivo tem o tamanho de 0x%016llX, mas o header do LZPak é de 0x%016llX.\n", len, (uint64_t)sizeof(sLZPakHeader));
 
 		return 3;
 	}
 
-	in.seekg(-sizeof(sLZPakHeader), std::ios_base::end);
+	in.seekg(-(int64_t)sizeof(sLZPakHeader), std::ios_base::end);
 
-	printf("Abriu o LZPak:\n\tTamanho: 0x%016llX\n\tNome: %s\n", len, std::filesystem::path(_argv[1]).filename().c_str());
+	printf("Abriu o LZPak:\n\tTamanho: 0x%016llX\n\tNome: %s\n", len, std::filesystem::path(_argv[1]).filename().string().c_str());
 
 	sLZPakHeaderEx header;
 
@@ -1077,7 +1094,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 	if (header.version != kLZPakVersion)
 		printf("Aviso: a versão do LZPak é difrente de 0x%02X != 0x%02X\n",
 			kLZPakVersion,
-			header);
+			header.version);
 
 	std::list< std::unique_ptr< sLZPakFileEntry > > l_file_entry;
 	sLZPakFileEntryHeader file_entry_header;
@@ -1115,7 +1132,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 
 		if (!in.good()) {
 			
-			printf("Falha ao ler o arquivo, não conseguiu ler o File Entry no offset: 0x%08X\n");
+			printf("Falha ao ler o arquivo, não conseguiu ler o File Entry no offset: 0x%08X\n", (uint32_t)in.tellg());
 
 			return 7;
 		}
@@ -1175,9 +1192,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
                             break;
                         case 6: {
 
-                            char *line = nullptr;
-                            size_t line_len = 0u;
-                            ssize_t nread;
+							std::string line;
 
                             do {
 
@@ -1185,19 +1200,18 @@ int32_t main(int32_t _argc, char* _argv[]) {
 
                                 do {
 
-                                    if ((nread = getline(&line, &line_len, stdin)) == -1) {
+									std::getline(std::cin, line);
 
-                                        printf("Falha ao ler uma linha do buffer de entrada do console, errno: %d, %s\n", errno, strerror(errno));
+                                    if (std::cin.fail()) {
+
+                                        printf("Falha ao ler uma linha do buffer de entrada do console.\n");
 
                                         return 8;
                                     }
 
-                                } while (line == nullptr || (nread < 9 && line[0] == '\n'));
+                                } while ((line.length() < 9 && line[0] == '\n'));
 
-                            } while (sscanf(line, "%08x,%08x,%08x,%08x", &gLocationCustomKeys[0], &gLocationCustomKeys[1], &gLocationCustomKeys[2], &gLocationCustomKeys[3]) != 4);
-
-                            if (line != nullptr)
-                                free(line);
+                            } while (sscanf(line.c_str(), "%08x,%08x,%08x,%08x", &gLocationCustomKeys[0], &gLocationCustomKeys[1], &gLocationCustomKeys[2], &gLocationCustomKeys[3]) != 4);
 
                             keys = gLocationCustomKeys;
                             break;
@@ -1241,7 +1255,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 		}
 
 		printf("LZPakFileEntry:\n\tNome: %s\n\tOffset: 0x%08X\n\tVersão: 0x%X\n\tTipo: 0x%X\n\tTamanho: 0x%08X\n\tTamanho comprimido: 0x%08X\n",
-			pFileEntry->name,
+			pFileEntry->getName().c_str(),
 			pFileEntry->offset,
 			pFileEntry->version,
 			pFileEntry->type,
@@ -1350,7 +1364,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 
             auto path = std::filesystem::path(_dir).parent_path();
 
-            if (!path.empty() && path != path.root_path() && !make_dir_if_not_exists(path.c_str()))
+            if (!path.empty() && path != path.root_path() && !make_dir_if_not_exists(path.string().c_str()))
                 return false;
 
             ec.clear();
@@ -1385,7 +1399,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 
             if (out_path_name.empty())
                 out_path_name = "./";
-            else if (out_path_name.back() != '/')
+            else if (out_path_name.back() != '/' && out_path_name.back() != '\\')
                 out_path_name += "/";
 		}
 
@@ -1397,15 +1411,15 @@ int32_t main(int32_t _argc, char* _argv[]) {
 		for (auto& file_entry : l_file_entry) {
 			
 		    // All
-		    if (std::regex_search(file_entry->name, regex_find)) {
+		    if (std::regex_search(file_entry->getName(), regex_find)) {
 
-				printf("Arquivo encontrado: %s\n", file_entry->name);
+				printf("Arquivo encontrado: %s\n", file_entry->getName().c_str());
 				
 				if (file_entry->type != LZPFET_DIRECTORY) {
 
-                    std::string dirname_out_file = file_entry->name;
+                    std::string dirname_out_file = file_entry->getName();
 
-                    const auto pos = dirname_out_file.find_last_of('/');
+                    const auto pos = dirname_out_file.find_last_of("/\\");
 
 					if (pos != std::string::npos && !dirname_out_file.substr(0u, pos).empty())
 					    dirname_out_file = out_path_name + dirname_out_file.substr(0u, pos) + "/";
@@ -1416,12 +1430,12 @@ int32_t main(int32_t _argc, char* _argv[]) {
 
 					    printf("Não conseguiu criar o diretório para salvar o arquivo.\n\tDirectory: \"%s\"\n\tFile: \"%s\"\n",
 					            dirname_out_file.c_str(),
-					            std::filesystem::path(file_entry->name).filename().c_str());
+					            std::filesystem::path(file_entry->getName()).filename().string().c_str());
 
 					    return 16;
 					}
 
-					out_file_name = dirname_out_file + std::filesystem::path(file_entry->name).filename().c_str();
+					out_file_name = dirname_out_file + std::filesystem::path(file_entry->getName()).filename().string().c_str();
 
 					out.open(out_file_name.c_str(), std::ios_base::binary);
 
@@ -1432,7 +1446,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 						continue;
 					}
 
-					printf("Extraindo no offset: 0x%08X, o arquivo: %s\n", file_entry->offset, file_entry->name);
+					printf("Extraindo no offset: 0x%08X, o arquivo: %s\n", file_entry->offset, file_entry->getName().c_str());
 
 					in.seekg(file_entry->offset, std::ios_base::beg);
 
@@ -1452,7 +1466,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 							
 							printf("Não conseguiu ler o arquivo, no offset: 0x%08X, para extrair o arquivo: %s\n",
 								file_entry->offset,
-								file_entry->name);
+								file_entry->getName().c_str());
 					
 							return 18;
 						}
@@ -1478,7 +1492,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 							
 							printf("Não conseguiu ler o arquivo, no offset: 0x%08X, para extrair o arquivo: %s\n",
 								file_entry->offset,
-								file_entry->name);
+								file_entry->getName().c_str());
 					
 							return 18;
 						}
@@ -1488,7 +1502,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 						if (decompress.empty()) {
 						
 							printf("Não conseguiu descomprimir o arquivo:\n\tNome: %s\n\tOffset: 0x%08X\n\tTamanho: 0x%08X\n\tTamanho comprimido: 0x%08X\n",
-									file_entry->name,
+									file_entry->getName().c_str(),
 									file_entry->offset,
 									file_entry->size,
 									file_entry->compress_size);
@@ -1517,7 +1531,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 							
 							printf("Não conseguiu ler o arquivo, no offset: 0x%08X, para extrair o arquivo: %s\n",
 								file_entry->offset,
-								file_entry->name);
+								file_entry->getName().c_str());
 					
 							return 18;
 						}
@@ -1527,7 +1541,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 						if (decompress.empty()) {
 						
 							printf("Não conseguiu descomprimir o arquivo:\n\tNome: %s\n\tOffset: 0x%08X\n\tTamanho: 0x%08X\n\tTamanho comprimido: 0x%08X\n",
-									file_entry->name,
+									file_entry->getName().c_str(),
 									file_entry->offset,
 									file_entry->size,
 									file_entry->compress_size);
@@ -1551,7 +1565,7 @@ int32_t main(int32_t _argc, char* _argv[]) {
 					if (out.is_open())
 						out.close();
 
-					printf("Extraiu o arquivo: %s para \"%s\" com sucesso!\n", file_entry->name, out_file_name.c_str());
+					printf("Extraiu o arquivo: %s para \"%s\" com sucesso!\n", file_entry->getName().c_str(), out_file_name.c_str());
 				}
 			}
 		}

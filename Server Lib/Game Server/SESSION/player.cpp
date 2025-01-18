@@ -610,7 +610,7 @@ bool player::checkCharacterEquipedPart(CharacterInfo& ci) {
 
 						if (parts != nullptr/* != _session.m_pi.v_wi.end()*/) {
 							
-							char slot = part->part_type.getSlot(i);
+							char slot = part->position_mask.getSlot(i);
 
 							if (slot == -1) {
 

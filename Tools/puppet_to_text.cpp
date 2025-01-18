@@ -77,6 +77,12 @@ static Version VERSION_1_3{0xFFFE0103};
 uint32_t gFileType = eFILE_TYPE::FT_ALL;
 Version gVersion = VERSION_1_0;
 
+#if defined(_MSC_VER)
+#define MyStricmp stricmp
+#else
+#define MyStricmp strcasecmp
+#endif
+
 void setFileType(std::string _file) {
 
 	gFileType = eFILE_TYPE::FT_ALL;
@@ -94,13 +100,13 @@ void setFileType(std::string _file) {
 	if (ext.empty())
 		return;
 
-	if (stricmp(ext.c_str(), ".pet") == 0)
+	if (MyStricmp(ext.c_str(), ".pet") == 0)
 		gFileType = FILE_PET;
-	else if (stricmp(ext.c_str(), ".mpet") == 0)
+	else if (MyStricmp(ext.c_str(), ".mpet") == 0)
 		gFileType = FILE_MPET;
-	else if (stricmp(ext.c_str(), ".apet") == 0)
+	else if (MyStricmp(ext.c_str(), ".apet") == 0)
 		gFileType = FILE_APET;
-	else if (stricmp(ext.c_str(), ".bpet") == 0)
+	else if (MyStricmp(ext.c_str(), ".bpet") == 0)
 		gFileType = FILE_BPET;
 };
 
@@ -1738,15 +1744,22 @@ int main(int _argc, char* _argv[]) {
 
 	BlockModelCtx bmc{0};
 	std::vector<BlockModelCtx> bmcs;
+	
+	bool have_vers = false;
 
 	while (readPETModelBlock(fo, &bmc)) {
 		bmcs.push_back(bmc);
+		if (!have_vers)
+			have_vers = bmc.model.getId().compare("VERS") == 0;
 		sLog << "Model:\n\tName: " << bmc.model.getId() << "\tLength: " << bmc.model.length << "\tIndex: " << bmc.index << std::endl;
 	}
 
 	Block block;
 	std::vector<Bone> bones;
 	std::vector<Texture> textures;
+	
+	if (!have_vers)
+		sLog << "Puppet: " << gVersion.toString() << std::endl;
 
 	for (auto& bmcr : bmcs) {
 		sLog << "Loading " << bmcr.model.getId() << std::endl;

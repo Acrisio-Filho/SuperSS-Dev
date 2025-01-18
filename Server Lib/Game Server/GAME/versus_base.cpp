@@ -2246,7 +2246,7 @@ void VersusBase::requestActiveCutin(player& _session, packet *_packet) {
 									+ std::to_string(ac.uid) + "], mas o jogador nao tem esse cutin[TYPEID="
 									+ std::to_string(pWi->_typeid) + ", ID=" + std::to_string(pWi->id) + "]. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::VERSUS_BASE, 3, 0x5200103));
 
-						if (pCutin->tipo == ac.tipo)
+						if (pCutin->tipo.ulCondition == ac.tipo)
 							break;
 						else if ((i + 1) == end)
 							throw exception("[VersusBase::requestActiveCutin][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou activar cutin[CHAR_TYPEID="
@@ -2288,7 +2288,7 @@ void VersusBase::requestActiveCutin(player& _session, packet *_packet) {
 
 		p.addUint32(pCutin->_typeid);
 		p.addUint32(pCutin->sector);
-		p.addUint32(pCutin->tipo);
+		p.addUint32(pCutin->tipo.ulCondition);
 		
 		p.addUint32(pCutin->img[0].tipo);
 		p.addUint32(pCutin->img[1].tipo);

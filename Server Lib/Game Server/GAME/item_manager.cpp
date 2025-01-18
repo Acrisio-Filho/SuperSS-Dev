@@ -91,7 +91,7 @@ using namespace stdA;
 							_item._typeid = _bi._typeid; \
 							_item.date = *(stItem::stDate*)&item->date; \
 							_item.price = item->shop.price; \
-							_item.desconto = item->shop.desconto; \
+							_item.desconto = item->shop.sale_price; \
 							_item.qntd = (uint32_t)_bi.qntd; \
 							_item.is_cash = item->shop.flag_shop.uFlagShop.stFlagShop.is_cash; \
  \
@@ -103,7 +103,7 @@ using namespace stdA;
 							_item._typeid = _bi._typeid; \
 							_item.date = *(stItem::stDate*)&item->date; \
 							_item.price = item->shop.price; \
-							_item.desconto = item->shop.desconto; \
+							_item.desconto = item->shop.sale_price; \
 							_item.qntd = (uint32_t)_bi.qntd; \
 							_item.is_cash = item->shop.flag_shop.uFlagShop.stFlagShop.is_cash; \
  \
@@ -4808,6 +4808,13 @@ int32_t item_manager::exchangeCadieMagicBox(player& _session, uint32_t _typeid, 
 			return -1;
 		}
 
+		if (_qntd != 1u) {
+			_smp::message_pool::getInstance().push(new message("[item_manager::exchangeCadieMagicBox][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] Caddie[TYPEID="
+					+ std::to_string(_typeid) + ", ID=" + std::to_string(_id) + "] quantidade[value=" + std::to_string(_qntd) + "] de caddie eh errado, nao pode mais que 1. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+			return -1;
+		}
+
 		auto caddie = sIff::getInstance().findCaddie(_typeid);
 
 		if (caddie == nullptr) {
@@ -4839,9 +4846,9 @@ int32_t item_manager::exchangeCadieMagicBox(player& _session, uint32_t _typeid, 
 			return -1;
 		}
 
-		if (_qntd != 1) {
-			_smp::message_pool::getInstance().push(new message("[item_manager::exchangeCadieMagicBox][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] quantidade[value=" 
-					+ std::to_string(_qntd) + "] de mascot eh errado, nao pode mais que 1. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+		if (_qntd != 1u) {
+			_smp::message_pool::getInstance().push(new message("[item_manager::exchangeCadieMagicBox][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] Mascot[TYPEID="
+					+ std::to_string(_typeid) + ", ID=" + std::to_string(_id) + "] quantidade[value=" + std::to_string(_qntd) + "] de mascot eh errado, nao pode mais que 1. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
 
 			return -1;
 		}
@@ -5002,6 +5009,13 @@ int32_t item_manager::exchangeCadieMagicBox(player& _session, uint32_t _typeid, 
 			return -1;
 		}
 
+		if (_qntd != 1u) {
+			_smp::message_pool::getInstance().push(new message("[item_manager::exchangeCadieMagicBox][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] ClubSet[TYPEID="
+					+ std::to_string(_typeid) + ", ID=" + std::to_string(_id) + "] quantidade[value=" + std::to_string(_qntd) + "] de clubset eh errado, nao pode mais que 1. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+			return -1;
+		}
+
 		auto clubset = sIff::getInstance().findClubSet(_typeid);
 
 		if (clubset == nullptr) {
@@ -5022,6 +5036,13 @@ int32_t item_manager::exchangeCadieMagicBox(player& _session, uint32_t _typeid, 
 		if (pWi == nullptr) {
 			_smp::message_pool::getInstance().push(new message("[item_manager::exchangeCadieMagicBox][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] nao tem o Part no Warehouse Item[TYPEID="
 					+ std::to_string(_typeid) + ", ID=" + std::to_string(_id) + "] para trocar. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+			return -1;
+		}
+
+		if (_qntd != 1u) {
+			_smp::message_pool::getInstance().push(new message("[item_manager::exchangeCadieMagicBox][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] Part[TYPEID="
+					+ std::to_string(_typeid) + ", ID=" + std::to_string(_id) + "] quantidade[value=" + std::to_string(_qntd) + "] de part eh errado, nao pode mais que 1. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
 
 			return -1;
 		}
@@ -5046,6 +5067,13 @@ int32_t item_manager::exchangeCadieMagicBox(player& _session, uint32_t _typeid, 
 		if (pWi == nullptr) {
 			_smp::message_pool::getInstance().push(new message("[item_manager::exchangeCadieMagicBox][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] nao tem o Skin no Warehouse Item[TYPEID="
 					+ std::to_string(_typeid) + ", ID=" + std::to_string(_id) + "] para trocar. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+			return -1;
+		}
+
+		if (_qntd != 1u) {
+			_smp::message_pool::getInstance().push(new message("[item_manager::exchangeCadieMagicBox][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] Skin[TYPEID="
+					+ std::to_string(_typeid) + ", ID=" + std::to_string(_id) + "] quantidade[value=" + std::to_string(_qntd) + "] de skin eh errado, nao pode mais que 1. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
 
 			return -1;
 		}
