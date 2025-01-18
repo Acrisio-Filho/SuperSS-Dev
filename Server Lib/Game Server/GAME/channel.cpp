@@ -7018,7 +7018,7 @@ void channel::requestCadieCauldronExchange(player& _session, packet* _packet) {
 
 		for (auto i = 0u; i < count; ++i) {
 
-			if (item_manager::exchangeCadieMagicBox(_session, cei[i]._typeid, cei[i].id, cmb->item_trade.qntd[i]) <= 0)
+			if (item_manager::exchangeCadieMagicBox(_session, cei[i]._typeid, cei[i].id, cmb->item_trade.qntd[i] * item_exchange_qntd) <= 0)
 				throw exception("[channel::requestCadieCauldronExchange][Error] player[UID=" + std::to_string(_session.m_pi.uid) + "] tentou trocar um item[Seq=" 
 						+ std::to_string(seq + 1) + ", TYPEID=" + std::to_string(cei[i]._typeid) + "] que nao pode ser trocado no CadieCauldron. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::CHANNEL, 457, 5200458));
 
