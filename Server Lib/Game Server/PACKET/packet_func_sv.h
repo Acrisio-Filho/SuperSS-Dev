@@ -202,6 +202,7 @@ namespace stdA {
 			static int packet146(void* _arg1, void* _arg2); // [MailBox] Move Item Para o Armario
 			static int packet147(void* _arg1, void* _arg2);	// [MailBox] Exclui Email
 			static int packet14B(void* _arg1, void* _arg2);	// [Papel Shop] request::Play Papel Shop Normal
+			static int packet186(void* _arg1, void* _arg2);	// [Papel Shop] request::Play Papel Shop BIG
 			static int packet151(void* _arg1, void* _arg2); // [DailyQuest] Abre DailyQuest
 			static int packet152(void* _arg1, void* _arg2);	// [DailyQuest] Aceite DailyQuest
 			static int packet153(void* _arg1, void* _arg2); // [DailyQuest] Request pega recompensa da quest

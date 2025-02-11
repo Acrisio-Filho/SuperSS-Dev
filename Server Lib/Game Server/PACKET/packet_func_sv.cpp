@@ -3496,6 +3496,30 @@ int packet_func::packet14B(void* _arg1, void* _arg2) {
 	return 0;
 };
 
+
+int packet_func::packet186(void* _arg1, void* _arg2) {
+	MAKE_BEGIN_PACKET_SERVER(_arg1, _arg2);
+
+	try {
+
+		auto c = gs->findChannel(pd._session.m_pi.channel);
+
+		if (c != nullptr)
+			c->requestPlayPapelShopBIG(pd._session, pd._packet);
+
+	}
+	catch (exception& e) {
+
+		_smp::message_pool::getInstance().push(new message("[packet_func::packet186][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
+
+		if (STDA_SOURCE_ERROR_DECODE(e.getCodeError()) != STDA_ERROR_TYPE::CHANNEL)
+			throw;
+	}
+
+	return 0;
+};
+
+
 int packet_func::packet151(void* _arg1, void* _arg2) {
 	MAKE_BEGIN_PACKET_SERVER(_arg1, _arg2);
 
@@ -6471,3 +6495,21 @@ void packet_func::session_send(std::vector< packet* > v_p, session *s, unsigned 
 	v_p.clear();
 	v_p.shrink_to_fit();
 };
+
+//int packet_func::packet186(void* _arg1, void* _arg2) {
+//	MAKE_BEGIN_PACKET_SERVER(_arg1, _arg2);
+//
+//	try {
+//
+//		gs->requestChat(pd._session, pd._packet);
+//
+//	}catch (exception& e) {
+//
+//		_smp::message_pool::getInstance().push(new message("[packet_func::packet186][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
+//
+//		if (STDA_SOURCE_ERROR_DECODE(e.getCodeError()) != STDA_ERROR_TYPE::GAME_SERVER)
+//			throw;
+//	}
+//
+//	return 0;
+//};

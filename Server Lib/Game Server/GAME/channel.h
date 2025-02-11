@@ -347,6 +347,7 @@ namespace stdA {
 			// Papel Shop
 			void requestOpenPapelShop(player& _session, packet *_packet);
 			void requestPlayPapelShop(player& _session, packet *_packet);
+			void requestPlayPapelShopBIG(player& _session, packet *_packet);
 
 			// Msg Chat da Sala
 			void requestSendMsgChatRoom(player& _session, std::string _msg);
