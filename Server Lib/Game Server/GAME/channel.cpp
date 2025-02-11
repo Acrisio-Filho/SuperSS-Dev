@@ -12508,7 +12508,7 @@ void channel::requestPlayMemorial(player& _session, packet *_packet) {
 						+ std::to_string(coin_typeid) + "], mas ele ja tem o Item[TYPEID=" + std::to_string(bi._typeid) + "]. Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::CHANNEL, 10, 0x6300310));
 
 			// Achievement add +1 ao contador de item raro que ganhou
-			if (el.tipo >= 0 && el.tipo < 3)
+			if (el.tipo > 0 && el.tipo < 3)
 				sys_achieve.incrementCounter(0x6C4000B5u/*Rare Win*/);
 			else if (el.tipo >= 3)
 				sys_achieve.incrementCounter(0x6C4000B4u/*Super Rare Win*/);
