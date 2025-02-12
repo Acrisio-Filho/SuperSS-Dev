@@ -323,7 +323,7 @@ std::vector< ctx_coin_item_ex > MemorialSystem::drawCoin(player& _session, ctx_c
 				lottery.push(el.probabilidade, (size_t)&el);
 			break;
 		case MCT_PREMIUM:
-		//	if (el.gacha_number < 0 || (uint32_t)el.gacha_number <= m_level[MEMORIAL_LEVEL_MAX].gacha_number)     //Teste Memorial
+			if (el.gacha_number < 0 || (uint32_t)el.gacha_number <= m_level[MEMORIAL_LEVEL_MAX].gacha_number)     //Teste Memorial
 				lottery.push(el.probabilidade/* + _ctx_c.probabilidade*/, (size_t)&el);
 			break;
 		case MCT_SPECIAL:	// Special n�o tem limite de level, ele pega todos
