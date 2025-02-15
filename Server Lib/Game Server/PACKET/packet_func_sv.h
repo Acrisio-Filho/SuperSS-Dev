@@ -234,6 +234,7 @@ namespace stdA {
 			static int packet181(void* _arg1, void* _arg2);	// [Game] request::Active Ring Terreno [Esse é o Pacote de combinação de 2 Aneis]
 			static int packet184(void* _arg1, void* _arg2);	// [Assist] request::Toggle Assist
 			static int packet185(void* _arg1, void* _arg2);	// [Assist] request::Active Assist Green
+			static int packet186(void* _arg1, void* _arg2);	// [Papel Shop] request::Play Papel Shop Big
 			static int packet187(void* _arg1, void* _arg2);	// [CharacterStats] request::Expand Mastery
 			static int packet188(void* _arg1, void* _arg2);	// [CharacterStats] request::Upgrade Stats
 			static int packet189(void* _arg1, void* _arg2);	// [CharacterStats] request::Downgrade Stats

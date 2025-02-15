@@ -478,6 +478,7 @@ game_server::game_server() : server(m_player_manager, 2, 26, 8), m_player_manage
 		packet_func::funcs.addPacketCall(0x181, packet_func::packet181, this);
 		packet_func::funcs.addPacketCall(0x184, packet_func::packet184, this);
 		packet_func::funcs.addPacketCall(0x185, packet_func::packet185, this);
+		packet_func::funcs.addPacketCall(0x186, packet_func::packet186, this);
 		packet_func::funcs.addPacketCall(0x187, packet_func::packet187, this);
 		packet_func::funcs.addPacketCall(0x188, packet_func::packet188, this);
 		packet_func::funcs.addPacketCall(0x189, packet_func::packet189, this);
@@ -758,6 +759,7 @@ game_server::game_server() : server(m_player_manager, 2, 26, 8), m_player_manage
 		packet_func::funcs_sv.addPacketCall(0x266, packet_func::packet_svFazNada, this);
 		packet_func::funcs_sv.addPacketCall(0x26A, packet_func::packet_svFazNada, this);
 		packet_func::funcs_sv.addPacketCall(0x26B, packet_func::packet_svFazNada, this);
+		packet_func::funcs_sv.addPacketCall(0x26C, packet_func::packet_svFazNada, this);
 		packet_func::funcs_sv.addPacketCall(0x26D, packet_func::packet_svFazNada, this);
 		packet_func::funcs_sv.addPacketCall(0x26E, packet_func::packet_svFazNada, this);
 		packet_func::funcs_sv.addPacketCall(0x26F, packet_func::packet_svFazNada, this);

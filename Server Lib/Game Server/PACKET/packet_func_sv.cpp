@@ -4211,6 +4211,27 @@ int packet_func::packet185(void* _arg1, void* _arg2) {
 	return 0;
 };
 
+int packet_func::packet186(void* _arg1, void* _arg2) {
+	MAKE_BEGIN_PACKET_SERVER(_arg1, _arg2);
+
+	try {
+
+		auto c = gs->findChannel(pd._session.m_pi.channel);
+
+		if (c != nullptr)
+			c->requestPlayBigPapelShop(pd._session, pd._packet);
+		
+	}catch (exception& e) {
+
+		_smp::message_pool::getInstance().push(new message("[packet_func::packet186][ErrorSystem] " + e.getFullMessageError(), CL_FILE_LOG_AND_CONSOLE));
+
+		if (STDA_SOURCE_ERROR_DECODE(e.getCodeError()) != STDA_ERROR_TYPE::CHANNEL)
+			throw;
+	}
+
+	return 0;
+};
+
 int packet_func::packet187(void* _arg1, void* _arg2) {
 	MAKE_BEGIN_PACKET_SERVER(_arg1, _arg2);
 
