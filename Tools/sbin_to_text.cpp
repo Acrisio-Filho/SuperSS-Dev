@@ -369,161 +369,42 @@ struct FileObject {
 	bool state;
 };
 
-struct Block {
-	Block() {
-		buf = nullptr;
-		size = 0;
-		index = 0;
-	}
-	Block(char* _buf, size_t _size) {
-		Block();
-		init(_buf, _size);
-	}
-	Block(size_t _size) {
-		Block();
-		init(_size);
-	}
-	~Block() {
-		free();
-	}
-
-	void init(char* _buf, size_t _size) {
-		free();
-		buf = new char[_size];
-		memcpy(buf, _buf, _size);
-		size = _size;
-		index = 0;
-	}
-	void init(size_t _size) {
-		free();
-		buf = new char[_size];
-		size = _size;
-		index = 0;
-	}
-	void free() {
-		if (buf != nullptr)
-			delete[] buf;
-		buf = nullptr;
-		size = 0;
-		index = 0;
-	}
-
-	uint8_t readByte() {
-
-		if (buf == nullptr)
-			return 0xFF;
-		if (index >= size)
-			return 0xFF;
-		if ((index + 1) > size)
-			return 0xFF;
-		
-		index++;
-
-		return (uint8_t)buf[index - 1];
-	}
-
-	bool readBuff(void* _buf, size_t _size) {
-		
-		if (_buf == nullptr || buf == nullptr)
-			return false;
-		if (index >= size)
-			return false;
-		if ((index + _size) > size)
-			return false;
-
-		memcpy(_buf, buf + index, _size);
-		index += _size;
-
-		return true;
-	}
-
-	bool readString(std::string& _str) {
-
-		if (buf == nullptr)
-			return false;
-		if (index >= size)
-			return false;
-		
-		_str.clear();
-
-		size_t length = strlen(buf + index);
-
-		if ((index + length + 1) > size)
-			return false;
-		
-		_str.assign(buf + index, buf + index + length);
-
-		index += length + 1;
-
-		return true;
-	}
-
-	bool readFixedString(std::string& _str) {
-
-		if (buf == nullptr)
-			return false;
-		if (index >= size)
-			return false;
-		
-		uint32_t length;
-		if (!readBuff(&length, sizeof(uint32_t)))
-			return false;
-		
-		if (length < 0)
-			return false;
-		
-		if ((index + length) > size)
-			return false;
-		
-		_str.clear();
-		_str.resize(length);
-
-		if (length == 0)
-			return true;
-
-		if (!readBuff((void*)_str.data(), length))
-			return false;
-
-		return true;
-	}
-
-	bool ignore(size_t _size) {
-
-		if (buf == nullptr)
-			return false;
-		if (index >= size)
-			return false;
-		if ((index + _size) > size)
-			return false;
-	
-		index += _size;
-
-		return true;
-	}
-
-	char* buf;
-	size_t size;
-	size_t index;
-};
-
-struct BlockCtx {
-    size_t index;
-    size_t length;
-};
-
-struct Vertex {
+struct MeshInfo {
     uint32_t vtxNum;
-    uint32_t vtxIndex;
+    uint32_t idxNum;
     std::string toString() {
-        return "vtxNum: " + std::to_string(vtxNum) + ", vtxIndex: " + std::to_string(vtxIndex);
+        return "vtxNum: " + std::to_string(vtxNum) + ", idxNum: " + std::to_string(idxNum);
+    }
+};
+
+struct IndexVertex {
+    union {
+        struct {
+            uint16_t index : 15;
+            uint16_t flag : 1;
+        };
+        uint16_t value;
+    };
+    std::string toString() {
+        return "Flag: " + std::to_string(flag)
+            + " index: " + std::to_string(index);
     }
 };
 
 struct MapDDSValue {
-    uint8_t values[16];
+	uint8_t mesh_index;
+	uint8_t __bytealign; // byte align to pack(4)
+	int16_t poly_index;
+	IndexVertex indexes_vertex[3];
+	uint16_t indexes_uv[3];
     std::string toString() {
-        return "values:(" + std::to_string(sizeof(values)) 
-            + ")\n" + BufferToHexString((unsigned char*)values, sizeof(values));
+        return "mesh_index: " + std::to_string((uint16_t)mesh_index) 
+			+ ", poly_index: " + std::to_string(poly_index)
+			+ "\nindexes_vertex: ["
+                + std::accumulate(indexes_vertex, (IndexVertex*)((uint8_t*)indexes_vertex + sizeof(indexes_vertex)), std::string(), toStringVectorOp)
+			+ "]\nindexes_uv: [" + std::to_string(indexes_uv[0])
+			+ ", " + std::to_string(indexes_uv[1])
+			+ ", " + std::to_string(indexes_uv[2]) + "]";
     }
 };
 
@@ -558,51 +439,62 @@ struct TextureDDS {
     std::vector<MapDDSValue> mapDDS;
 };
 
-struct MeshShadowMap {
-    uint32_t numMesh;
-    uint32_t numMesh3d;
-    uint32_t numMesh2d;
+struct InFragMesh {
+    uint32_t numMeshInfo;
+    uint32_t numVertex;
+    uint32_t numUV;
     uint32_t sizeTexture_global;
     uint32_t sizeTexture_type[2];
     uint32_t numTexture_global;
     uint32_t numTexture_type[2];
-    std::vector<Vertex> vertex;
-    std::vector<Vector3d> mesh3d;
-    std::vector<Vector2d> mesh2d;
+    std::vector<MeshInfo> info_meshes;
+    std::vector<Vector3d> vertexes;
+    std::vector<Vector2d> uvs;
     std::vector<TextureDDS> texture_global;
     std::vector<TextureDDS> texture_type[2];
     std::string toString() {
-        return "numMesh: " + std::to_string(numMesh)
-            + ", numMesh3d: " + std::to_string(numMesh3d)
-            + ", numMesh2d: " + std::to_string(numMesh2d)
+        return "numMeshInfo: " + std::to_string(numMeshInfo)
+            + ", numVertex: " + std::to_string(numVertex)
+            + ", numUV: " + std::to_string(numUV)
             + ", sizeTexture_global: " + std::to_string(sizeTexture_global)
             + ", sizeTexture_type[0]: " + std::to_string(sizeTexture_type[0])
             + ", sizeTexture_type[1]: " + std::to_string(sizeTexture_type[1])
             + ", numTexture_global: " + std::to_string(numTexture_global)
             + ", numTexture_type[0]: " + std::to_string(numTexture_type[0])
             + ", numTexture_type[1]: " + std::to_string(numTexture_type[1])
-            + "\nvertex length: " + std::to_string(vertex.size())
-            + ", mesh3d length: " + std::to_string(mesh3d.size())
-            + ", mesh2d length: " + std::to_string(mesh2d.size())
+            + "\ninfo_meshes length: " + std::to_string(info_meshes.size())
+            + ", vertexes length: " + std::to_string(vertexes.size())
+            + ", uvs length: " + std::to_string(uvs.size())
             + ", texture_global length: " + std::to_string(texture_global.size())
             + ", texture_type[0] length: " + std::to_string(texture_type[0].size())
             + ", texture_type[1] length: " + std::to_string(texture_type[1].size())
-            + "\nvertex: " + std::accumulate(vertex.begin(), vertex.end(), std::string(), toStringVectorOp)
-            + "\nmesh3d: " + std::accumulate(mesh3d.begin(), mesh3d.end(), std::string(), toStringVectorOp)
-            + "\nmesh2d: " + std::accumulate(mesh2d.begin(), mesh2d.end(), std::string(), toStringVectorOp)
+            + "\ninfo_meshes: " + std::accumulate(info_meshes.begin(), info_meshes.end(), std::string(), toStringVectorOp)
+            + "\nvertexes: " + std::accumulate(vertexes.begin(), vertexes.end(), std::string(), toStringVectorOp)
+            + "\nuvs: " + std::accumulate(uvs.begin(), uvs.end(), std::string(), toStringVectorOp)
             + "\ntexture_global: " + std::accumulate(texture_global.begin(), texture_global.end(), std::string(), toStringVectorOp)
             + "\ntexture_type[0]: " + std::accumulate(texture_type[0].begin(), texture_type[0].end(), std::string(), toStringVectorOp)
             + "\ntexture_type[1]: " + std::accumulate(texture_type[1].begin(), texture_type[1].end(), std::string(), toStringVectorOp);
     }
 };
 
-struct OutFrag {
+struct OutFragMeshValue {
+	int16_t poly_index;
+	IndexVertex indexes_vertex[3];
+	std::string toString() {
+		return "poly_index: " + std::to_string(poly_index)
+			+ "\nindexes_vertex: ["
+                + std::accumulate(indexes_vertex, (IndexVertex*)((uint8_t*)indexes_vertex + sizeof(indexes_vertex)), std::string(), toStringVectorOp)
+            + "]";
+	}
+};
+
+struct OutFragMesh {
     uint32_t totalGlobal;
     uint32_t totalType[2];
     std::vector<uint32_t> global_num_value;
     std::vector<uint32_t> type_num_value[2];
-    std::vector<uint64_t> global_value;
-    std::vector<uint64_t> type_value[2];
+    std::vector<OutFragMeshValue> global_value;
+    std::vector<OutFragMeshValue> type_value[2];
     std::string toString() {
         return "totalGlobal: " + std::to_string(totalGlobal)
             + ", totalType[0]: " + std::to_string(totalType[0])
@@ -616,20 +508,20 @@ struct OutFrag {
             + "\nglobal_num_value: " + std::accumulate(global_num_value.begin(), global_num_value.end(), std::string(), toStringVectorRawOp)
             + "\ntype_num_value[0]: " + std::accumulate(type_num_value[0].begin(), type_num_value[0].end(), std::string(), toStringVectorRawOp)
             + "\ntype_num_value[1]: " + std::accumulate(type_num_value[1].begin(), type_num_value[1].end(), std::string(), toStringVectorRawOp)
-            + "\nglobal_value: " + std::accumulate(global_value.begin(), global_value.end(), std::string(), toStringVectorRawOp)
-            + "\ntype_value[0]: " + std::accumulate(type_value[0].begin(), type_value[0].end(), std::string(), toStringVectorRawOp)
-            + "\ntype_value[1]: " + std::accumulate(type_value[1].begin(), type_value[1].end(), std::string(), toStringVectorRawOp);
+            + "\nglobal_value: " + std::accumulate(global_value.begin(), global_value.end(), std::string(), toStringVectorOp)
+            + "\ntype_value[0]: " + std::accumulate(type_value[0].begin(), type_value[0].end(), std::string(), toStringVectorOp)
+            + "\ntype_value[1]: " + std::accumulate(type_value[1].begin(), type_value[1].end(), std::string(), toStringVectorOp);
     }
 };
 
 struct SBINCtx {
-    std::string puppet; // root bone name
-    MeshShadowMap msm;
-    OutFrag of;
+    std::string bone; // bone name
+    InFragMesh ifm;
+    OutFragMesh ofm;
     std::string toString() {
-        return "puppet: " + puppet
-            + "\nMeshShadowMap: " + msm.toString()
-            + "\nof: " + of.toString();
+        return "bone: " + bone
+            + "\nInFragMesh: " + ifm.toString()
+            + "\nOutFragMesh: " + ofm.toString();
     }
 };
 
@@ -638,67 +530,67 @@ bool loadSBIN(FileObject& _fo, SBINCtx& _sbin) {
     if (_fo.index >= _fo.size)
         return false;
     
-    if (!_fo.read((char*)&_sbin.msm.numMesh, sizeof(uint32_t)))
+    if (!_fo.read((char*)&_sbin.ifm.numMeshInfo, sizeof(uint32_t)))
         return false;
     
-    sLog << "Loading Mesh Vertex(" << _sbin.msm.numMesh << ")";
+    sLog << "Loading In Frag Mesh, Mesh Info(" << _sbin.ifm.numMeshInfo << ")";
     
-    if ((_fo.index + _sbin.msm.numMesh * sizeof(Vertex)) > _fo.size)
+    if ((_fo.index + _sbin.ifm.numMeshInfo * sizeof(MeshInfo)) > _fo.size)
         return false;
     
     uint32_t i;
 
     // Mesh
-    Vertex vtx;
-    for (i = 0u; i < _sbin.msm.numMesh; i++) {
-        if (!_fo.read((char*)&vtx, sizeof(Vertex)))
+    MeshInfo mi;
+    for (i = 0u; i < _sbin.ifm.numMeshInfo; i++) {
+        if (!_fo.read((char*)&mi, sizeof(MeshInfo)))
             return false;
-        _sbin.msm.vertex.push_back(vtx);
+        _sbin.ifm.info_meshes.push_back(mi);
     }
 
-    sLog << " Loadded(" << _sbin.msm.vertex.size() << ")" << std::endl;
+    sLog << " Loadded(" << _sbin.ifm.info_meshes.size() << ")" << std::endl;
 
-    if (!_fo.read((char*)&_sbin.msm.numMesh3d, sizeof(uint32_t)))
+    if (!_fo.read((char*)&_sbin.ifm.numVertex, sizeof(uint32_t)))
         return false;
-    if (!_fo.read((char*)&_sbin.msm.numMesh2d, sizeof(uint32_t)))
+    if (!_fo.read((char*)&_sbin.ifm.numUV, sizeof(uint32_t)))
         return false;
     
-    sLog << "Loading Mesh3d(" << _sbin.msm.numMesh3d << ")";
+    sLog << "Loading Vertex(" << _sbin.ifm.numVertex << ")";
 
     Vector3d v3;
-    for (i = 0u; i < _sbin.msm.numMesh3d; i++) {
+    for (i = 0u; i < _sbin.ifm.numVertex; i++) {
         if (!_fo.read((char*)&v3, sizeof(Vector3d)))
             return false;
-        _sbin.msm.mesh3d.push_back(v3);
+        _sbin.ifm.vertexes.push_back(v3);
     }
 
-    sLog << " Loadded(" << _sbin.msm.mesh3d.size() << ")" << std::endl;
+    sLog << " Loadded(" << _sbin.ifm.vertexes.size() << ")" << std::endl;
 
-    sLog << "Loading Mesh2d(" << _sbin.msm.numMesh2d << ")";
+    sLog << "Loading UV(" << _sbin.ifm.numUV << ")";
 
     Vector2d v2;
-    for (i = 0u; i < _sbin.msm.numMesh2d; i++) {
+    for (i = 0u; i < _sbin.ifm.numUV; i++) {
         if (!_fo.read((char*)&v2, sizeof(Vector2d)))
             return false;
-        _sbin.msm.mesh2d.push_back(v2);
+        _sbin.ifm.uvs.push_back(v2);
     }
 
-    sLog << " Loadded(" << _sbin.msm.mesh2d.size() << ")" << std::endl;
+    sLog << " Loadded(" << _sbin.ifm.uvs.size() << ")" << std::endl;
 
     TextureDDS texture;
 
-    if (!_fo.read((char*)&_sbin.msm.sizeTexture_global, sizeof(uint32_t)))
+    if (!_fo.read((char*)&_sbin.ifm.sizeTexture_global, sizeof(uint32_t)))
         return false;
     
-    sLog << "Loading Texture Global(" << _sbin.msm.sizeTexture_global << ")";
+    sLog << "Loading Texture Global(" << _sbin.ifm.sizeTexture_global << ")";
     
-    if (_sbin.msm.sizeTexture_global > 0u) {
-        if (!_fo.read((char*)&_sbin.msm.numTexture_global, sizeof(uint32_t)))
+    if (_sbin.ifm.sizeTexture_global > 0u) {
+        if (!_fo.read((char*)&_sbin.ifm.numTexture_global, sizeof(uint32_t)))
             return false;
 
-        sLog << " (" << _sbin.msm.numTexture_global << ")";
+        sLog << " (" << _sbin.ifm.numTexture_global << ")";
 
-        for (i = 0u; i < _sbin.msm.numTexture_global; i++) {
+        for (i = 0u; i < _sbin.ifm.numTexture_global; i++) {
 
             texture.clear();
 
@@ -716,26 +608,26 @@ bool loadSBIN(FileObject& _fo, SBINCtx& _sbin) {
                 if (!_fo.read((char *)texture.mapDDS.data(), texture.numMapDDS * sizeof(MapDDSValue)))
                     return false;
             }
-            _sbin.msm.texture_global.push_back(texture);
+            _sbin.ifm.texture_global.push_back(texture);
         }
 
-        sLog << " Loadded(" << _sbin.msm.texture_global.size() << ")" << std::endl;
+        sLog << " Loadded(" << _sbin.ifm.texture_global.size() << ")" << std::endl;
     }
 
     for (i = 0; i < 2u; i++) {
 
-        if (!_fo.read((char *)&_sbin.msm.sizeTexture_type[i], sizeof(uint32_t)))
+        if (!_fo.read((char *)&_sbin.ifm.sizeTexture_type[i], sizeof(uint32_t)))
             return false;
         
-        sLog << "Loading Texture Type[" << i << "](" << _sbin.msm.sizeTexture_type[i] << ")";
+        sLog << "Loading Texture Type[" << i << "](" << _sbin.ifm.sizeTexture_type[i] << ")";
 
-        if (_sbin.msm.sizeTexture_type[i] > 0u) {
-            if (!_fo.read((char *)&_sbin.msm.numTexture_type[i], sizeof(uint32_t)))
+        if (_sbin.ifm.sizeTexture_type[i] > 0u) {
+            if (!_fo.read((char *)&_sbin.ifm.numTexture_type[i], sizeof(uint32_t)))
                 return false;
             
-            sLog << " (" << _sbin.msm.numTexture_type[i] << ")";
+            sLog << " (" << _sbin.ifm.numTexture_type[i] << ")";
             
-            for (uint32_t j = 0u; j < _sbin.msm.numTexture_type[i]; j++) {
+            for (uint32_t j = 0u; j < _sbin.ifm.numTexture_type[i]; j++) {
 
                 texture.clear();
 
@@ -753,77 +645,77 @@ bool loadSBIN(FileObject& _fo, SBINCtx& _sbin) {
                     if (!_fo.read((char *)texture.mapDDS.data(), texture.numMapDDS * sizeof(MapDDSValue)))
                         return false;
                 }
-                _sbin.msm.texture_type[i].push_back(texture);
+                _sbin.ifm.texture_type[i].push_back(texture);
             }
 
-            sLog << " Loadded(" << _sbin.msm.texture_type[i].size() << ")" << std::endl;
+            sLog << " Loadded(" << _sbin.ifm.texture_type[i].size() << ")" << std::endl;
         }
     }
 
     // Out Frag
-    if (!_fo.read((char*)&_sbin.of.totalGlobal, sizeof(uint32_t)))
+    if (!_fo.read((char*)&_sbin.ofm.totalGlobal, sizeof(uint32_t)))
         return false;
     for (i = 0u; i < 2u; i++)
-        if (!_fo.read((char*)&_sbin.of.totalType[i], sizeof(uint32_t)))
+        if (!_fo.read((char*)&_sbin.ofm.totalType[i], sizeof(uint32_t)))
             return false;
     
-    sLog << "Loading Out Frag, Global(" << _sbin.of.totalGlobal 
-        << "), Type[0](" << _sbin.of.totalType[0] << "), Type[1](" << _sbin.of.totalType[1] << ")";
+    sLog << "Loading Out Frag Mesh, Global(" << _sbin.ofm.totalGlobal 
+        << "), Type[0](" << _sbin.ofm.totalType[0] << "), Type[1](" << _sbin.ofm.totalType[1] << ")";
 
-    if (_sbin.of.totalGlobal > 0u) {
-        if ((_fo.index + _sbin.msm.numMesh * sizeof(uint32_t)) > _fo.size)
+    if (_sbin.ofm.totalGlobal > 0u) {
+        if ((_fo.index + _sbin.ifm.numMeshInfo * sizeof(uint32_t)) > _fo.size)
             return false;
         uint32_t numOFGlobal;
-        for (i = 0u; i < _sbin.msm.numMesh; i++) {
+        for (i = 0u; i < _sbin.ifm.numMeshInfo; i++) {
             if (!_fo.read((char*)&numOFGlobal, sizeof(uint32_t)))
                 return false;
-            _sbin.of.global_num_value.push_back(numOFGlobal);
+            _sbin.ofm.global_num_value.push_back(numOFGlobal);
         }
     }
 
-    sLog << " Loadded Global Num Values(" << _sbin.of.global_num_value.size() << ")";
+    sLog << " Loadded Global Num Values(" << _sbin.ofm.global_num_value.size() << ")";
 
     for (i = 0u; i < 2u; i++) {
-        if (_sbin.of.totalType[i] > 0u) {
-            if ((_fo.index + _sbin.msm.numMesh * sizeof(uint32_t)) > _fo.size)
+        if (_sbin.ofm.totalType[i] > 0u) {
+            if ((_fo.index + _sbin.ifm.numMeshInfo * sizeof(uint32_t)) > _fo.size)
                 return false;
             uint32_t numOFType;
-            for (uint32_t j = 0u; j < _sbin.msm.numMesh; j++) {
+            for (uint32_t j = 0u; j < _sbin.ifm.numMeshInfo; j++) {
                 if (!_fo.read((char*)&numOFType, sizeof(uint32_t)))
                     return false;
-                _sbin.of.type_num_value[i].push_back(numOFType);
+                _sbin.ofm.type_num_value[i].push_back(numOFType);
             }
         }
 
-        sLog << " Loadded Type[" << i << "] Num Values(" << _sbin.of.type_num_value[i].size() << ")";
+        sLog << " Loadded Type[" << i << "] Num Values(" << _sbin.ofm.type_num_value[i].size() << ")";
     }
 
-    if (_sbin.of.totalGlobal > 0u) {
-        if ((_fo.index + _sbin.of.totalGlobal * sizeof(uint64_t)) > _fo.size)
+    if (_sbin.ofm.totalGlobal > 0u) {
+        if ((_fo.index + _sbin.ofm.totalGlobal * sizeof(OutFragMeshValue)) > _fo.size)
             return false;
-        uint64_t valueOFGlobal;
-        for (i = 0u; i < _sbin.of.totalGlobal; i++) {
-            if (!_fo.read((char*)&valueOFGlobal, sizeof(uint64_t)))
+        OutFragMeshValue valueOFGlobal;
+        for (i = 0u; i < _sbin.ofm.totalGlobal; i++) {
+            if (!_fo.read((char*)&valueOFGlobal, sizeof(OutFragMeshValue)))
                 return false;
-            _sbin.of.global_value.push_back(valueOFGlobal);
+            _sbin.ofm.global_value.push_back(valueOFGlobal);
         }
     }
 
-    sLog << " Loadded Global Values(" << _sbin.of.global_value.size() << ")";
+    sLog << " Loadded Global Values(" << _sbin.ofm.global_value.size() << ")";
     
     for (i = 0u; i < 2u; i++) {
-        if (_sbin.of.totalType[i] > 0u) {
-            if ((_fo.index + _sbin.of.totalType[i] * sizeof(uint64_t)) > _fo.size)
+        if (_sbin.ofm.totalType[i] > 0u) {
+            if ((_fo.index + _sbin.ofm.totalType[i] * sizeof(OutFragMeshValue)) > _fo.size)
                 return false;
-            uint64_t valueOFType;
-            for (uint32_t j = 0u; j < _sbin.of.totalType[i]; j++) {
-                if (!_fo.read((char*)&valueOFType, sizeof(uint64_t)))
+            OutFragMeshValue valueOFType;
+            for (uint32_t j = 0u; j < _sbin.ofm.totalType[i]; j++) {
+                if (!_fo.read((char*)&valueOFType, sizeof(OutFragMeshValue)))
                     return false;
-                _sbin.of.type_value[i].push_back(valueOFType);
+                _sbin.ofm.type_value[i].push_back(valueOFType);
             }
         }
 
-        sLog << " Loadded Type[" << i << "] Values(" << _sbin.of.type_value[i].size() << ")";
+        sLog << " Loadded Type[" << i << "] Values(" << _sbin.ofm.type_value[i].size() << ")";
     }
 
     sLog << "\nFinal Index: " << _fo.index << std::endl;
@@ -861,21 +753,21 @@ int main(int _argc, char* _argv[]) {
     SBINCtx sbin;
     
     if ((ver._v.full_version & 0xFFFE0000) == 0xFFFE0000 && compareVersions(ver, VERSION_1_0) >= 0) {
-        uint32_t numPuppets;
-        if (!fo.read((char*)&numPuppets, sizeof(uint32_t)))
+        uint32_t numBones;
+        if (!fo.read((char*)&numBones, sizeof(uint32_t)))
             return -5;
-        if (numPuppets <= 0)
+        if (numBones <= 0)
             return -6;
 
-        for (uint32_t i = 0u; i < numPuppets; i++) {
-            if (!fo.readFixedString(sbin.puppet))
+        for (uint32_t i = 0u; i < numBones; i++) {
+            if (!fo.readFixedString(sbin.bone))
                 return -7;
             loadSBIN(fo, sbin);
             sbins.push_back(sbin);
         }
     }else {
         fo.resetIndex();
-        sbin.puppet = "Beta version";
+        sbin.bone = "Beta version";
         loadSBIN(fo, sbin);
         sbins.push_back(sbin);
     }

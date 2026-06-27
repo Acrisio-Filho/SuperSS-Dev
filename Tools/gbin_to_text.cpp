@@ -1,6 +1,6 @@
 // Arquivo gbin_to_text.cpp
 // Criado em 03/07/2023 as 18:25 por Acrisio
-// Definição e Implementação do Tradutor dos arquivos .gbin e .aibin do PangYa do PC todas as versões
+// Definição e Implementação do Tradutor dos arquivos .gbin, .sgbin e .aibin do PangYa do PC todas as versões
 
 #include <iostream>
 #include <fstream>
@@ -689,7 +689,7 @@ struct BlockCtx {
 // Packed
 #pragma pack(1)
 
-struct HeaderV71 {
+struct HeaderV70 {
     char magic[4];
     uint32_t version;
     uint32_t num_element_global;
@@ -700,7 +700,7 @@ struct HeaderV71 {
     uint32_t num_texture;
     uint32_t num_node;
     void clear() {
-        memset(this, 0, sizeof(HeaderV71));
+        memset(this, 0, sizeof(HeaderV70));
     };
     std::string toString() {
         return "magic: " + std::string(magic, magic + sizeof(magic))
@@ -716,122 +716,122 @@ struct HeaderV71 {
     }
 };
 
-struct HeaderV72 : public HeaderV71 {
+struct HeaderV72 : public HeaderV70 {
     uint32_t num_new_element;
     void clear() {
         memset(this, 0, sizeof(HeaderV72));
     };
     std::string toString() {
-        return HeaderV71::toString()
+        return HeaderV70::toString()
             + "\nnum_new_element: " + std::to_string(num_new_element);
     }
 };
 
 struct ExtraValueV72 {
     int32_t guid;
-    int32_t unknown2;
+    int32_t parent_guid;
     void clear() {
         memset(this, 0, sizeof(ExtraValueV72));
     };
     std::string toString() {
         return "guid: " + std::to_string(guid)
-            + "\nunknown2: " + std::to_string(unknown2);
+            + "\nparent_guid: " + std::to_string(parent_guid);
     }
 };
 
-struct CameraV71 {
+struct CameraV70 {
     char name[32];
-    Vector3d pos;
-    Vector3d dest;
+    Vector3d pos_world;
+    Vector3d dest_world;
     float fov;
     float bank;
     void clear() {
-        memset(this, 0, sizeof(CameraV71));
+        memset(this, 0, sizeof(CameraV70));
     };
     std::string toString() {
         return "name: " + std::string(name)
-            + "\npos: " + pos.toString()
-            + "\ndest: " + dest.toString()
+            + "\npos_world: " + pos_world.toString()
+            + "\ndest_world: " + dest_world.toString()
             + "\nfov: " + std::to_string(fov)
             + "\nbank: " + std::to_string(bank);
     }
 };
 
-struct CameraV72 : public CameraV71 {
-    Vector3d pos2;
-    Vector3d dest2;
+struct CameraV72 : public CameraV70 {
+    Vector3d pos_local;
+    Vector3d dest_local;
     ExtraValueV72 extra_value;
     void clear() {
         memset(this, 0, sizeof(CameraV72));
     };
     std::string toString() {
-        return CameraV71::toString()
-            + "\npos2: " + pos2.toString()
-            + "\ndest2: " + dest2.toString()
+        return CameraV70::toString()
+            + "\npos_local: " + pos_local.toString()
+            + "\ndest_local: " + dest_local.toString()
             + "\nextra_value: " + extra_value.toString();
     }
 };
 
-struct LightV71 {
+struct LightV70 {
     uint8_t type;
     char name[32];
-    Vector3d pos;
+    Vector3d pos_world;
     char data[64];
     void clear() {
-        memset(this, 0, sizeof(LightV71));
+        memset(this, 0, sizeof(LightV70));
     };
     std::string toString() {
         return "type: " + std::to_string((uint16_t)type)
             + "\nname: " + std::string(name)
-            + "\npos: " + pos.toString()
+            + "\npos_world: " + pos_world.toString()
             + "\ndata: " + std::string(data);
     }
 };
 
-struct LightV72 : public LightV71 {
-    Vector3d pos2;
+struct LightV72 : public LightV70 {
+    Vector3d pos_local;
     ExtraValueV72 extra_value;
     void clear() {
         memset(this, 0, sizeof(LightV72));
     };
     std::string toString() {
-        return LightV71::toString()
-            + "\npos2: " + pos2.toString()
+        return LightV70::toString()
+            + "\npos_local: " + pos_local.toString()
             + "\nextra_value: " + extra_value.toString();
     }
 };
 
-struct SoundBoxV71 {
+struct SoundBoxV70 {
     uint8_t type;
     char name[64];
-    Area min_max;
+    Area min_max_world;
     void clear() {
-        memset(this, 0, sizeof(SoundBoxV71));
+        memset(this, 0, sizeof(SoundBoxV70));
     };
     std::string toString() {
         return "type: " + std::to_string((uint16_t)type)
             + "\nname: " + std::string(name)
-            + "\nmin_max: " + min_max.toString();
+            + "\nmin_max_world: " + min_max_world.toString();
     }
 };
 
-struct SoundBoxV72 : public SoundBoxV71 {
-    Area min_max2;
+struct SoundBoxV72 : public SoundBoxV70 {
+    Area min_max_local;
     ExtraValueV72 extra_value;
     void clear() {
         memset(this, 0, sizeof(SoundBoxV72));
     };
     std::string toString() {
-        return SoundBoxV71::toString()
-            + "\nmin_max2: " + min_max2.toString()
+        return SoundBoxV70::toString()
+            + "\nmin_max_local: " + min_max_local.toString()
             + "\nextra_value: " + extra_value.toString();
     }
 };
 
-struct TextureV71 {
+struct TextureV70 {
     char name[32];
     void clear() {
-        memset(this, 0, sizeof(TextureV71));
+        memset(this, 0, sizeof(TextureV70));
     };
     std::string toString() {
         return "name: " + std::string(name);
@@ -849,16 +849,16 @@ struct NodeBase {
     virtual void pushVect(Vector3d& _vect) = 0;
 };
 
-struct NodeV71 : public NodeBase {
+struct NodeV70 : public NodeBase {
     char name[16];
     uint32_t num_vect;
     uint32_t type;
     std::vector< Vector3d > vects;
-    NodeV71(uint32_t _ul = 0u) {
+    NodeV70(uint32_t _ul = 0u) {
         (_ul);
         clear();
     };
-    virtual ~NodeV71() {
+    virtual ~NodeV70() {
         clear();
     };
     virtual void clear() override {
@@ -945,68 +945,67 @@ struct NodeV72 : public NodeBase {
 
 struct ElementV70 {
 	union {
-        uint32_t ul_option;
+        uint16_t uc_option;
         struct {
-            // ele não está distribuidos assim pelo que vi no s4 qa
-            uint32_t unknown1 : 8;
-            uint32_t unknown2 : 8;
-            uint32_t unknown3 : 8;
-            uint32_t unknown4 : 8;
+            uint16_t flag1 : 3; // flags to animate object and etc
+            uint16_t flag2 : 5; // flag to collision object and etc
         }bit_fileds;
-    }u_option;
-    uint32_t vtxNum;
+    }u_option; 
+    uint8_t __align_memory[2]; // align 4 bytes memory
+    uint32_t face_num;
     char name[32];
-    Matrix matrix1;
-    Matrix matrix2;
+    Area min_max;
+    Area fit_base_model;
+    Matrix matrix_world;
     uint32_t course_type; // type[0], type[1] (1 - Blue Lagoon, 2 - Blue Water)
 	void clear() {
 		memset(this, 0, sizeof(ElementV70));
 	};
 	std::string toString() {
-		return "u_option: " + std::to_string(u_option.ul_option)
+		return "u_option: " + std::to_string(u_option.uc_option)
             + " ("
-                + std::to_string(u_option.bit_fileds.unknown1)
-                + ", " + std::to_string(u_option.bit_fileds.unknown2)
-                + ", " + std::to_string(u_option.bit_fileds.unknown3)
-                + ", " + std::to_string(u_option.bit_fileds.unknown4)
+                + std::to_string(u_option.bit_fileds.flag1)
+                + ", " + std::to_string(u_option.bit_fileds.flag2)
             + ")"
-            + "\nvtxNum: " + std::to_string(vtxNum)
+            + "\nface_num: " + std::to_string(face_num)
             + "\nname: " + std::string(name)
-            + "\nmatrix1: " + matrix1.toString()
-            + "\nmatrix2: " + matrix2.toString()
+            + "\nmin_max: " + min_max.toString()
+            + "\nfit_base_model: " + fit_base_model.toString()
+            + "\nmatrix_world: " + matrix_world.toString()
             + "\ncourse_type: " + std::to_string(course_type);
 	}
 };
 
 struct ElementV71 : public ElementV70 {
-    char class_name[32];
+    char script[32]; // used in portals, values to warp ball trajectory
     void clear() {
         memset(this, 0, sizeof(ElementV71));
     };
     std::string toString() {
         return ElementV70::toString()
-            + "\nclass_name: " + std::string(class_name);
+            + "\nscript: " + std::string(script);
     }
 };
 
 struct ElementV72 : public ElementV71 {
-    Matrix matrix2_v72;
+    Matrix matrix_local;
     ExtraValueV72 extra_value;
     void clear() {
         memset(this, 0, sizeof(ElementV72));
     };
     std::string toString() {
         return ElementV71::toString()
-            + "\nmatrix2_v72: " + matrix2_v72.toString()
+            + "\nmatrix_local: " + matrix_local.toString()
             + "\nextra_value: " + extra_value.toString();
     }
 };
 
+// Esse aqui é do Grand Zodiac, tem o Green tipo 1, e Tee Shot tipo 2
 struct NewElementV72 {
     ExtraValueV72 extra_value;
     char name[64];
-    Matrix matrix1;
-    Matrix matrix2;
+    Matrix matrix_world;
+    Matrix matrix_local;
     uint32_t type;
     void clear() {
         memset(this, 0, sizeof(NewElementV72));
@@ -1014,8 +1013,8 @@ struct NewElementV72 {
     std::string toString() {
         return "extra_value: " + extra_value.toString()
             + "\nname: " + std::string(name)
-            + "\nmatrix1: " + matrix1.toString()
-            + "\nmatrix2: " + matrix2.toString()
+            + "\nmatrix_world: " + matrix_world.toString()
+            + "\nmatrix_local: " + matrix_local.toString()
             + "\ntype: " + std::to_string(type);
     }
 };
@@ -1033,12 +1032,12 @@ struct PointXZ {
 };
 
 // fast par hole, tee and pin check in gbin
-struct MapCheckV71 {
+struct MapCheckV70 {
     uint8_t par_hole;
     PointXZ tee_type[2];
     PointXZ pin_type[2][3];
     void clear() {
-        memset(this, 0, sizeof(MapCheckV71));
+        memset(this, 0, sizeof(MapCheckV70));
     };
     std::string toString(){
         return "par_hole: " + std::to_string((uint16_t)par_hole)
@@ -1078,7 +1077,7 @@ struct MapColorVtx {
     };
 };
 
-struct ElementBaseFaceMapColorVtxV71 {
+struct ElementBaseFaceMapColorVtxV70 {
     std::vector< MapColorVtx > map;
     void clear() {
         map.clear();
@@ -1089,7 +1088,7 @@ struct ElementBaseFaceMapColorVtxV71 {
 };
 
 struct ElementBaseFaceMapColorVtxV72 {
-    std::map< std::string, std::vector< uint32_t > > map;
+    std::map< std::string, std::vector< std::vector< uint32_t > > > map;
     void clear() {
         map.clear();
     };
@@ -1098,9 +1097,13 @@ struct ElementBaseFaceMapColorVtxV72 {
         std::string ret = "map(" + std::to_string(map.size()) + "):\n{\n";
 
         for (auto& el : map) {
-            ret += "\nname: " + el.first;
-            ret += "\nvalues(" + std::to_string(el.second.size()) + "):\n{\n";
-            ret += std::accumulate(el.second.begin(), el.second.end(), std::string(), toStringVectorRawOp);
+            ret += "\nbone_name: " + el.first;
+            ret += "\nfaces(" + std::to_string(el.second.size()) + "):\n{\n";
+            for (auto& el2: el.second) {
+                ret += "\nvalues(" + std::to_string(el2.size()) + "):\n{\n";
+                ret += std::accumulate(el2.begin(), el2.end(), std::string(), toStringVectorRawOp);
+                ret += "\n}";
+            }
             ret += "\n}";
         }
 
@@ -1118,14 +1121,14 @@ struct GbinCtx {
     std::vector< CameraV72 > cameras;
     std::vector< LightV72 > lights;
     std::vector< SoundBoxV72 > sound_boxs;
-    std::vector< TextureV71 > textures;
+    std::vector< TextureV70 > textures;
     std::vector< NodeV72 > nodes;
     std::vector< ElementV72 > elements;
     std::vector< NewElementV72 > new_elements;
-    ElementBaseFaceMapColorVtxV71 element_base_face_map_color_vtx_v71;
+    ElementBaseFaceMapColorVtxV70 element_base_face_map_color_vtx_v70;
     ElementBaseFaceMapColorVtxV72 element_base_face_map_color_vtx_v72;
     ElementV72 element_base;
-    MapCheckV71 map_check_v71;
+    MapCheckV70 map_check_v70;
     MapCheckV72 map_check_v72;
     void clear() {
         header.clear();
@@ -1136,10 +1139,10 @@ struct GbinCtx {
         nodes.clear();
         elements.clear();
         new_elements.clear();
-        element_base_face_map_color_vtx_v71.clear();
+        element_base_face_map_color_vtx_v70.clear();
         element_base_face_map_color_vtx_v72.clear();
         element_base.clear();
-        map_check_v71.clear();
+        map_check_v70.clear();
         map_check_v72.clear();
     };
     std::string toString() {
@@ -1162,7 +1165,7 @@ struct GbinCtx {
             + "\nelement_base: " + element_base.toString()
             + "\nelement_base_face_map_color_vtx:" + (
                 header.version < 0x72 
-                    ? element_base_face_map_color_vtx_v71.toString()
+                    ? element_base_face_map_color_vtx_v70.toString()
                     : element_base_face_map_color_vtx_v72.toString()
             )
             + "\nelements("
@@ -1173,7 +1176,7 @@ struct GbinCtx {
             + "): " + std::accumulate(new_elements.begin(), new_elements.end(), std::string(), toStringVectorOp)
             + "\nmap_check: " + (
                 header.version < 0x72
-                    ? map_check_v71.toString()
+                    ? map_check_v70.toString()
                     : map_check_v72.toString()
             );
     }
@@ -1186,10 +1189,10 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
     if (_fo.index >= _fo.size)
         return false;
     
-    if ((_fo.index + sizeof(HeaderV71)) > _fo.size)
+    if ((_fo.index + sizeof(HeaderV70)) > _fo.size)
         return false;
     
-    if (!_fo.read((char*)&_gbin.header, sizeof(HeaderV71)))
+    if (!_fo.read((char*)&_gbin.header, sizeof(HeaderV70)))
         return false;
 
     if (strncmp(_gbin.header.magic, "WEPX", 4) != 0)
@@ -1212,11 +1215,11 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
     for (i = 0u; i < _gbin.header.num_camera; i++) {
         cam.clear();
 
-        if (!_fo.read((char*)&cam, sizeof(CameraV71)))
+        if (!_fo.read((char*)&cam, sizeof(CameraV70)))
             return false;
 
         if (_gbin.header.version > 0x71
-                && !_fo.read((char*)(&cam) + sizeof(CameraV71), sizeof(CameraV72) - sizeof(CameraV71)))
+                && !_fo.read((char*)(&cam) + sizeof(CameraV70), sizeof(CameraV72) - sizeof(CameraV70)))
             return false;
 
         _gbin.cameras.push_back(cam);
@@ -1231,7 +1234,7 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
     for (i = 0u; i < _gbin.header.num_light; i++) {
         light.clear();
 
-        if (!_fo.read((char*)&light, sizeof(LightV71) - sizeof(light.data)))
+        if (!_fo.read((char*)&light, sizeof(LightV70) - sizeof(light.data)))
             return false;
         
         if (light.type != 0u
@@ -1239,7 +1242,7 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
             return false;
         
         if (_gbin.header.version > 0x71
-                && !_fo.read((char*)(&light) + sizeof(LightV71), sizeof(LightV72) - sizeof(LightV71)))
+                && !_fo.read((char*)(&light) + sizeof(LightV70), sizeof(LightV72) - sizeof(LightV70)))
             return false;
         
         _gbin.lights.push_back(light);
@@ -1254,11 +1257,11 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
     for (i = 0u; i < _gbin.header.num_sound_box; i++) {
         sound_box.clear();
 
-        if (!_fo.read((char*)&sound_box, sizeof(SoundBoxV71)))
+        if (!_fo.read((char*)&sound_box, sizeof(SoundBoxV70)))
             return false;
         
         if (_gbin.header.version > 0x71
-                && !_fo.read((char*)(&sound_box) + sizeof(SoundBoxV71), sizeof(SoundBoxV72) - sizeof(SoundBoxV71)))
+                && !_fo.read((char*)(&sound_box) + sizeof(SoundBoxV70), sizeof(SoundBoxV72) - sizeof(SoundBoxV70)))
             return false;
         
         _gbin.sound_boxs.push_back(sound_box);
@@ -1268,12 +1271,12 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
 
     sLog << "Loading Texture(" << _gbin.header.num_texture << ")";
 
-    TextureV71 texture;
+    TextureV70 texture;
 
     for (i = 0u; i < _gbin.header.num_texture; i++) {
         texture.clear();
 
-        if (!_fo.read((char*)&texture, sizeof(TextureV71)))
+        if (!_fo.read((char*)&texture, sizeof(TextureV70)))
             return false;
 
         _gbin.textures.push_back(texture);
@@ -1288,12 +1291,12 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
     NodeBase *pNode = nullptr;
     Vector3d vec3;
 
-    // Extra node point (tee) to short game, *extra (approach), *extra_shortgame(shortgame)
-    // .aibin file, shortgame
+    // Extra node A.I Grand Prix
+    // .aibin file
     if (!file_ext.empty() && file_ext.compare(".aibin") == 0)
         pNode = new NodeV72();
     else
-        pNode = new NodeV71();
+        pNode = new NodeV70();
 
     for (i = 0u; i < _gbin.header.num_node; i++) {
         pNode->clear();
@@ -1339,20 +1342,20 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
 
         // Load Element base map color vtx
         if (_gbin.header.version < 0x72) {
-            sLog << "Loading Element base map color vtx v70,v71(" << _gbin.element_base.vtxNum << ")";
+            sLog << "Loading Element base map color vtx v70,v71(" << _gbin.element_base.face_num << ")";
 
             MapColorVtx map_color_vtx;
 
-            for (i = 0u; i < _gbin.element_base.vtxNum; i++) {
+            for (i = 0u; i < _gbin.element_base.face_num; i++) {
                 map_color_vtx.clear();
 
                 if (!_fo.read((char *)&map_color_vtx, sizeof(MapColorVtx)))
                     return false;
 
-                _gbin.element_base_face_map_color_vtx_v71.map.push_back(map_color_vtx);
+                _gbin.element_base_face_map_color_vtx_v70.map.push_back(map_color_vtx);
             }
 
-            sLog << " Loadded(" << _gbin.element_base_face_map_color_vtx_v71.map.size() << ") Index: " << _fo.index << std::endl;
+            sLog << " Loadded(" << _gbin.element_base_face_map_color_vtx_v70.map.size() << ") Index: " << _fo.index << std::endl;
 
         }else{
 
@@ -1365,17 +1368,18 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
 
             sLog << j << ")";
 
-            std::vector<uint32_t> map_color_vtx_single_coord;
+            std::vector< std::vector<uint32_t> > map_color_vtx_faces;
+            std::vector< uint32_t > map_color_vtx_single_coord;
 
             if (j > 0u) {
-                std::string name_map_puppet;
+                std::string bone_name_puppet_map;
 
                 for (i = 0u; i < j; i++) {
 
-                    name_map_puppet.clear();
-                    map_color_vtx_single_coord.clear();
+                    bone_name_puppet_map.clear();
+                    map_color_vtx_faces.clear();
 
-                    if (!_fo.readFixedString(name_map_puppet))
+                    if (!_fo.readFixedString(bone_name_puppet_map))
                         return false;
 
                     if (!_fo.read((char *)&k, sizeof(uint32_t)))
@@ -1384,6 +1388,9 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
                     if (k > 0u) {
 
                         for (uint32_t a = 0u; a < k; a++) {
+
+                            map_color_vtx_single_coord.clear();
+
                             if (!_fo.read((char *)&l, sizeof(uint32_t)))
                                 return false;
 
@@ -1393,10 +1400,12 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
 
                                 map_color_vtx_single_coord.push_back(h);
                             }
+
+                            map_color_vtx_faces.push_back(map_color_vtx_single_coord);
                         }
                     }
 
-                    _gbin.element_base_face_map_color_vtx_v72.map.insert(std::make_pair(name_map_puppet, map_color_vtx_single_coord));
+                    _gbin.element_base_face_map_color_vtx_v72.map.insert(std::make_pair(bone_name_puppet_map, map_color_vtx_faces));
                 }
             }
 
@@ -1453,7 +1462,7 @@ bool loadGBin(FileObject& _fo, GbinCtx& _gbin) {
 
         if (_gbin.header.version < 0x72) {
 
-            if (!_fo.read((char *)&_gbin.map_check_v71, sizeof(MapCheckV71)))
+            if (!_fo.read((char *)&_gbin.map_check_v70, sizeof(MapCheckV70)))
                 return false;
 
         }else{

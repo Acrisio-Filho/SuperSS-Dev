@@ -542,7 +542,7 @@ const uint32_t* findKeyLocation(sLZPakFileEntry& _header) {
     return nullptr;
 }
 
-void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType _type) {
+void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType _type, uint32_t _compress_level, bool _request_input = true) {
 
     sLZPakHeaderEx header;
 
@@ -657,16 +657,18 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
         return;
     }
 
-    printf("Escolha a versão:\n"
-            "1) Versão 1;\n"
-            "2) Versão 2;\n"
-            "3) Versão 3;\n"
-            "4) Versão Raw.\n"
-            "A versão padrão é a 3: ");
-
     uint32_t input_version = _version;
 
-    scanf("%d", &input_version);
+    if (_request_input) {
+        printf("Escolha a versão:\n"
+               "1) Versão 1;\n"
+               "2) Versão 2;\n"
+               "3) Versão 3;\n"
+               "4) Versão Raw.\n"
+               "A versão padrão é a 3: ");
+
+        scanf("%d", &input_version);
+    }
 
     switch (input_version) {
         case 1:
@@ -684,15 +686,17 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
             break;
     }
 
-    printf("Escolha o tipo de compressão:\n"
-            "1) Raw;\n"
-            "2) LZ77;\n"
-            "3) LZ772.\n"
-            "O tipo de compressão padrão é o 3: ");
-
     uint32_t input_type = _type;
 
-    scanf("%d", &input_type);
+    if (_request_input) {
+        printf("Escolha o tipo de compressão:\n"
+               "1) Raw;\n"
+               "2) LZ77;\n"
+               "3) LZ772.\n"
+               "O tipo de compressão padrão é o 3: ");
+
+        scanf("%d", &input_type);
+    }
 
     switch (input_type) {
         case 1:
@@ -706,13 +710,15 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
             _type = LZPFET_LZ772;
     }
 
-    uint32_t input_compress_level = 5u;
+    uint32_t input_compress_level = _compress_level;
 
     if (_type == LZPFET_LZ77 || _type == LZPFET_LZ772) {
 
-        printf("Escolha o nível de compressão, valor de 0 a 5: ");
+        if (_request_input) {
+            printf("Escolha o nível de compressão, valor de 0 a 5: ");
 
-        scanf("%d", &input_compress_level);
+            scanf("%d", &input_compress_level);
+        }
 
         if (input_compress_level > 5u)
             input_compress_level = 5u;
@@ -723,65 +729,67 @@ void make_file(char* _name, eLZPakFileEntryVersion _version, eLZPakFileEntryType
 
     if (_version == LZPFEV_3) {
 
-        int32_t location_file = -1;
+        if (_request_input) {
+            int32_t location_file = -1;
 
-        do {
+            do {
 
-            printf("Especifique a localidade do arquivo.\n"
-                    "0) Global;\n"
-                    "1) Tailandês;\n"
-                    "2) Japonês;\n"
-                    "3) Coreano;\n"
-                    "4) Indonesiano;\n"
-                    "5) Europeu;\n"
-                    "6) Digitar uma chave customizada.\n");
+                printf("Especifique a localidade do arquivo.\n"
+                        "0) Global;\n"
+                        "1) Tailandês;\n"
+                        "2) Japonês;\n"
+                        "3) Coreano;\n"
+                        "4) Indonesiano;\n"
+                        "5) Europeu;\n"
+                        "6) Digitar uma chave customizada.\n");
 
-        } while (scanf("%d", &location_file) != 1 || location_file < 0 || location_file > 6);
+            } while (scanf("%d", &location_file) != 1 || location_file < 0 || location_file > 6);
 
-        switch (location_file) {
-            case 0:
-                gLocationKeys = kKeys_GB;
-                break;
-            case 1:
-                gLocationKeys = kKeys_TH;
-                break;
-            case 2:
-                gLocationKeys = kKeys_JP;
-                break;
-            case 3:
-                gLocationKeys = kKeys_KR;
-                break;
-            case 4:
-                gLocationKeys = kKeys_ID;
-                break;
-            case 5:
-                gLocationKeys = kKeys_EU;
-                break;
-            case 6: {
+            switch (location_file) {
+                case 0:
+                    gLocationKeys = kKeys_GB;
+                    break;
+                case 1:
+                    gLocationKeys = kKeys_TH;
+                    break;
+                case 2:
+                    gLocationKeys = kKeys_JP;
+                    break;
+                case 3:
+                    gLocationKeys = kKeys_KR;
+                    break;
+                case 4:
+                    gLocationKeys = kKeys_ID;
+                    break;
+                case 5:
+                    gLocationKeys = kKeys_EU;
+                    break;
+                case 6: {
 
-				std::string line;
-
-                do {
-
-                    printf("Exemplo de chave customizada: 4ffff,3ddd,4444,2222.\n");
+				    std::string line;
 
                     do {
 
-						std::getline(std::cin, line);
+                        printf("Exemplo de chave customizada: 4ffff,3ddd,4444,2222.\n");
 
-                        if (std::cin.fail()) {
+                        do {
 
-                            printf("Falha ao ler uma linha do buffer de entrada do console.\n");
+						    std::getline(std::cin, line);
 
-                            return;
-                        }
+                            if (std::cin.fail()) {
 
-                    } while ((line.length() < 9 && line[0] == '\n'));
+                                printf("Falha ao ler uma linha do buffer de entrada do console.\n");
 
-                } while (sscanf(line.c_str(), "%08x,%08x,%08x,%08x", &gLocationCustomKeys[0], &gLocationCustomKeys[1], &gLocationCustomKeys[2], &gLocationCustomKeys[3]) != 4);
+                                return;
+                            }
 
-                gLocationKeys = gLocationCustomKeys;
-                break;
+                        } while ((line.length() < 9 && line[0] == '\n'));
+
+                    } while (sscanf(line.c_str(), "%08x,%08x,%08x,%08x", &gLocationCustomKeys[0], &gLocationCustomKeys[1], &gLocationCustomKeys[2], &gLocationCustomKeys[3]) != 4);
+
+                    gLocationKeys = gLocationCustomKeys;
+                    break;
+                }
             }
         }
     }
@@ -1046,7 +1054,13 @@ int32_t main(int32_t _argc, char* _argv[]) {
     if (lpos == std::string::npos || strcmp(&_argv[1][lpos], ".pak") != 0
             || (_argc > 2 && strcmp(_argv[2], "-c") == 0)) {
 
-        make_file(_argv[1], LZPFEV_3, LZPFET_LZ772);
+        make_file(
+            _argv[1],
+            eLZPakFileEntryVersion(_argc > 2 && strcmp(_argv[2], "-c") != 0 ? atoi(_argv[2]) : LZPFEV_3),
+            eLZPakFileEntryType(_argc > 3 && strcmp(_argv[2], "-c") != 0 ? atoi(_argv[3]) : LZPFET_LZ772),
+            _argc > 4 && strcmp(_argv[2], "-c") != 0 ? atoi(_argv[4]) : 5,
+            _argc == 2 || (_argc > 2 && strcmp(_argv[2], "-c") == 0)
+        );
 
         return 0;
     }

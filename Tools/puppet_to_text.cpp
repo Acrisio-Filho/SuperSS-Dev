@@ -211,6 +211,20 @@ struct FileLog {
 
 FileLog sLog;
 
+#include <cmath>
+
+struct Vector2d;
+struct Vector3d;
+struct Vector4d;
+
+bool isEqual(Vector2d& _v1, Vector2d& _v2, float _epsilon = 1e-05f);
+bool isEqual(Vector3d& _v1, Vector3d& _v2, float _epsilon = 1e-05f);
+bool isEqual(Vector4d& _v1, Vector4d& _v2, float _epsilon = 1e-05f);
+
+bool isEqualThan(Vector2d& _v1, Vector2d& _v2, float _epsilon = 1e-05f);
+bool isEqualThan(Vector3d& _v1, Vector3d& _v2, float _epsilon = 1e-05f);
+bool isEqualThan(Vector4d& _v1, Vector4d& _v2, float _epsilon = 1e-05f);
+
 struct Vector2d {
 	float x;
 	float y;
@@ -251,6 +265,12 @@ struct Vector3d {
 
 		return *this;
 	}
+	Vector3d& divide(float _s) {
+		if (_s == 0.f)
+			return *this;
+
+		return multiply(1.f / _s);
+	}
 	Vector3d& add(Vector3d _v) {
 		x += _v.x;
 		y += _v.y;
@@ -265,8 +285,38 @@ struct Vector3d {
 
 		return *this;
 	}
+	Vector3d cross(Vector3d _v) {
+		return Vector3d{
+			y * _v.z - z * _v.y,
+			z * _v.x - x * _v.z,
+			x * _v.y - y * _v.x
+		};
+	}
 	float product(Vector3d _v) {
 		return x * _v.x + y * _v.y + z * _v.z;
+	}
+	double length() {
+		return sqrt((double)product(*this));
+	}
+	Vector3d& normalize() {
+		Vector3d zero{0};
+		if (isEqual(*this, zero)) {
+			multiply(0.f);
+			return *this;
+		}
+
+		float len = (float)length();
+
+		return divide(len);
+	}
+	Vector3d normalized() {
+		Vector3d zero{0};
+		if (isEqual(*this, zero))
+			return Vector3d{x * 0.f, y * 0.f, z * 0.f};
+		
+		float len = (float)length();
+
+		return Vector3d{x / len, y / len, z / len};
 	}
 	std::string toString() {
 		return "x: " + std::to_string(x) + ", y: " + std::to_string(y) + ", z: " + std::to_string(z);
@@ -310,6 +360,66 @@ struct Vector4d {
 			+ std::to_string(y) + ", z: " + std::to_string(z) + ", w: " + std::to_string(w);
 	}
 };
+
+bool isEqual(Vector2d& _v1, Vector2d& _v2, float _epsilon) {
+	if (fabs(_v1.x - _v2.x) >= _epsilon)
+		return false;
+	if (fabs(_v1.y - _v2.y) >= _epsilon)
+		return false;
+	return true;
+}
+
+bool isEqual(Vector3d& _v1, Vector3d& _v2, float _epsilon) {
+	if (fabs(_v1.x - _v2.x) >= _epsilon)
+		return false;
+	if (fabs(_v1.y - _v2.y) >= _epsilon)
+		return false;
+	if (fabs(_v1.z - _v2.z) >= _epsilon)
+		return false;
+	return true;
+}
+
+bool isEqual(Vector4d& _v1, Vector4d& _v2, float _epsilon) {
+	if (fabs(_v1.x - _v2.x) >= _epsilon)
+		return false;
+	if (fabs(_v1.y - _v2.y) >= _epsilon)
+		return false;
+	if (fabs(_v1.z - _v2.z) >= _epsilon)
+		return false;
+	if (fabs(_v1.w - _v2.w) >= _epsilon)
+		return false;
+	return true;
+}
+
+bool isEqualThan(Vector2d& _v1, Vector2d& _v2, float _epsilon) {
+	if (fabs(_v1.x - _v2.x) > _epsilon)
+		return false;
+	if (fabs(_v1.y - _v2.y) > _epsilon)
+		return false;
+	return true;
+}
+
+bool isEqualThan(Vector3d& _v1, Vector3d& _v2, float _epsilon) {
+	if (fabs(_v1.x - _v2.x) > _epsilon)
+		return false;
+	if (fabs(_v1.y - _v2.y) > _epsilon)
+		return false;
+	if (fabs(_v1.z - _v2.z) > _epsilon)
+		return false;
+	return true;
+}
+
+bool isEqualThan(Vector4d& _v1, Vector4d& _v2, float _epsilon) {
+	if (fabs(_v1.x - _v2.x) > _epsilon)
+		return false;
+	if (fabs(_v1.y - _v2.y) > _epsilon)
+		return false;
+	if (fabs(_v1.z - _v2.z) > _epsilon)
+		return false;
+	if (fabs(_v1.w - _v2.w) > _epsilon)
+		return false;
+	return true;
+}
 
 struct Matrix {
 	Vector3d v1;
@@ -361,6 +471,22 @@ struct Matrix4 {
 		v4.y = 0;
 		v4.z = 0;
 		v4.w = 1;
+	}
+	Vector3d multiplyVec3Matrix3x3(Vector3d _v3) {
+		Vector3d out = {0};
+
+		out.x = _v3.x * v1.x + _v3.y * v1.y + _v3.z * v1.z;
+		out.y = _v3.x * v2.x + _v3.y * v2.y + _v3.z * v2.z;
+		out.z = _v3.x * v3.x + _v3.y * v3.y + _v3.z * v3.z;
+
+		return out;
+	}
+	Vector3d multiply(Vector3d _v3) {
+		Vector4d out = {_v3.x, _v3.y, _v3.z, 1.f};
+
+		out = this->multiply(out);
+
+		return *(Vector3d*)&out;
 	}
 	Vector4d multiply(Vector4d _v4) {
 		Vector4d out = {0};
@@ -500,10 +626,10 @@ struct Bone {
 	std::string name;
 	uint16_t parent;
 	Matrix matrix;
-	float unknown_v1_3; // valor novo da versão 1.3
+	float orientation_flag; // valor novo da versão 1.3
 	std::string toString() {
-		return "name: " + name + ", parent: " + std::to_string(parent) + ", unknown_v1_3: " 
-			+ std::to_string(unknown_v1_3)
+		return "name: " + name + ", parent: " + std::to_string(parent) + ", orientation_flag: " 
+			+ std::to_string(orientation_flag)
 			+ "\nmatrix:\n" + matrix.toString();
 	}
 };
@@ -532,11 +658,11 @@ struct ScalingData {
 	}
 };
 
-struct AnimationFlag {
+struct OrientationFlagData {
 	float time;
-	float scale;
+	float orientation_flag;
 	std::string toString() {
-		return "time: " + std::to_string(time) + ", scale: " + std::to_string(scale);
+		return "time: " + std::to_string(time) + ", orientation_flag: " + std::to_string(orientation_flag);
 	}
 };
 
@@ -545,17 +671,17 @@ struct Animation {
 	uint32_t position_length;
 	uint32_t rotation_length;
 	uint32_t scaling_length;
-	uint32_t flags_length; // acho que esse é o scale
+	uint32_t orientation_flag_length;
 	std::vector<PositionData> positions;
 	std::vector<RotationData> rotations;
 	std::vector<ScalingData> scalings;
-	std::vector<AnimationFlag> flags;
+	std::vector<OrientationFlagData> orientation_flags;
 	std::string toString() {
 		return "bone_idx: " + std::to_string(bone_idx)
 			+ "\nPositions:" + std::accumulate(positions.begin(), positions.end(), std::string(), toStringVectorOp)
 			+ "\nRotations:" + std::accumulate(rotations.begin(), rotations.end(), std::string(), toStringVectorOp)
 			+ "\nScalings:" + std::accumulate(scalings.begin(), scalings.end(), std::string(), toStringVectorOp)
-			+ "\nFlags:" + std::accumulate(flags.begin(), flags.end(), std::string(), toStringVectorOp);
+			+ "\nOrientationFlags:" + std::accumulate(orientation_flags.begin(), orientation_flags.end(), std::string(), toStringVectorOp);
 	}
 };
 
@@ -577,12 +703,12 @@ struct Motion {
 	std::string nextmove;
 	std::string connection_method;
 	float connection_time;
-	std::string top_version;
+	std::string root_bone;
 	std::string toString() {
 		return "name: " + name + "\nframe_start: " 
 			+ std::to_string(frame_start) + ", frame_end: " + std::to_string(frame_end)
 			+ "\nnextmove: " + nextmove + "\nconnection_method: " + connection_method
-			+ "\ntop_version: " + top_version + "\nconnection_time: " + std::to_string(connection_time);
+			+ "\nroot_bone: " + root_bone + "\nconnection_time: " + std::to_string(connection_time);
 	}
 };
 
@@ -642,16 +768,9 @@ struct Polygon {
 };
 
 struct TextureIndex {
-	uint8_t index;
+	int8_t index;
 	std::string toString() {
-		return "index: " + std::to_string((uint16_t)index);
-	}
-};
-
-struct mesh_new_value_v1_2 {
-	int8_t value;
-	std::string toString() {
-		return "value: " + std::to_string((int16_t)value);
+		return "index: " + std::to_string((int16_t)index);
 	}
 };
 
@@ -664,15 +783,17 @@ struct extra_value_index_length {
 };
 
 struct mpet_extra_value {
-	uint32_t unknown;
+	uint8_t bone_id;
+	uint8_t __bytealign[3]; // byte align to pack(4)
 	extra_value_index_length value_verticies;
 	extra_value_index_length value_polygons;
 	std::string toString() {
-		return "unknown: " + std::to_string(unknown) + "\nverticies: " + value_verticies.toString()
+		return "bone_id: " + std::to_string((uint16_t)bone_id) + "\nverticies: " + value_verticies.toString()
 			+ "\npolygons: " + value_polygons.toString();
 	}
 };
 
+// Esse aqui a maioria que encontrei foi os ossos de animação de Asas
 struct Extra {
 	int16_t bone_id;
 	std::string toString() {
@@ -688,18 +809,18 @@ struct Mesh {
 	std::vector<Polygon> polygons;
 	std::vector<TextureIndex> texture_indexs;
 	std::vector<mpet_extra_value> mpet_extra_values;
-	std::vector<mesh_new_value_v1_2> mesh_new_values_v1_2;
+	std::vector<TextureIndex> texture_specular_indexs; // Versão 1.2 - Material Texture Specular Index
 	std::string toString() {
 		return "Vertice length: " + std::to_string(vertices.size()) 
 			+ ", Polygon length: " + std::to_string(polygons.size())
 			+ ", Texture Index length: " + std::to_string(texture_indexs.size())
+			+ ", Second Texture Index length: " + std::to_string(texture_specular_indexs.size())
 			+ "\nmpet_extra_value_length: " + std::to_string((uint16_t)mpet_extra_value_length)
-			+ ", mesh_new_value_v1_2_length: " + std::to_string(mesh_new_values_v1_2.size())
 			+ "\nmpet_extra_Values:" + std::accumulate(mpet_extra_values.begin(), mpet_extra_values.end(), std::string(), toStringVectorOp)
 			+ "\nVertices:" + std::accumulate(vertices.begin(), vertices.end(), std::string(), toStringVectorOp)
 			+ "\nPolygons:" + std::accumulate(polygons.begin(), polygons.end(), std::string(), toStringVectorOp)
 			+ "\nTexture Indexs:" + std::accumulate(texture_indexs.begin(), texture_indexs.end(), std::string(), toStringVectorOp)
-			+ "\nMesh New Values Ver 1.2:" + std::accumulate(mesh_new_values_v1_2.begin(), mesh_new_values_v1_2.end(), std::string(), toStringVectorOp);
+			+ "\nTexture Specular Indexs:" + std::accumulate(texture_specular_indexs.begin(), texture_specular_indexs.end(), std::string(), toStringVectorOp);
 	}
 };
 
@@ -812,6 +933,8 @@ struct FileObject {
 	};
 
 	bool jumpBlock(size_t _size) {
+		if (_size == 0u)
+			return true;
 		if (index >= size)
 			return false;
 		if ((index + _size) > size)
@@ -1155,17 +1278,17 @@ Mesh* loadMesh(Block* _block, size_t _size) {
 		<< mesh->texture_indexs.size() << "\tIndex: " << _block->index << std::endl;
 	
 	if (compareVersions(getVersion(), VERSION_1_2) >= 0) {
-		mesh_new_value_v1_2 mesh_new_value;
+		TextureIndex texture_specular_index;
 
 		for (i = 0; i < mesh->polygon_length; i++) {
-			if (!_block->readBuff(&mesh_new_value, sizeof(mesh_new_value_v1_2))) {
+			if (!_block->readBuff(&texture_specular_index, sizeof(TextureIndex))) {
 				delete mesh;
 				return nullptr;
 			}
-			mesh->mesh_new_values_v1_2.push_back(mesh_new_value);
+			mesh->texture_specular_indexs.push_back(texture_specular_index);
 		}
-		sLog << "Mesh New Value Ver 1.2(" << mesh->polygon_length << ")\tLoadded: "
-			<< mesh->mesh_new_values_v1_2.size() << "\tIndex: " << _block->index << std::endl;
+		sLog << "Second Texture Index(" << mesh->polygon_length << ")\tLoadded: "
+			<< mesh->texture_specular_indexs.size() << "\tIndex: " << _block->index << std::endl;
 	}
 
 	return mesh;
@@ -1275,7 +1398,7 @@ std::vector<Bone> loadBone(Block* _block, size_t _size) {
 
 	for (i = 0; i < length; i++) {
 		bone.parent = 0;
-		bone.unknown_v1_3 = 0.f;
+		bone.orientation_flag = -1.f;
 		bone.name.clear();
 		memset(&bone.matrix, 0, sizeof(Matrix));
 
@@ -1302,7 +1425,7 @@ std::vector<Bone> loadBone(Block* _block, size_t _size) {
 				return vb;
 			}
 			if (compareVersions(getVersion(), VERSION_1_3) >= 0) {
-				if (!_block->readBuff(&bone.unknown_v1_3, sizeof(float))) {
+				if (!_block->readBuff(&bone.orientation_flag, sizeof(float))) {
 					vb.clear();
 					return vb;
 				}
@@ -1326,30 +1449,30 @@ std::vector<Animation> loadAnimation(Block* _block, size_t _size) {
 	PositionData pd;
 	RotationData rd;
 	ScalingData sd;
-	AnimationFlag af;
+	OrientationFlagData ofd;
 	uint32_t i;
 
 	while(true) {
+		anim.bone_idx = 0u;
 		if (!_block->readBuff(&anim.bone_idx, sizeof(uint8_t))) {
 			va.clear();
 			return va;
 		}
-		anim.bone_idx &= 0xFF;
-		if (anim.bone_idx == 0xFF)
+		if ((uint8_t)anim.bone_idx == 0xFF)
 			break;
-		if (anim.bone_idx == 0xFE) {
+		if ((uint8_t)anim.bone_idx == 0xFE) {
 			if (!_block->readBuff(&anim.bone_idx, sizeof(uint16_t))) {
 				va.clear();
 				return va;
 			}
 		}
-		if ((int8_t)anim.bone_idx < 0 || (int16_t)anim.bone_idx < 0)
+		if ((int16_t)anim.bone_idx == -1)
 			break;
 		
 		anim.positions.clear();
 		anim.rotations.clear();
 		anim.scalings.clear();
-		anim.flags.clear();
+		anim.orientation_flags.clear();
 		
 		if (!_block->readBuff(&anim.position_length, sizeof(uint32_t))) {
 			va.clear();
@@ -1397,20 +1520,20 @@ std::vector<Animation> loadAnimation(Block* _block, size_t _size) {
 		sLog << "\tLoadded: " << anim.scalings.size() << "\tIndex: " << _block->index << std::endl;
 
 		if (compareVersions(getVersion(), VERSION_1_3) >= 0) {
-			if (!_block->readBuff(&anim.flags_length, sizeof(uint32_t))) {
+			if (!_block->readBuff(&anim.orientation_flag_length, sizeof(uint32_t))) {
 				va.clear();
 				return va;
 			}
-			sLog << "Animation->Flag(" << anim.flags_length << ")";
+			sLog << "Animation->OrientationFlag(" << anim.orientation_flag_length << ")";
 
-			for (i = 0; i < anim.flags_length; i++) {
-				if (!_block->readBuff(&af, sizeof(AnimationFlag))) {
+			for (i = 0; i < anim.orientation_flag_length; i++) {
+				if (!_block->readBuff(&ofd, sizeof(OrientationFlagData))) {
 					va.clear();
 					return va;
 				}
-				anim.flags.push_back(af);
+				anim.orientation_flags.push_back(ofd);
 			}
-			sLog << "\tLoadded: " << anim.flags.size() << "\tIndex: " << _block->index << std::endl;
+			sLog << "\tLoadded: " << anim.orientation_flags.size() << "\tIndex: " << _block->index << std::endl;
 		}
 
 		va.push_back(anim);
@@ -1442,7 +1565,7 @@ std::vector<Motion> loadMotion(Block* _block, size_t _size) {
 		motion.frame_end = 0;
 		motion.connection_time = 0;
 		motion.name.clear();
-		motion.top_version.clear();
+		motion.root_bone.clear();
 		motion.connection_method.clear();
 		motion.nextmove.clear();
 
@@ -1470,7 +1593,7 @@ std::vector<Motion> loadMotion(Block* _block, size_t _size) {
 			vm.clear();
 			return vm;
 		}
-		if (!_block->readFixedString(motion.top_version)) {
+		if (!_block->readFixedString(motion.root_bone)) {
 			vm.clear();
 			return vm;
 		}
@@ -1723,6 +1846,185 @@ Matrix4 calc_bonemat(std::vector<Bone>& _vb, uint16_t _bone_id
 	return m4;
 };
 
+// !@
+#include <map>
+#include <float.h>
+#include <ranges>
+
+void calc_vtx_and_index(Mesh *_mesh, std::vector<Bone>& _bones, std::vector<Texture>& _textures) {
+	struct vtxcmp {
+		Vector3d pos;
+		Vector3d normal;
+		std::vector< UVMapping > uvs;
+		float weight;
+		std::string bone_name;
+		std::string toString() {
+			return "bone_name: " + bone_name + ", weight: " + std::to_string(weight)
+				+ ", pos: " + pos.toString() + ", normal: " + normal.toString() + 
+				+ ", uvs: " + std::accumulate(uvs.begin(), uvs.end(), std::string(), toStringVectorOp);
+		}
+	};
+
+	auto hasChild = [&_bones](int16_t _parent_id, int16_t _child_id) {
+		Bone* child = &_bones[_child_id];
+		Bone* parent = &_bones[_parent_id];
+
+		while ((int16_t)child->parent != -1) {
+			child = &_bones[child->parent];
+
+			if (parent->name.compare(child->name) == 0)
+				return true;
+		}
+
+		return false;
+	};
+
+	auto noChildren = [&_bones](int16_t _bone_id) {
+		for (auto& bone : _bones) {
+			if (bone.parent == _bone_id)
+				return false;
+		}
+		return true;
+	};
+
+	auto isFakeBody = [&_bones](int16_t _bone_id) {
+		auto *b = &_bones[_bone_id];
+		if (strstr(b->name.c_str(), "Bip") == nullptr && strstr(b->name.c_str(), "Bone") == nullptr && strstr(b->name.c_str(), "Jaw") == nullptr)
+			return true;
+		return false;
+	};
+
+	auto findFakeBodyBone = [&_bones, noChildren](std::vector< Vertex >& _vertices) -> int16_t {
+		for (auto&& [id, bone] : std::views::enumerate(_bones)) {
+			if (strstr(bone.name.c_str(), "Bip") != nullptr || strstr(bone.name.c_str(), "Jaw") != nullptr)
+				continue;
+			uint32_t i;
+			for (i = 0u; i < _vertices.size(); i++)
+				if ((int16_t)id == (int16_t)_vertices[i].bone_infos[0].id)
+					break;
+			if (i == _vertices.size() && noChildren((int16_t)id))
+				return (int16_t)id;
+		}
+		return (int16_t)-1;
+	};
+
+	auto cmpVtx = [](vtxcmp& _a, vtxcmp& _b) {
+		if (!isEqual(_a.pos, _b.pos))
+			return false;
+		if (_a.weight != _b.weight)
+			return false;
+		if (_a.uvs.size() != _b.uvs.size())
+			return false;
+		for (uint32_t i = 0u; i < _a.uvs.size(); i++)
+			if (_a.uvs[i].v.x != _b.uvs[i].v.x || _a.uvs[i].v.y != _b.uvs[i].v.y)
+				return false;
+		if (!isEqualThan(_a.normal, _b.normal, 0.001f))
+			return false;
+		if (_a.bone_name.compare(_b.bone_name) != 0)
+			return false;
+
+		return true;
+	};
+
+	// update vertices
+	for (auto& vert : _mesh->vertices) {
+		auto matb = calc_bonemat(_bones, vert.bone_infos[0].id);
+		vert.v = matb.multiply(vert.v);
+	}
+
+	// update normals
+	int32_t fakebodybone_id = findFakeBodyBone(_mesh->vertices);
+
+	if (fakebodybone_id != -1)
+		sLog << "=========== Tem FakebodyBone: " << fakebodybone_id << std::endl;
+
+	Vector3d v3_zero = {0.f, 0.f, 0.f};
+	for (auto& poly : _mesh->polygons) {
+		for (uint32_t i = 0u; i < 3u; i++) {
+			Vector3d nor = poly.pet_tri_points[i].v;
+			if (!isEqual(poly.pet_tri_points[i].v, v3_zero)) {
+				if (compareVersions(getVersion(), VERSION_1_0) <= 0) {
+					if (fakebodybone_id == -1 || isFakeBody((int16_t)_mesh->vertices[poly.pet_tri_points[i].pos].bone_infos[0].id))
+						nor = calc_bonemat(_bones, _mesh->vertices[poly.pet_tri_points[i].pos].bone_infos[0].id).multiplyVec3Matrix3x3(nor);
+					else
+						nor = calc_bonemat(_bones, fakebodybone_id).multiplyVec3Matrix3x3(nor);
+				}
+			}else {
+				sLog << "============== Zero normal: " << nor.toString() << std::endl;
+				auto matb = calc_bonemat(_bones, _mesh->vertices[poly.pet_tri_points[0].pos].bone_infos[0].id);
+				Vector3d tmpv = matb.multiply(_mesh->vertices[poly.pet_tri_points[1].pos].v);
+				nor = matb.multiply(_mesh->vertices[poly.pet_tri_points[2].pos].v).sub(tmpv);
+				tmpv = matb.multiply(_mesh->vertices[poly.pet_tri_points[0].pos].v).sub(tmpv);
+				nor = nor.cross(tmpv);
+			}
+			poly.pet_tri_points[i].v = nor.normalized();
+		}
+	}
+
+	sLog << "========================= VtxNum, IdxNum =========================" << std::endl;
+
+	for (auto& bone : _bones) {
+		sLog << "Bone: " << bone.name << "\tVertices: " << _mesh->vertice_length << "\tPolygons: " << _mesh->polygon_length << std::endl;
+
+		std::map< uint32_t, Polygon* > mp_poly;
+		for (auto&& [idx, poly] : std::views::enumerate(_mesh->polygons)) {
+			int16_t bone_id = -1;
+			for (uint32_t i = 0u; i < 3u; i++) {
+				auto& vert = _mesh->vertices[poly.pet_tri_points[i].pos];
+				if (bone_id == -1)
+					bone_id = (int16_t)vert.bone_infos[0].id;
+				else if (bone_id != (int16_t)vert.bone_infos[0].id && hasChild((int16_t)vert.bone_infos[0].id, bone_id))
+					bone_id = (int16_t)vert.bone_infos[0].id;
+			}
+			if (bone.name.compare(_bones[bone_id].name) == 0)
+				mp_poly.insert(std::make_pair(idx, &poly));
+		}
+
+		sLog << "Bone Polygons: " << mp_poly.size() << std::endl;
+
+		for (auto& tex : std::views::reverse(_textures)) {
+			sLog << "Texture: " << tex.name << std::endl;
+
+			std::vector< Polygon* > v_poly;
+			for (auto& poly : mp_poly) {
+				auto& t = _textures[_mesh->texture_indexs[poly.first].index];
+				if (tex.group == t.group && tex.handle == t.handle)
+					v_poly.push_back(poly.second);
+			}
+
+			sLog << "Texture Polygons: " << v_poly.size() << std::endl;
+
+			std::vector< vtxcmp > v_vtx;
+			for (auto& poly : v_poly) {
+				for (uint32_t i = 0u; i < 3u; i++) {
+					auto& vert = _mesh->vertices[poly->pet_tri_points[i].pos];
+					auto& b = _bones[vert.bone_infos[0].id];
+					vtxcmp vtxc = {
+						vert.v,
+						poly->pet_tri_points[i].v,
+						poly->pet_tri_points[i].uv_mappings,
+						vert.weight,
+						b.name
+					};
+
+					if (v_vtx.empty())
+						v_vtx.push_back(vtxc);
+					else {
+						uint32_t j;
+						for (j = 0u; j < v_vtx.size(); j++)
+							if (cmpVtx(v_vtx[j], vtxc))
+								break;
+						if (j == v_vtx.size())
+							v_vtx.push_back(vtxc);
+					}
+				}
+			}
+			
+			sLog << "Vertex Num: " << v_vtx.size() << "\tIndex Num: " << v_poly.size() * 3u << std::endl;
+		}
+	}
+}
+
 int main(int _argc, char* _argv[]) {
 	char* file = (char*)default_file;
 
@@ -1862,6 +2164,8 @@ int main(int _argc, char* _argv[]) {
 						<< " " << faces.pet_tri_points[2].pos + 1 << "/" << ii + 2 << "/" << ii + 2 << std::endl;
 					ii += 3;
 				}
+				// !@
+				//calc_vtx_and_index(mesh, bones, textures);
 				delete mesh;
 			}
 		}else if (bmcr.model.getId().compare("SMTL") == 0) {
