@@ -49,6 +49,8 @@ namespace stdA {
 			// Opt sem sala practice, se não todas as salas
 			std::vector< RoomInfo > getRoomsInfo(bool _without_practice_room = true);
 
+			std::vector < RoomGrandPrix* > getAllRoomsGrandPrix();
+
 			std::vector< RoomGrandZodiacEvent* > getAllRoomsGrandZodiacEvent();
 
 			std::vector< RoomBotGMEvent* > getAllRoomsBotGMEvent();

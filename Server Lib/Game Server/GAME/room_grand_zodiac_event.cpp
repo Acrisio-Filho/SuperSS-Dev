@@ -103,6 +103,10 @@ RoomGrandZodiacEvent::~RoomGrandZodiacEvent() {
 	pop_instancia(this);
 }
 
+eROOM_CLASS_TYPE RoomGrandZodiacEvent::getClassType() {
+	return eROOM_CLASS_TYPE::RCT_GRAND_ZODIAC_EVENT;
+}
+
 bool RoomGrandZodiacEvent::isAllReady() {
 
 	// é sempre true porque quem começa o jogo nessa sala é sempre o server

@@ -400,8 +400,8 @@ std::map< uint32_t, IFF::GrandPrixAIOptionalData > iff::load_grand_prix_ai_optio
 	MAKE_UNZIP_MAP(uint32_t, IFF::GrandPrixAIOptionalData, id, "iff::load_grand_prix_ai_optional_data", "GrandPrixAIOptionalData.sff");
 };
 
-std::map< uint32_t, IFF::GrandPrixConditionEquip > iff::load_grand_prix_condition_equip() {
-	MAKE_UNZIP_MAP(uint32_t, IFF::GrandPrixConditionEquip, _typeid, "iff::load_grand_prix_condition_equip", "GrandPrixConditionEquip.iff");
+std::vector< IFF::GrandPrixConditionEquip > iff::load_grand_prix_condition_equip() {
+	MAKE_UNZIP_VECTOR(IFF::GrandPrixConditionEquip, "iff::load_grand_prix_condition_equip", "GrandPrixConditionEquip.iff");
 };
 
 std::map< uint32_t, IFF::GrandPrixData > iff::load_grand_prix_data() {
@@ -452,8 +452,8 @@ std::map< uint32_t, IFF::LevelUpPrizeItem > iff::load_level_up_prize_item() {
 	MAKE_UNZIP_MAP(uint32_t, IFF::LevelUpPrizeItem, level, "iff::level_up_prize_item", "LevelUpPrizeItem.iff");
 };
 
-std::map< uint32_t, IFF::NonVisibleItemTable > iff::load_non_visible_item_table() {
-	MAKE_UNZIP_MAP(uint32_t, IFF::NonVisibleItemTable, _typeid, "iff::load_non_visible_item_table", "NonVisibleItemTable.iff");
+std::vector< IFF::NonVisibleItemTable > iff::load_non_visible_item_table() {
+	MAKE_UNZIP_VECTOR(IFF::NonVisibleItemTable, "iff::load_non_visible_item_table", "NonVisibleItemTable.iff");
 };
 
 std::map< uint32_t, IFF::PointShop > iff::load_point_shop() {
@@ -997,10 +997,6 @@ IFF::GrandPrixAIOptionalData *iff::findGrandPrixAIOptionalData(uint32_t _id) {
 	MAKE_FIND_MAP_IFF(IFF::GrandPrixAIOptionalData, m_grand_prix_ai_optinal_data, _id);
 };
 
-IFF::GrandPrixConditionEquip *iff::findGrandPrixConditionEquip(uint32_t _typeid) {
-	MAKE_FIND_MAP_IFF(IFF::GrandPrixConditionEquip, m_grand_prix_condition_equip, _typeid);
-};
-
 IFF::GrandPrixData *iff::findGrandPrixData(uint32_t _typeid) {
 	MAKE_FIND_MAP_IFF(IFF::GrandPrixData, m_grand_prix_data, _typeid);
 };
@@ -1023,10 +1019,6 @@ IFF::HoleCupDropItem *iff::findHoleCupDropItem(uint32_t _typeid) {
 
 IFF::LevelUpPrizeItem *iff::findLevelUpPrizeItem(uint32_t _level) {
 	MAKE_FIND_MAP_IFF(IFF::LevelUpPrizeItem, m_level_up_prize_item, _level);
-};
-
-IFF::NonVisibleItemTable *iff::findNonVisibleItemTable(uint32_t _typeid) {
-	MAKE_FIND_MAP_IFF(IFF::NonVisibleItemTable, m_non_visible_item_table, _typeid);
 };
 
 IFF::PointShop *iff::findPointShop(uint32_t _typeid) {
@@ -1081,6 +1073,10 @@ std::vector< IFF::ClubSetWorkShopLevelUpLimit > iff::findClubSetWorkShopLevelUpL
 	MAKE_FIND_VECTOR_IFF(IFF::ClubSetWorkShopLevelUpLimit, m_club_set_work_shop_level_up_limit, tipo, _tipo);
 };
 
+std::vector< IFF::GrandPrixConditionEquip > iff::findGrandPrixConditionEquip(uint32_t _typeid) {
+	MAKE_FIND_VECTOR_IFF(IFF::GrandPrixConditionEquip, m_grand_prix_condition_equip, _typeid, _typeid);
+};
+
 std::vector< IFF::GrandPrixRankReward > iff::findGrandPrixRankReward(uint32_t _typeid) {
 	MAKE_FIND_VECTOR_IFF(IFF::GrandPrixRankReward, m_grand_prix_rank_reward, _typeid, _typeid);
 };
@@ -1099,6 +1095,10 @@ std::vector< IFF::CaddieVoiceTable > iff::findCaddieVoiceTable(uint32_t _typeid)
 
 std::vector< IFF::FurnitureAbility > iff::findFurnitureAbility(uint32_t _typeid) {
 	MAKE_FIND_VECTOR_IFF(IFF::FurnitureAbility, m_furniture_ability, _typeid, _typeid);
+};
+
+std::vector< IFF::NonVisibleItemTable > iff::findNonVisibleItemTable(uint32_t _typeid) {
+	MAKE_FIND_VECTOR_IFF(IFF::NonVisibleItemTable, m_non_visible_item_table, _typeid, _typeid);
 };
 
 std::vector< IFF::TwinsItemTable > iff::findTwinsItemTable(uint32_t _type) {
@@ -1328,7 +1328,7 @@ bool iff::IsCanOverlapped(uint32_t _typeid) {
 		
 		break;
 	}
-	case ITEM:	// Libera todos item para dub se tiver abilitado no shop
+	case ITEM:	// Libera todos item para dub se tiver habilitado no shop
 	/*{
 		auto commom = findCommomItem(_typeid);
 		if (commom != nullptr && (commom->shop.flag_shop.uFlagShop.stFlagShop.can_dup || commom->shop.flag_shop.uFlagShop.stFlagShop.can_send_mail_and_personal_shop/*mail*//*))
@@ -1605,10 +1605,6 @@ std::map< uint32_t, IFF::Match >& iff::getMatch() {
 	return m_match;
 };
 
-std::map< uint32_t, IFF::GrandPrixConditionEquip >& iff::getGrandPrixConditionEquip() {
-	return m_grand_prix_condition_equip;
-};
-
 std::map< uint32_t, IFF::ArtifactManaInfo >& iff::getArtifactManaInfo() {
 	return m_artifact_mana_info;
 };
@@ -1619,10 +1615,6 @@ std::map< uint32_t, IFF::ErrorCodeInfo >& iff::getErrorCodeInfo() {
 
 std::map< uint32_t, IFF::HoleCupDropItem >& iff::getHoleCupDropItem() {
 	return m_hole_cup_drop_item;
-};
-
-std::map< uint32_t, IFF::NonVisibleItemTable >& iff::getNonVisibleItemTable() {
-	return m_non_visible_item_table;
 };
 
 std::map< uint32_t, IFF::PointShop >& iff::getPointShop() {
@@ -1669,6 +1661,10 @@ std::vector< IFF::ClubSetWorkShopLevelUpLimit >& iff::getClubSetWorkShopLevelUpL
 	return m_club_set_work_shop_level_up_limit;
 };
 
+std::vector< IFF::GrandPrixConditionEquip >& iff::getGrandPrixConditionEquip() {
+	return m_grand_prix_condition_equip;
+};
+
 std::vector< IFF::GrandPrixRankReward >& iff::getGrandPrixRankReward() {
 	return m_grand_prix_rank_reward;
 };
@@ -1683,6 +1679,10 @@ std::vector< IFF::CaddieVoiceTable >& iff::getCaddieVoiceTable() {
 
 std::vector< IFF::FurnitureAbility >& iff::getFurnitureAbility() {
 	return m_furniture_ability;
+};
+
+std::vector< IFF::NonVisibleItemTable >& iff::getNonVisibleItemTable() {
+	return m_non_visible_item_table;
 };
 
 std::vector< IFF::TwinsItemTable >& iff::getTwinsItemTable() {

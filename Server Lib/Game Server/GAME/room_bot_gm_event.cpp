@@ -118,6 +118,10 @@ RoomBotGMEvent::~RoomBotGMEvent() {
 	pop_instancia(this);
 }
 
+eROOM_CLASS_TYPE RoomBotGMEvent::getClassType() {
+	return eROOM_CLASS_TYPE::RCT_GRAND_ZODIAC_EVENT;
+}
+
 bool RoomBotGMEvent::isAllReady() {
 	
 	// é sempre true porque quem começa o jogo nessa sala é sempre o server

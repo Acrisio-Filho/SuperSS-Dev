@@ -359,7 +359,7 @@ namespace stdA {
 			char texture_org[3][40];				// By S4 TH - (OrgTex) 3 Org Textura(Original)
 			unsigned short c[5];					// C = Stats[Control, Power, Spin e etc]
 			unsigned short slot[5];					// O mesmo que C, só que esse é slot
-			unsigned char equippable_with[40];		// By TH S4
+			char equippable_with[40];				// By TH S4
 			unsigned int sub_part[2];				// By TH S4
 			unsigned short character_slot;			// By TH S4
 			unsigned short flag_caddie_card_slot;	// By TH S4 - (caddie_slot) Terceiro Caddie Card Slot
@@ -814,14 +814,23 @@ namespace stdA {
 			char xml[43];									// By TH S4 - (TexProp)
 			float rate_pang;								// By TH S4 - (Slope)
 			char seq[40];									// By TH S4 - (SkyFx)
-			unsigned int  ulUnknown[12];					// pode ser unsigned short COM[5], unsigned short point
+			struct BonusPangScore {
+				uint32_t hio;
+				uint32_t albatross;
+				uint32_t eagle;
+				uint32_t birdie;
+				uint32_t par;
+				uint32_t overpar;
+			};
+			BonusPangScore bonus_pang_score_normal;
+			BonusPangScore bonus_pang_score_natural;
 			struct ParScore {
 				unsigned char par_hole[18];
 				unsigned char min_score_hole[18];
 				unsigned char max_score_hole[18];
 			};
 			ParScore par_score_hole;
-			unsigned short usUnknown;
+			unsigned short usUnknown; // pode ser o point
 		};
 
 		// CutinInfomation IFF
@@ -954,12 +963,12 @@ namespace stdA {
 			void clear() { memset(this, 0, sizeof(Ability)); };
 			unsigned int  _typeid;
 			struct Efeito {
-				unsigned int  EfeitoOrNo[3];		// Ativação na hora da tacada(ACHO)
+				unsigned int  EfeitoOrNo[3];	// Ativação na hora da tacada(ACHO)
 				unsigned int  type[3];
 				float rate[3];
 			};
 			Efeito efeito;
-			unsigned char ucUnknown[32];
+			SYSTEMTIME date[2];					// [0] - Start, [1] - End
 			unsigned int  flag1;
 			unsigned int  flag2;
 			std::string toString() {
@@ -975,9 +984,10 @@ namespace stdA {
 					+ "\r\nRate:        " + std::to_string(efeito.rate[0])
 					+ ", " + std::to_string(efeito.rate[1])
 					+ ", " + std::to_string(efeito.rate[2])
+					+ "\r\nDate Start: " + _formatDate(date[0])
+					+ "\r\nDate End: " + _formatDate(date[1])
 					+ "\r\nFlag1: " + std::to_string(flag1)
-					+ "\tFlag2: " + std::to_string(flag2)
-					+ hex_util::BufferToHexString(ucUnknown, sizeof(ucUnknown));
+					+ "\tFlag2: " + std::to_string(flag2);
 #else
 				return "Typeid: " + std::to_string(_typeid)
 					+ "(0x" + hex_util::ltoaToHex(_typeid) + ")";
@@ -1033,7 +1043,8 @@ namespace stdA {
 			unsigned int  active;
 			unsigned int  _typeid;
 			unsigned int  item_typeid;
-			char info[516];
+			char info[512];
+			uint32_t ulUnknown;
 		};
 
 		// GrandPrixData IFF
@@ -1104,7 +1115,8 @@ namespace stdA {
 			unsigned int  ulUnknown;			// Não sei o que seja direito, mas pode ser outro do clear_GP
 			unsigned int  clear_gp_typeid;		// typeid do GrandPrix que bloquea ele se nao estiver concluido
 			unsigned int  lock_yn;				// Esse só bloquea se tiver um typeid de um gp no de cima sem concluir
-			char info[516];
+			char info[512];
+			uint32_t ulUnknown2;
 		};
 
 		// GrandPrixRankReward IFF
@@ -1286,8 +1298,9 @@ namespace stdA {
 			void clear() { memset(this, 0, sizeof(AddonPart)); };
 			unsigned int  active;
 			unsigned int  _typeid;
-			char name[40];
-			char textura[6][40];		// Textura e effect textura
+			char mpet[40];
+			char textura[3][40];		// Textura
+			char textura_org[3][40];	// Textura Original
 		};
 
 		// ArtifactManaInfo IFF
@@ -1319,13 +1332,15 @@ namespace stdA {
 			unsigned int  _typeid;
 			char name[64];
 			unsigned char type;
-			char shot_name[65];
+			char shot_name[64];
+			uint8_t ucUnknown;
 			std::string toString() {
 #ifdef _DEBUG
 				return "Name: " + std::string(name)
 					+ "\r\nTypeid: " + std::to_string(_typeid) + "(0x" + hex_util::ltoaToHex(_typeid) + ")"
 					+ "\r\nType: " + std::to_string(type)
-					+ "\r\nShot Name: " + std::string(shot_name);
+					+ "\r\nShot Name: " + std::string(shot_name)
+					+ "\r\nucUnknown: " + std::to_string((uint16_t)ucUnknown);
 #else
 				return "Typeid: " + std::to_string(_typeid) + "(0x" + hex_util::ltoaToHex(_typeid) + ")";
 #endif
@@ -1336,16 +1351,16 @@ namespace stdA {
 		struct ErrorCodeInfo {
 			void clear() { memset(this, 0, sizeof(ErrorCodeInfo)); };
 			unsigned int  active;
-			unsigned int  code;
-			unsigned int  type;
+			uint32_t code;
+			uint32_t type;
 			char info[260];
 			std::string toString() {
 #ifdef _DEBUG
 				return "ErrorCode: " + std::to_string(code) + " (0x" + hex_util::ltoaToHex(code) + ")"
-					+ "\r\nType: " + std::to_string(type)
+					+ "\r\nType: " + std::to_string(type) + " (0x" + hex_util::ltoaToHex(type) + ")"
 					+ "\r\nInfo.\r\n" + std::string(info);
 #else
-				return "ErrorCode: " + std::to_string(code) + " (0x" + hex_util::ltoaToHex(code) + ")";
+				return "ErrorCode: " + std::to_string(code) + " (0x" + hex_util::lltoaToHex(code) + ")";
 #endif
 			};
 		};

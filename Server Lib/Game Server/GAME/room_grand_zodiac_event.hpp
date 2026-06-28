@@ -186,6 +186,8 @@ namespace stdA {
 			RoomGrandZodiacEvent(unsigned char _channel_owner, RoomInfoEx _ri);
 			virtual ~RoomGrandZodiacEvent();
 
+			virtual eROOM_CLASS_TYPE getClassType() override;
+
 			virtual bool isAllReady() override;
 
 			// O Grand Prix de tempo tem o seu pr�prio startGame j� que quem come�a � o server

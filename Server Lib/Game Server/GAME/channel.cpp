@@ -4417,10 +4417,19 @@ void channel::requestEnterRoomGrandPrix(player& _session, packet *_packet) {
 		// Verifica condition equiped item
 		auto gp_condition = sIff::getInstance().findGrandPrixConditionEquip(gp->typeid_link);
 
-		if (gp_condition != nullptr && !_session.m_pi.checkEquipedItem(gp_condition->item_typeid))
-			throw exception("[channel::requestEnterRoomGrandPrix][Error] Player[UID=" + std::to_string(_session.m_pi.uid) 
+		uint32_t gp_condition_item_typeid = 0u;
+
+		// tem que está com pelo menos 1 item equipado, ex: (clubset, character, ball, caddie, Part)
+		// na condição pode vários itens mas do mesmo tipo(IFF::TYPE), ex: (3 clubset, 3 character, 2 ball, 1 caddie, 5 Part)
+		if (!gp_condition.empty() && !std::any_of(gp_condition.begin(), gp_condition.end(), [&_session, &gp_condition_item_typeid](auto& _el) -> bool {
+			
+			gp_condition_item_typeid = _el.item_typeid;
+
+			return _session.m_pi.checkEquipedItem(_el.item_typeid);
+		}))
+			throw exception("Player[UID=" + std::to_string(_session.m_pi.uid) 
 					+ "] Canal[ID=" + std::to_string((unsigned short)m_ci.id) + "] tentou entrar na sala Grand Prix[TYPEID=" + std::to_string(gp->_typeid) 
-					+ "] mas ele nao esta equipado com o item[TYPEID=" + std::to_string(gp_condition->item_typeid) + "]. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::CHANNEL, 0x6700007, 0x6700007));
+					+ "] mas ele nao esta equipado com o item[TYPEID=" + std::to_string(gp_condition_item_typeid) + "]. Hacker ou Bug", STDA_MAKE_ERROR(STDA_ERROR_TYPE::CHANNEL, 0x6700007, 0x6700007));
 
 		// Verifica Avg. Score
 		if (_session.m_pi.ui.getMediaScore() < gp->condition[0] || (gp->condition[1] > 0u && _session.m_pi.ui.getMediaScore() > gp->condition[1]))
@@ -5166,6 +5175,14 @@ void channel::requestChangePlayerItemMyRoom(player& _session, packet* _packet) {
 						}
 					}
 				}
+
+				// Verifica se está em uma sala GrandPrix para verificar o GrandPrixConditionEquip
+				BEGIN_FIND_ROOM(_session.m_pi.mi.sala_numero);
+
+				if (r != nullptr && r->getClassType() == eROOM_CLASS_TYPE::RCT_GRAND_PRIX)
+					((RoomGrandPrix*)r)->requestChangeItemSlot(_session, ue);
+
+				END_FIND_ROOM;
 
 #if defined(_WIN32)
 				memcpy_s(_session.m_pi.ue.item_slot, sizeof(_session.m_pi.ue.item_slot), ue.item_slot, sizeof(_session.m_pi.ue.item_slot));
@@ -9365,6 +9382,14 @@ void channel::requestChangePlayerItemChannel(player& _session, packet* _packet) 
 				
 				_session.m_pi.ei.char_info = pCe;
 				_session.m_pi.ue.character_id = item_id;
+
+				// Verifica se está em uma sala GrandPrix para verificar o GrandPrixConditionEquip
+				BEGIN_FIND_ROOM(_session.m_pi.mi.sala_numero);
+
+				if (r != nullptr && r->getClassType() == eROOM_CLASS_TYPE::RCT_GRAND_PRIX)
+					((RoomGrandPrix*)r)->requestChangeCharacter(_session, *pCe);
+
+				END_FIND_ROOM;
 
 				// Update ON DB
 				snmdb::NormalManagerDB::getInstance().add(0, new CmdUpdateCharacterEquiped(_session.m_pi.uid, item_id), channel::SQLDBResponse, this);
