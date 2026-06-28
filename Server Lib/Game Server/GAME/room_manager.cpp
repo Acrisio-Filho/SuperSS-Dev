@@ -771,6 +771,29 @@ std::vector< RoomInfo > RoomManager::getRoomsInfo(bool _without_practice_room) {
 	return v_ri;
 };
 
+std::vector< RoomGrandPrix* > RoomManager::getAllRoomsGrandPrix() {
+	
+	std::vector< RoomGrandPrix* > v_r;
+
+#if defined(_WIN32)
+	EnterCriticalSection(&m_cs);
+#elif defined(__linux__)
+	pthread_mutex_lock(&m_cs);
+#endif
+
+	for (auto& el : v_rooms)
+		if (el != nullptr && el->getClassType() == eROOM_CLASS_TYPE::RCT_GRAND_PRIX)
+			v_r.push_back(reinterpret_cast<RoomGrandPrix*>(el));
+
+#if defined(_WIN32)
+	LeaveCriticalSection(&m_cs);
+#elif defined(__linux__)
+	pthread_mutex_unlock(&m_cs);
+#endif
+
+	return v_r;
+};
+
 std::vector< RoomGrandZodiacEvent* > RoomManager::getAllRoomsGrandZodiacEvent() {
 	
 	std::vector< RoomGrandZodiacEvent* > v_r;
@@ -782,7 +805,7 @@ std::vector< RoomGrandZodiacEvent* > RoomManager::getAllRoomsGrandZodiacEvent() 
 #endif
 
 	for (auto& el : v_rooms)
-		if (el != nullptr && (int)el->getMaster() == -2 && (el->getInfo()->tipo == RoomInfo::TIPO::GRAND_ZODIAC_ADV || el->getInfo()->tipo == RoomInfo::TIPO::GRAND_ZODIAC_INT))
+		if (el != nullptr && el->getClassType() == eROOM_CLASS_TYPE::RCT_GRAND_ZODIAC_EVENT)
 			v_r.push_back(reinterpret_cast< RoomGrandZodiacEvent* >(el));
 
 #if defined(_WIN32)
@@ -805,7 +828,7 @@ std::vector< RoomBotGMEvent* > RoomManager::getAllRoomsBotGMEvent() {
 #endif
 
 	for (auto& el : v_rooms)
-		if (el != nullptr && (int)el->getMaster() == -2 && el->getInfo()->tipo == RoomInfo::TIPO::TOURNEY && el->getInfo()->flag_gm == 1u && el->getInfo()->trofel == TROFEL_GM_EVENT_TYPEID)
+		if (el != nullptr && el->getClassType() == eROOM_CLASS_TYPE::RCT_BOT_GM_EVENT)
 			v_r.push_back(reinterpret_cast< RoomBotGMEvent* >(el));
 
 #if defined(_WIN32)

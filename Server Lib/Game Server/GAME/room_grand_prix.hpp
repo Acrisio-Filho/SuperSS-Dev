@@ -107,11 +107,19 @@ namespace stdA {
 			RoomGrandPrix(unsigned char _channel_owner, RoomInfoEx _ri, IFF::GrandPrixData& _gp);
 			virtual ~RoomGrandPrix();
 
+			virtual eROOM_CLASS_TYPE getClassType() override;
+
 			// Checkers
 			virtual bool isAllReady() override;
 
 			// Change Item Equiped of player
 			virtual void requestChangePlayerItemRoom(player& _session, ChangePlayerItemRoom& _cpir) override;
+
+			// Change Item Slot
+			virtual void requestChangeItemSlot(player& _session, UserEquip& _ue);
+
+			// Change Character
+			virtual void requestChangeCharacter(player& _session, CharacterInfo& _ce);
 
 			// Game, esse aqui é só para o Grand Prix ROOKIE(TUTO)
 			virtual bool requestStartGame(player& _session, packet *_packet) override;
@@ -126,6 +134,24 @@ namespace stdA {
 			static int _count_down_to_start(void* _arg1, void* _arg2);
 
 			virtual void count_down_to_start(int64_t _sec_to_start);
+
+			// Verifica Caddie
+			virtual bool checkCaddie(player& _session, CaddieInfoEx** _pCi, std::vector< IFF::GrandPrixConditionEquip >& _gp_condition);
+
+			// Verifica Ball
+			virtual bool checkBall(player& _session, WarehouseItemEx** _pWi, std::vector< IFF::GrandPrixConditionEquip >& _gp_condition);
+
+			// Verifica ClubSet
+			virtual bool checkClubSet(player& _session, WarehouseItemEx** _pWi, std::vector< IFF::GrandPrixConditionEquip >& _gp_condition);
+
+			// Verifica Character
+			virtual bool checkCharacter(player& _session, CharacterInfo** _pCe, std::vector< IFF::GrandPrixConditionEquip >& _gp_condition);
+
+			// Verifica Mascot
+			virtual bool checkMascot(player& _session, MascotInfoEx** _pMi, std::vector< IFF::GrandPrixConditionEquip >& _gp_condition);
+
+			// Verifica ItemSlot
+			virtual bool checkItemSlot(player& _session, UserEquip** _ue, std::vector< IFF::GrandPrixConditionEquip >& _gp_condition);
 
 		protected:
 			std::vector< IFF::GrandPrixRankReward > reward;

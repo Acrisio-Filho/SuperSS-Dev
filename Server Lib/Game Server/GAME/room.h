@@ -29,11 +29,15 @@
 #include <string>
 #include <map>
 
+#include "../TYPE/room_type.hpp"
+
 namespace stdA {
     class room {
         public:
             room(unsigned char _channel_owner, RoomInfoEx _ri);
             virtual ~room();
+
+			virtual eROOM_CLASS_TYPE getClassType();
 
 			void destroy();
 

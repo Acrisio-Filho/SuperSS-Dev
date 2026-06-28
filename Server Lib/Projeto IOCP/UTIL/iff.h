@@ -51,12 +51,14 @@ namespace stdA {
 				CAD_ITEM,			// 32
 				SET_ITEM,			// 36
 				COURSE,				// 40
-				MATCH,				// 44 Trofel
-				ENCHANT = 13,		// 52
+				MATCH,				// 44 Troféu
+				TITLE,				// 48
+				ENCHANT,			// 52
 				SKIN,				// 56
 				HAIR_STYLE,			// 60
 				MASCOT,				// 64
-				FURNITURE = 18,		// 72
+				CHILDITEM,			// 68
+				FURNITURE,			// 72
 				ACHIEVEMENT,		// 76
 				COUNTER_ITEM = 27,	// 108
 				AUX_PART,			// 112
@@ -106,14 +108,12 @@ namespace stdA {
 			/*static*/ IFF::Ability *findAbility(uint32_t _typeid);
 			/*static*/ IFF::Desc *findDesc(uint32_t _typeid);
 			/*static*/ IFF::GrandPrixAIOptionalData *findGrandPrixAIOptionalData(uint32_t _id);
-			/*static*/ IFF::GrandPrixConditionEquip *findGrandPrixConditionEquip(uint32_t _typeid);
 			/*static*/ IFF::GrandPrixData *findGrandPrixData(uint32_t _typeid);
 			/*static*/ IFF::MemorialShopCoinItem *findMemorialShopCoinItem(uint32_t _typeid);
 			/*static*/ IFF::ArtifactManaInfo *findArtifactManaInfo(uint32_t _typeid);
 			/*static*/ IFF::ErrorCodeInfo *findErrorCodeInfo(uint32_t _code);
 			/*static*/ IFF::HoleCupDropItem *findHoleCupDropItem(uint32_t _typeid);
 			/*static*/ IFF::LevelUpPrizeItem *findLevelUpPrizeItem(uint32_t _level);
-			/*static*/ IFF::NonVisibleItemTable *findNonVisibleItemTable(uint32_t _typeid);
 			/*static*/ IFF::PointShop *findPointShop(uint32_t _typeid);
 			/*static*/ IFF::ShopLimitItem *findShopLimitItem(uint32_t _typeid);
 			/*static*/ IFF::SpecialPrizeItem *findSpecialPrizeItem(uint32_t _typeid);
@@ -128,11 +128,13 @@ namespace stdA {
 			/*static*/ std::vector< IFF::CadieMagicBoxRandom > findCadieMagicBoxRandom(uint32_t _id);
 			/*static*/ std::vector< IFF::CharacterMastery > findCharacterMastery(uint32_t _typeid);
 			/*static*/ std::vector< IFF::ClubSetWorkShopLevelUpLimit > findClubSetWorkShopLevelUpLimit(uint32_t _tipo);
+			/*static*/ std::vector< IFF::GrandPrixConditionEquip > findGrandPrixConditionEquip(uint32_t _typeid);
 			/*static*/ std::vector< IFF::GrandPrixRankReward > findGrandPrixRankReward(uint32_t _typeid);
 			/*static*/ std::vector< IFF::GrandPrixSpecialHole > findGrandPrixSpecialHole(uint32_t _typeid);
 			/*static*/ std::vector< IFF::MemorialShopRareItem > findMemorialShopRareItem(uint32_t _gacha_num);
 			/*static*/ std::vector< IFF::CaddieVoiceTable > findCaddieVoiceTable(uint32_t _typeid);
 			/*static*/ std::vector< IFF::FurnitureAbility > findFurnitureAbility(uint32_t _typeid);
+			/*static*/ std::vector< IFF::NonVisibleItemTable > findNonVisibleItemTable(uint32_t _typeid);
 			/*static*/ std::vector< IFF::TwinsItemTable > findTwinsItemTable(uint32_t _type);
 
 			/*static*/ IFF::SetEffectTable *findFirstItemInSetEffectTable(uint32_t _typeid);
@@ -271,9 +273,6 @@ namespace stdA {
 			// get Match
 			/*static */std::map< uint32_t, IFF::Match >& getMatch();
 
-			// get GrandPrixConditionEquip
-			/*static */std::map< uint32_t, IFF::GrandPrixConditionEquip >& getGrandPrixConditionEquip();
-
 			// get ArtifactManaInfo
 			/*static */std::map< uint32_t, IFF::ArtifactManaInfo >& getArtifactManaInfo();
 
@@ -282,9 +281,6 @@ namespace stdA {
 
 			// get HoleCupDropItem
 			/*static */std::map< uint32_t, IFF::HoleCupDropItem >& getHoleCupDropItem();
-
-			// get NonVisibleItemTable
-			/*static */std::map< uint32_t, IFF::NonVisibleItemTable >& getNonVisibleItemTable();
 
 			// get PointShop
 			/*static */std::map< uint32_t, IFF::PointShop >& getPointShop();
@@ -319,6 +315,9 @@ namespace stdA {
 			// get ClubSetWorkShopLevelUpLimit
 			/*static */std::vector< IFF::ClubSetWorkShopLevelUpLimit >& getClubSetWorkShopLevelUpLimit();
 
+			// get GrandPrixConditionEquip
+			/*static */std::vector< IFF::GrandPrixConditionEquip >& getGrandPrixConditionEquip();
+
 			// get GrandPrixRankReward
 			/*static */std::vector< IFF::GrandPrixRankReward >& getGrandPrixRankReward();
 
@@ -330,6 +329,9 @@ namespace stdA {
 
 			// get FurnitureAbility
 			/*static */std::vector< IFF::FurnitureAbility >& getFurnitureAbility();
+
+			// get NonVisibleItemTable
+			/*static */std::vector< IFF::NonVisibleItemTable >& getNonVisibleItemTable();
 
 			// get TwinsItemTable
 			/*static */std::vector< IFF::TwinsItemTable >& getTwinsItemTable();
@@ -420,7 +422,7 @@ namespace stdA {
 			/*static*/ std::map< uint32_t, IFF::GrandPrixAIOptionalData > load_grand_prix_ai_optional_data();
 
 			// GrandPrixConditionEquip
-			/*static*/ std::map< uint32_t, IFF::GrandPrixConditionEquip > load_grand_prix_condition_equip();
+			/*static*/ std::vector< IFF::GrandPrixConditionEquip > load_grand_prix_condition_equip();
 
 			// GrandPrixData
 			/*static*/ std::map< uint32_t, IFF::GrandPrixData > load_grand_prix_data();
@@ -459,7 +461,7 @@ namespace stdA {
 			/*static*/ std::map< uint32_t, IFF::LevelUpPrizeItem > load_level_up_prize_item();
 
 			// NonVisibleItemTable
-			/*static*/ std::map< uint32_t, IFF::NonVisibleItemTable > load_non_visible_item_table();
+			/*static*/ std::vector< IFF::NonVisibleItemTable > load_non_visible_item_table();
 
 			// PointShop
 			/*static*/ std::map< uint32_t, IFF::PointShop > load_point_shop();
@@ -558,14 +560,12 @@ namespace stdA {
 			/*static */std::map< uint32_t, IFF::Ability > m_ability;
 			/*static */std::map< uint32_t, IFF::Desc > m_desc;
 			/*static */std::map< uint32_t, IFF::GrandPrixAIOptionalData > m_grand_prix_ai_optinal_data;
-			/*static */std::map< uint32_t, IFF::GrandPrixConditionEquip > m_grand_prix_condition_equip;
 			/*static */std::map< uint32_t, IFF::GrandPrixData > m_grand_prix_data;
 			/*static */std::map< uint32_t, IFF::MemorialShopCoinItem > m_memorial_shop_coin_item;
 			/*static */std::map< uint32_t, IFF::ArtifactManaInfo > m_artifact_mana_info;
 			/*static */std::map< uint32_t, IFF::ErrorCodeInfo > m_error_code_info;
 			/*static */std::map< uint32_t, IFF::HoleCupDropItem > m_hole_cup_drop_item;
 			/*static */std::map< uint32_t, IFF::LevelUpPrizeItem > m_level_up_prize_item;
-			/*static */std::map< uint32_t, IFF::NonVisibleItemTable > m_non_visible_item_table;
 			/*static */std::map< uint32_t, IFF::PointShop > m_point_shop;
 			/*static */std::map< uint32_t, IFF::ShopLimitItem > m_shop_limit_item;
 			/*static */std::map< uint32_t, IFF::SpecialPrizeItem > m_special_prize_item;
@@ -581,11 +581,13 @@ namespace stdA {
 			/*static */std::vector< IFF::CadieMagicBoxRandom > m_cadie_magic_box_random;
 			/*static */std::vector< IFF::CharacterMastery > m_character_mastery;
 			/*static */std::vector< IFF::ClubSetWorkShopLevelUpLimit > m_club_set_work_shop_level_up_limit;
+			/*static */std::vector< IFF::GrandPrixConditionEquip > m_grand_prix_condition_equip;
 			/*static */std::vector< IFF::GrandPrixRankReward > m_grand_prix_rank_reward;
 			/*static */std::vector< IFF::GrandPrixSpecialHole > m_grand_prix_special_hole;
 			/*static */std::vector< IFF::MemorialShopRareItem > m_memorial_shop_rare_item;
 			/*static */std::vector< IFF::CaddieVoiceTable > m_caddie_voice_table;
 			/*static */std::vector< IFF::FurnitureAbility > m_furniture_ability;
+			/*static */std::vector< IFF::NonVisibleItemTable > m_non_visible_item_table;
 			/*static */std::vector< IFF::TwinsItemTable > m_twins_item_table;
 
 			/*static */bool m_loaded;

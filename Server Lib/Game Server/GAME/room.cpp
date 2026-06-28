@@ -110,6 +110,10 @@ room::~room() {
 #endif
 };
 
+eROOM_CLASS_TYPE room::getClassType() {
+	return eROOM_CLASS_TYPE::RCT_NORMAL;
+};
+
 void room::destroy() {
 
 	// Leave All Players

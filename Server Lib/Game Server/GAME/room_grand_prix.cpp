@@ -75,8 +75,12 @@ RoomGrandPrix::~RoomGrandPrix() {
 		m_count_down = nullptr;
 	}
 
-	// Tira a inst�ncia da classe do vector statico, por que a sala vai ser destruida
+	// Tira a instância da classe do vector statico, por que a sala vai ser destruida
 	pop_instancia(this);
+}
+
+eROOM_CLASS_TYPE RoomGrandPrix::getClassType() {
+	return eROOM_CLASS_TYPE::RCT_GRAND_PRIX;
 }
 
 bool RoomGrandPrix::isAllReady() {
@@ -96,23 +100,16 @@ void RoomGrandPrix::requestChangePlayerItemRoom(player& _session, ChangePlayerIt
 
 		auto gp_condition = sIff::getInstance().findGrandPrixConditionEquip(m_gp.typeid_link);
 
-		if (gp_condition != nullptr) {
-
-			auto grup_type = sIff::getInstance().getItemGroupIdentify(gp_condition->item_typeid);
+		if (!gp_condition.empty()) {
 
 			switch (_cpir.type) {
 				case ChangePlayerItemRoom::TYPE_CHANGE::TC_CADDIE:
-					if (grup_type == iff::CADDIE) {
+				{
 						CaddieInfoEx *pCi = nullptr;
 
-						// Caddie
 						if (_cpir.caddie != 0 && (pCi = _session.m_pi.findCaddieById(_cpir.caddie)) != nullptr
-								&& sIff::getInstance().getItemGroupIdentify(pCi->_typeid) == iff::CADDIE) {
-
-							if (gp_condition->item_typeid != pCi->_typeid) {
-
-								// Procura o caddie que o player tem que ter para jogar esse Grand Prix
-								if ((pCi = _session.m_pi.findCaddieByTypeid(gp_condition->item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pCi->_typeid) == iff::CADDIE) {
+							&& sIff::getInstance().getItemGroupIdentify(pCi->_typeid) == iff::CADDIE
+							&& checkCaddie(_session, &pCi, gp_condition) && pCi != nullptr) {
 
 									// Atualiza o caddie equipado do player
 									_cpir.caddie = pCi->id;
@@ -122,30 +119,17 @@ void RoomGrandPrix::requestChangePlayerItemRoom(player& _session, ChangePlayerIt
 
 									// Update IN GAME
 									packet_func::pacote04B(p, &_session, ChangePlayerItemRoom::TYPE_CHANGE::TC_CADDIE, 0);
-									packet_func::room_broadcast(*this, p, 1);
-								
-								}else {
-									
-									// Player n�o tem o caddie necess�rio para jogar esse Grand Prix, kick ele d� sala
-									_smp::message_pool::getInstance().push(new message("[RoomGrandPrix::requestChangePlayerItemRoom][WARNING] Player[UID=" + std::to_string(_session.m_pi.uid)
-											+ "] tentou trocar item[ID=" + std::to_string(_cpir.caddie) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
-											+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o caddie equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
-								}
-							}
-						}
+						packet_func::room_broadcast(*this, p, 1);
 					}
 					break;
+				}
 				case ChangePlayerItemRoom::TYPE_CHANGE::TC_BALL:
-					if (grup_type == iff::BALL) {
+				{
 						WarehouseItemEx *pWi = nullptr;
 
 						if (_cpir.ball != 0 && (pWi = _session.m_pi.findWarehouseItemByTypeid(_cpir.ball)) != nullptr
-								&& sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::BALL) {
-
-							if (gp_condition->item_typeid != pWi->_typeid) {
-
-								// Procura a Ball que o player tem que ter para jogar esse Grand Prix
-								if ((pWi = _session.m_pi.findWarehouseItemByTypeid(gp_condition->item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::BALL) {
+							&& sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::BALL
+							&& checkBall(_session, &pWi, gp_condition) && pWi != nullptr) {
 
 									// Atualiza a bola equipado do player
 									_cpir.ball = pWi->_typeid;
@@ -155,39 +139,25 @@ void RoomGrandPrix::requestChangePlayerItemRoom(player& _session, ChangePlayerIt
 
 									// Update IN GAME
 									packet_func::pacote04B(p, &_session, ChangePlayerItemRoom::TYPE_CHANGE::TC_BALL, 0);
-									packet_func::room_broadcast(*this, p, 1);
-								
-								}else {
-									
-									// Player n�o tem a bola necess�rio para jogar esse Grand Prix, kick ele d� sala
-									_smp::message_pool::getInstance().push(new message("[RoomGrandPrix::requestChangePlayerItemRoom][WARNING] Player[UID=" + std::to_string(_session.m_pi.uid)
-											+ "] tentou trocar item[TYPEID=" + std::to_string(_cpir.ball) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
-											+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar a bola equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
-								}
-							}
-						}
+						packet_func::room_broadcast(*this, p, 1);
 					}
 					break;
+				}
 				case ChangePlayerItemRoom::TYPE_CHANGE::TC_CLUBSET:
-					if (grup_type == iff::CLUBSET) {
+				{
 						WarehouseItemEx *pWi = nullptr;
 
-						// ClubSet
 						if (_cpir.clubset != 0 && (pWi = _session.m_pi.findWarehouseItemById(_cpir.clubset)) != nullptr
-								&& sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::CLUBSET) {
-
-							if (gp_condition->item_typeid != pWi->_typeid) {
-
-								// Procura a ClubSet que o player tem que ter para jogar esse Grand Prix
-								if ((pWi = _session.m_pi.findWarehouseItemByTypeid(gp_condition->item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::CLUBSET) {
+							&& sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::CLUBSET
+							&& checkClubSet(_session, &pWi, gp_condition) && pWi != nullptr) {
 
 									// Atualiza o clubset equipado do player
 									_cpir.clubset = pWi->id;
 
 									_session.m_pi.ei.clubset = pWi;
 
-									// Esse C do WarehouseItem, que pega do DB, n�o � o ja updado inicial da taqueira � o que fica tabela enchant, 
-									// que no original fica no warehouse msm, eu s� confundi quando fiz
+						// Esse C do WarehouseItem, que pega do DB, não é o ja updado inicial da taqueira é o que fica tabela enchant, 
+						// que no original fica no warehouse msm, eu só confundi quando fiz
 									_session.m_pi.ei.csi = { pWi->id, pWi->_typeid, pWi->c };
 
 									IFF::ClubSet *cs = sIff::getInstance().findClubSet(pWi->_typeid);
@@ -202,30 +172,17 @@ void RoomGrandPrix::requestChangePlayerItemRoom(player& _session, ChangePlayerIt
 
 									// Update IN GAME
 									packet_func::pacote04B(p, &_session, ChangePlayerItemRoom::TYPE_CHANGE::TC_CLUBSET, 0);
-									packet_func::room_broadcast(*this, p, 1);
-								
-								}else {
-									
-									// Player n�o tem o clubset necess�rio para jogar esse Grand Prix, kick ele d� sala
-									_smp::message_pool::getInstance().push(new message("[RoomGrandPrix::requestChangePlayerItemRoom][WARNING] Player[UID=" + std::to_string(_session.m_pi.uid)
-											+ "] tentou trocar item[ID=" + std::to_string(_cpir.clubset) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
-											+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o ClubSet equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
-								}
-							}
-						}
+						packet_func::room_broadcast(*this, p, 1);
 					}
 					break;
+				}
 				case ChangePlayerItemRoom::TYPE_CHANGE::TC_CHARACTER:
-					if (grup_type == iff::CHARACTER) {
+				{
 						CharacterInfo *pCe = nullptr;
 
 						if (_cpir.character != 0 && (pCe = _session.m_pi.findCharacterById(_cpir.character)) != nullptr
-								&& sIff::getInstance().getItemGroupIdentify(pCe->_typeid) == iff::CHARACTER) {
-
-							if (gp_condition->item_typeid != pCe->_typeid) {
-
-								// Procura o character que o player tem que ter para jogar esse Grand Prix
-								if ((pCe = _session.m_pi.findCharacterByTypeid(gp_condition->item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pCe->_typeid) == iff::CHARACTER) {
+							&& sIff::getInstance().getItemGroupIdentify(pCe->_typeid) == iff::CHARACTER
+							&& checkCharacter(_session, &pCe, gp_condition) && pCe != nullptr) {
 
 									// Atualiza o character equipado do player
 									_cpir.character = pCe->id;
@@ -236,29 +193,16 @@ void RoomGrandPrix::requestChangePlayerItemRoom(player& _session, ChangePlayerIt
 									// Update IN GAME
 									packet_func::pacote06B(p, &_session, &_session.m_pi, 5/*Character ID only*/, 4/*Sucesso*/);
 									packet_func::session_send(p, &_session, 1);
-								
-								}else {
-									
-									// Player n�o tem o character necess�rio para jogar esse Grand Prix, kick ele d� sala
-									_smp::message_pool::getInstance().push(new message("[RoomGrandPrix::requestChangePlayerItemRoom][WARNING] Player[UID=" + std::to_string(_session.m_pi.uid)
-											+ "] tentou trocar item[ID=" + std::to_string(_cpir.character) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
-											+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o character equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
-								}
-							}
-						}
 					}
 					break;
+				}
 				case ChangePlayerItemRoom::TYPE_CHANGE::TC_MASCOT:
-					if (grup_type == iff::MASCOT) {
+				{
 						MascotInfoEx *pMi = nullptr;
 
 						if (_cpir.mascot != 0 && (pMi = _session.m_pi.findMascotById(_cpir.mascot)) != nullptr 
-								&& sIff::getInstance().getItemGroupIdentify(pMi->_typeid) == iff::MASCOT) {
-
-							if (gp_condition->item_typeid != pMi->_typeid) {
-
-								// Procura o mascot que o player tem que ter para jogar esse Grand Prix
-								if ((pMi = _session.m_pi.findMascotByTypeid(gp_condition->item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pMi->_typeid) == iff::MASCOT) {
+							&& sIff::getInstance().getItemGroupIdentify(pMi->_typeid) == iff::MASCOT
+							&& checkMascot(_session, &pMi, gp_condition) && pMi != nullptr) {
 
 									// Atualiza o mascot equipado do player
 									_cpir.mascot = pMi->id;
@@ -268,36 +212,26 @@ void RoomGrandPrix::requestChangePlayerItemRoom(player& _session, ChangePlayerIt
 
 									// Update IN GAME
 									packet_func::pacote04B(p, &_session, ChangePlayerItemRoom::TYPE_CHANGE::TC_MASCOT, 0);
-									packet_func::room_broadcast(*this, p, 1);
-								
-								}else {
-									
-									// Player n�o tem o mascot necess�rio para jogar esse Grand Prix, kick ele d� sala
-									_smp::message_pool::getInstance().push(new message("[RoomGrandPrix::requestChangePlayerItemRoom][WARNING] Player[UID=" + std::to_string(_session.m_pi.uid)
-											+ "] tentou trocar item[ID=" + std::to_string(_cpir.mascot) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
-											+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o mascot equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
-								}
-							}
-						}
+						packet_func::room_broadcast(*this, p, 1);
 					}
 					break;
-				case ChangePlayerItemRoom::TYPE_CHANGE::TC_ITEM_EFFECT_LOUNGE:
-					if (grup_type == iff::PART) {
-						// Esse n�o usa por que � s� no lounge que troca esse item ou ativa o efeito
 					}
+				case ChangePlayerItemRoom::TYPE_CHANGE::TC_ITEM_EFFECT_LOUNGE:
+					// Esse não usa por que é só no lounge que troca esse item ou ativa o efeito
 					break;
 				case ChangePlayerItemRoom::TYPE_CHANGE::TC_ALL:
 				{
-					if (grup_type == iff::CHARACTER) {
+
 						CharacterInfo *pCe = nullptr;
+					CaddieInfoEx *pCi = nullptr;
+					WarehouseItemEx *pWi = nullptr;
+
+					// Character
+					pCe = nullptr;
 
 						if (_cpir.character != 0 && (pCe = _session.m_pi.findCharacterById(_cpir.character)) != nullptr
-								&& sIff::getInstance().getItemGroupIdentify(pCe->_typeid) == iff::CHARACTER) {
-
-							if (gp_condition->item_typeid != pCe->_typeid) {
-
-								// Procura o character que o player tem que ter para jogar esse Grand Prix
-								if ((pCe = _session.m_pi.findCharacterByTypeid(gp_condition->item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pCe->_typeid) == iff::CHARACTER) {
+							&& sIff::getInstance().getItemGroupIdentify(pCe->_typeid) == iff::CHARACTER
+							&& checkCharacter(_session, &pCe, gp_condition) && pCe != nullptr) {
 
 									// Atualiza o character equipado do player
 									_cpir.character = pCe->id;
@@ -308,28 +242,14 @@ void RoomGrandPrix::requestChangePlayerItemRoom(player& _session, ChangePlayerIt
 									// Update IN GAME
 									packet_func::pacote06B(p, &_session, &_session.m_pi, 5/*Character ID only*/, 4/*Sucesso*/);
 									packet_func::session_send(p, &_session, 1);
-								
-								}else {
-									
-									// Player n�o tem o character necess�rio para jogar esse Grand Prix, kick ele d� sala
-									_smp::message_pool::getInstance().push(new message("[RoomGrandPrix::requestChangePlayerItemRoom][WARNING] Player[UID=" + std::to_string(_session.m_pi.uid)
-											+ "] tentou trocar item[ID=" + std::to_string(_cpir.character) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
-											+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o character equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
-								}
-							}
-						}
-
-					}else if (grup_type == iff::CADDIE) {
-						CaddieInfoEx *pCi = nullptr;
+					}
 
 						// Caddie
+					pCi = nullptr;
+
 						if (_cpir.caddie != 0 && (pCi = _session.m_pi.findCaddieById(_cpir.caddie)) != nullptr
-								&& sIff::getInstance().getItemGroupIdentify(pCi->_typeid) == iff::CADDIE) {
-
-							if (gp_condition->item_typeid != pCi->_typeid) {
-
-								// Procura o caddie que o player tem que ter para jogar esse Grand Prix
-								if ((pCi = _session.m_pi.findCaddieByTypeid(gp_condition->item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pCi->_typeid) == iff::CADDIE) {
+							&& sIff::getInstance().getItemGroupIdentify(pCi->_typeid) == iff::CADDIE
+							&& checkCaddie(_session, &pCi, gp_condition) && pCi != nullptr) {
 
 									// Atualiza o caddie equipado do player
 									_cpir.caddie = pCi->id;
@@ -339,37 +259,23 @@ void RoomGrandPrix::requestChangePlayerItemRoom(player& _session, ChangePlayerIt
 
 									// Update IN GAME
 									packet_func::pacote04B(p, &_session, ChangePlayerItemRoom::TYPE_CHANGE::TC_CADDIE, 0);
-									packet_func::room_broadcast(*this, p, 1);
-								
-								}else {
-									
-									// Player n�o tem o caddie necess�rio para jogar esse Grand Prix, kick ele d� sala
-									_smp::message_pool::getInstance().push(new message("[RoomGrandPrix::requestChangePlayerItemRoom][WARNING] Player[UID=" + std::to_string(_session.m_pi.uid)
-											+ "] tentou trocar item[ID=" + std::to_string(_cpir.caddie) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
-											+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o caddie equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
-								}
-							}
+						packet_func::room_broadcast(*this, p, 1);
 						}
 
-					}else if (grup_type == iff::CLUBSET) {
-						WarehouseItemEx *pWi = nullptr;
-
 						// ClubSet
+					pWi = nullptr;
+
 						if (_cpir.clubset != 0 && (pWi = _session.m_pi.findWarehouseItemById(_cpir.clubset)) != nullptr
-								&& sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::CLUBSET) {
-
-							if (gp_condition->item_typeid != pWi->_typeid) {
-
-								// Procura a ClubSet que o player tem que ter para jogar esse Grand Prix
-								if ((pWi = _session.m_pi.findWarehouseItemByTypeid(gp_condition->item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::CLUBSET) {
+							&& sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::CLUBSET
+							&& checkClubSet(_session, &pWi, gp_condition) && pWi != nullptr) {
 
 									// Atualiza o clubset equipado do player
 									_cpir.clubset = pWi->id;
 
 									_session.m_pi.ei.clubset = pWi;
 
-									// Esse C do WarehouseItem, que pega do DB, n�o � o ja updado inicial da taqueira � o que fica tabela enchant, 
-									// que no original fica no warehouse msm, eu s� confundi quando fiz
+						// Esse C do WarehouseItem, que pega do DB, não é o ja updado inicial da taqueira é o que fica tabela enchant, 
+						// que no original fica no warehouse msm, eu só confundi quando fiz
 									_session.m_pi.ei.csi = { pWi->id, pWi->_typeid, pWi->c };
 
 									IFF::ClubSet *cs = sIff::getInstance().findClubSet(pWi->_typeid);
@@ -384,28 +290,15 @@ void RoomGrandPrix::requestChangePlayerItemRoom(player& _session, ChangePlayerIt
 
 									// Update IN GAME
 									packet_func::pacote04B(p, &_session, ChangePlayerItemRoom::TYPE_CHANGE::TC_CLUBSET, 0);
-									packet_func::room_broadcast(*this, p, 1);
-								
-								}else {
-									
-									// Player n�o tem o clubset necess�rio para jogar esse Grand Prix, kick ele d� sala
-									_smp::message_pool::getInstance().push(new message("[RoomGrandPrix::requestChangePlayerItemRoom][WARNING] Player[UID=" + std::to_string(_session.m_pi.uid)
-											+ "] tentou trocar item[ID=" + std::to_string(_cpir.clubset) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
-											+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o ClubSet equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
-								}
-							}
+						packet_func::room_broadcast(*this, p, 1);
 						}
 
-					}else if (grup_type == iff::BALL) {
-						WarehouseItemEx *pWi = nullptr;
+					// Ball
+					pWi = nullptr;
 
 						if (_cpir.ball != 0 && (pWi = _session.m_pi.findWarehouseItemByTypeid(_cpir.ball)) != nullptr
-								&& sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::BALL) {
-
-							if (gp_condition->item_typeid != pWi->_typeid) {
-
-								// Procura a Ball que o player tem que ter para jogar esse Grand Prix
-								if ((pWi = _session.m_pi.findWarehouseItemByTypeid(gp_condition->item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::BALL) {
+							&& sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::BALL
+							&& checkBall(_session, &pWi, gp_condition) && pWi != nullptr) {
 
 									// Atualiza a bola equipado do player
 									_cpir.ball = pWi->_typeid;
@@ -415,26 +308,15 @@ void RoomGrandPrix::requestChangePlayerItemRoom(player& _session, ChangePlayerIt
 
 									// Update IN GAME
 									packet_func::pacote04B(p, &_session, ChangePlayerItemRoom::TYPE_CHANGE::TC_BALL, 0);
-									packet_func::room_broadcast(*this, p, 1);
-								
-								}else {
-									
-									// Player n�o tem a bola necess�rio para jogar esse Grand Prix, kick ele d� sala
-									_smp::message_pool::getInstance().push(new message("[RoomGrandPrix::requestChangePlayerItemRoom][WARNING] Player[UID=" + std::to_string(_session.m_pi.uid)
-											+ "] tentou trocar item[TYPEID=" + std::to_string(_cpir.ball) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
-											+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar a bola equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
-								}
-							}
-						}
-
+						packet_func::room_broadcast(*this, p, 1);
 					}
 					break;
 				}
 			}
 
-		} // fim do iff que verifica se o gp_condition � v�lido
+		} // fim do iff que verifica se o gp_condition é válido
 
-		// Chama o changePlayerItemRoom d� sala padr�o para fazer as altera��es
+		// Chama o changePlayerItemRoom dá sala padrão para fazer as alterações
 		room::requestChangePlayerItemRoom(_session, _cpir);
 
 	}catch (exception& e) {
@@ -446,7 +328,47 @@ void RoomGrandPrix::requestChangePlayerItemRoom(player& _session, ChangePlayerIt
 	}
 }
 
-// Game, esse aqui � s� para o Grand Prix ROOKIE(TUTO)
+void RoomGrandPrix::requestChangeItemSlot(player& _session, UserEquip& _ue) {
+
+	UserEquip* pUe = &_ue;
+
+	auto gp_condition = sIff::getInstance().findGrandPrixConditionEquip(m_gp.typeid_link);
+
+	if (!gp_condition.empty()) {
+
+		if (checkItemSlot(_session, &pUe, gp_condition) && pUe != nullptr) {
+
+			// Atualiza o item slot, troca o primeiro item do slot pelo item requerido
+#if defined(_WIN32)
+			memcpy_s(&_ue, sizeof(UserEquip), pUe, sizeof(UserEquip));
+#elif defined(__linux__)
+			memcpy(&_ue, pUe, sizeof(UserEquip));
+#endif
+		}
+
+	} // fim do iff que verifica se o gp_condition é válido
+}
+
+void RoomGrandPrix::requestChangeCharacter(player& _session, CharacterInfo& _ce) {
+
+	
+	CharacterInfo* pCe = &_ce;
+
+	auto gp_condition = sIff::getInstance().findGrandPrixConditionEquip(m_gp.typeid_link);
+
+	if (!gp_condition.empty()) {
+
+		if (checkCharacter(_session, &pCe, gp_condition) && pCe != nullptr) {
+
+			// Atualiza o character equipado do player
+			_session.m_pi.ei.char_info = pCe;
+			_session.m_pi.ue.character_id = pCe->id;
+
+		}
+	} // fim do iff que verifica se o gp_condition é válido
+}
+
+// Game, esse aqui é só para o Grand Prix ROOKIE(TUTO)
 bool RoomGrandPrix::requestStartGame(player& _session, packet *_packet) {
 	REQUEST_BEGIN("StartGame");
 
@@ -820,6 +742,670 @@ void RoomGrandPrix::count_down_to_start(int64_t _sec_to_start) {
 		// Libera a sala
 		unlock();
 	}
+}
+
+bool RoomGrandPrix::checkCaddie(player& _session, CaddieInfoEx** _pCi, std::vector< IFF::GrandPrixConditionEquip >& _gp_condition) {
+
+	if (_pCi == nullptr || *_pCi == nullptr)
+		return false;
+
+	bool ret = false;
+	CaddieInfoEx* pCi = *_pCi;
+	uint32_t changed_caddie_typeid = pCi->_typeid;
+	
+	std::vector< IFF::GrandPrixConditionEquip > all_caddie;
+	std::vector< IFF::GrandPrixConditionEquip >::iterator it_caddie;
+
+	std::copy_if(_gp_condition.begin(), _gp_condition.end(), std::back_inserter(all_caddie), [](auto& _el) {
+		return sIff::getInstance().getItemGroupIdentify(_el.item_typeid) == iff::CADDIE;
+	});
+
+	if (!all_caddie.empty() && !std::any_of(all_caddie.begin(), all_caddie.end(), [&pCi](auto& _el) -> bool {
+		return _el.item_typeid == pCi->_typeid;
+	})) {
+
+		it_caddie = std::find_if(all_caddie.begin(), all_caddie.end(), [&_session, &pCi](auto& _el) {
+			return (pCi = _session.m_pi.findCaddieByTypeid(_el.item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pCi->_typeid) == iff::CADDIE;
+		});
+
+		// Procura o caddie que o player tem que ter para jogar esse Grand Prix
+		if (it_caddie != all_caddie.end()) {
+
+			// Atualiza o caddie equipado do player
+			_session.m_pi.ei.cad_info = pCi;
+			_session.m_pi.ue.caddie_id = pCi->id;
+
+			ret = true;
+								
+		}else {
+									
+			// Player não tem o caddie necessário para jogar esse Grand Prix, kick ele dá sala
+			_smp::message_pool::getInstance().push(new message("Player[UID=" + std::to_string(_session.m_pi.uid)
+					+ "] tentou trocar item[ID=" + std::to_string(changed_caddie_typeid) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
+					+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o caddie equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+			*_pCi = nullptr;
+			ret = true;
+		}
+
+	} else if (all_caddie.empty()) { // Verifica caddie item
+
+		std::vector< IFF::GrandPrixConditionEquip > all_cad_item;
+		std::vector< IFF::GrandPrixConditionEquip >::iterator it_cad_item;
+
+		std::copy_if(_gp_condition.begin(), _gp_condition.end(), std::back_inserter(all_cad_item), [](auto& _el) {
+			return sIff::getInstance().getItemGroupIdentify(_el.item_typeid) == iff::CAD_ITEM;
+		});
+
+		if (!all_cad_item.empty() && !std::any_of(all_cad_item.begin(), all_cad_item.end(), [&pCi](auto& _el) -> bool {
+
+			uint32_t cad_typeid = (iff::CADDIE << 26) | sIff::getInstance().getCaddieIdentify(_el.item_typeid);
+
+			return pCi->_typeid == cad_typeid && pCi->parts_typeid == _el.item_typeid;
+		})) {
+
+			it_cad_item = std::find_if(all_cad_item.begin(), all_cad_item.end(), [&_session, &pCi](auto& _el) {
+
+				uint32_t cad_typeid = (iff::CADDIE << 26) | sIff::getInstance().getCaddieIdentify(_el.item_typeid);
+
+				return (pCi = _session.m_pi.findCaddieByTypeid(cad_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pCi->_typeid) == iff::CADDIE
+					&& pCi->parts_typeid == _el.item_typeid;
+			});
+
+			// Procura o caddie que o player tem que ter para jogar esse Grand Prix
+			if (it_cad_item != all_cad_item.end()) {
+
+				// Atualiza o caddie equipado do player
+				_session.m_pi.ei.cad_info = pCi;
+				_session.m_pi.ue.caddie_id = pCi->id;
+
+				ret = true;
+								
+			}else {
+									
+				// Player não tem o caddie necessário para jogar esse Grand Prix, kick ele dá sala
+				_smp::message_pool::getInstance().push(new message("Player[UID=" + std::to_string(_session.m_pi.uid)
+						+ "] tentou trocar item[ID=" + std::to_string(changed_caddie_typeid) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
+						+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o caddie equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+				*_pCi = nullptr;
+				ret = true;
+			}
+		}
+	}
+
+	return ret;
+}
+
+bool RoomGrandPrix::checkBall(player& _session, WarehouseItemEx** _pWi, std::vector< IFF::GrandPrixConditionEquip >& _gp_condition) {
+	
+	if (_pWi == nullptr || *_pWi == nullptr)
+		return false;
+
+	bool ret = false;
+	WarehouseItemEx* pWi = *_pWi;
+	uint32_t changed_ball_typeid = pWi->_typeid;
+
+	std::vector< IFF::GrandPrixConditionEquip > all_ball;
+	std::vector< IFF::GrandPrixConditionEquip >::iterator it_ball;
+
+	std::copy_if(_gp_condition.begin(), _gp_condition.end(), std::back_inserter(all_ball), [](auto& _el) {
+		return sIff::getInstance().getItemGroupIdentify(_el.item_typeid) == iff::BALL;
+	});
+
+	if (!all_ball.empty() && !std::any_of(all_ball.begin(), all_ball.end(), [&pWi](auto& _el) -> bool {
+		return _el.item_typeid == pWi->_typeid;
+	})) {
+
+		it_ball = std::find_if(all_ball.begin(), all_ball.end(), [&_session, &pWi](auto& _el) {
+			return (pWi = _session.m_pi.findWarehouseItemByTypeid(_el.item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::BALL;
+		});
+
+		// Procura a Ball que o player tem que ter para jogar esse Grand Prix
+		if (it_ball != all_ball.end()) {
+
+			// Atualiza a bola equipado do player
+			_session.m_pi.ei.comet = pWi;
+			_session.m_pi.ue.ball_typeid = pWi->_typeid;
+
+			ret = true;
+								
+		}else {
+									
+			// Player não tem a bola necessário para jogar esse Grand Prix, kick ele dá sala
+			_smp::message_pool::getInstance().push(new message("Player[UID=" + std::to_string(_session.m_pi.uid)
+					+ "] tentou trocar item[TYPEID=" + std::to_string(changed_ball_typeid) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
+					+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar a bola equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+			*_pWi = nullptr;
+			ret = true;
+		}
+	}
+
+	return ret;
+}
+
+bool RoomGrandPrix::checkClubSet(player& _session, WarehouseItemEx** _pWi, std::vector< IFF::GrandPrixConditionEquip >& _gp_condition) {
+	
+	if (_pWi == nullptr || *_pWi == nullptr)
+		return false;
+
+	bool ret = false;
+	WarehouseItemEx* pWi = *_pWi;
+	uint32_t changed_clubset_typeid = pWi->_typeid;
+
+	std::vector< IFF::GrandPrixConditionEquip > all_clubset;
+	std::vector< IFF::GrandPrixConditionEquip >::iterator it_clubset;
+
+	std::copy_if(_gp_condition.begin(), _gp_condition.end(), std::back_inserter(all_clubset), [](auto& _el) {
+		return sIff::getInstance().getItemGroupIdentify(_el.item_typeid) == iff::CLUBSET;
+	});
+
+	if (!all_clubset.empty() && !std::any_of(all_clubset.begin(), all_clubset.end(), [&pWi](auto& _el) -> bool {
+		return _el.item_typeid == pWi->_typeid;
+	})) {
+
+		it_clubset = std::find_if(all_clubset.begin(), all_clubset.end(), [&_session, &pWi](auto& _el) {
+			return (pWi = _session.m_pi.findWarehouseItemByTypeid(_el.item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::CLUBSET;
+		});
+
+		// Procura a ClubSet que o player tem que ter para jogar esse Grand Prix
+		if (it_clubset != all_clubset.end()) {
+
+			// Atualiza o clubset equipado do player
+			_session.m_pi.ei.clubset = pWi;
+
+			// Esse C do WarehouseItem, que pega do DB, não é o ja updado inicial da taqueira é o que fica tabela enchant, 
+			// que no original fica no warehouse msm, eu só confundi quando fiz
+			_session.m_pi.ei.csi = { pWi->id, pWi->_typeid, pWi->c };
+
+			IFF::ClubSet *cs = sIff::getInstance().findClubSet(pWi->_typeid);
+
+			if (cs != nullptr) {
+
+				for (auto j = 0u; j < (sizeof(_session.m_pi.ei.csi.enchant_c) / sizeof(short)); ++j)
+					_session.m_pi.ei.csi.enchant_c[j] = cs->slot[j] + pWi->clubset_workshop.c[j];
+
+				_session.m_pi.ue.clubset_id = pWi->id;
+			}
+
+			ret = true;
+								
+		}else {
+									
+			// Player não tem o clubset necessário para jogar esse Grand Prix, kick ele dá sala
+			_smp::message_pool::getInstance().push(new message("Player[UID=" + std::to_string(_session.m_pi.uid)
+					+ "] tentou trocar item[ID=" + std::to_string(changed_clubset_typeid) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
+					+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o ClubSet equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+			*_pWi = nullptr;
+			ret = true;
+		}
+	}
+
+	return ret;
+}
+
+bool RoomGrandPrix::checkCharacter(player& _session, CharacterInfo** _pCe, std::vector< IFF::GrandPrixConditionEquip >& _gp_condition) {
+	
+	if (_pCe == nullptr || *_pCe == nullptr)
+		return false;
+
+	bool ret = false;
+	CharacterInfo* pCe = *_pCe;
+	uint32_t changed_char_typeid = pCe->_typeid;
+
+	std::vector< IFF::GrandPrixConditionEquip > all_char;
+	std::vector< IFF::GrandPrixConditionEquip >::iterator it_char;
+
+	std::copy_if(_gp_condition.begin(), _gp_condition.end(), std::back_inserter(all_char), [](auto& _el) {
+		return sIff::getInstance().getItemGroupIdentify(_el.item_typeid) == iff::CHARACTER;
+	});
+
+	if (!all_char.empty() && !std::any_of(all_char.begin(), all_char.end(), [&pCe](auto& _el) -> bool {
+		return pCe->_typeid == _el.item_typeid;
+	})) {
+
+		it_char = std::find_if(all_char.begin(), all_char.end(), [&_session, &pCe](auto& _el) {
+			return (pCe = _session.m_pi.findCharacterByTypeid(_el.item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pCe->_typeid) == iff::CHARACTER;
+		});
+
+		// Procura o character que o player tem que ter para jogar esse Grand Prix
+		if (it_char != all_char.end()) {
+
+			// Atualiza o character equipado do player
+			_session.m_pi.ei.char_info = pCe;
+			_session.m_pi.ue.character_id = pCe->id;
+
+			ret = true;
+								
+		}else {
+									
+			// Player não tem o character necessário para jogar esse Grand Prix, kick ele dá sala
+			_smp::message_pool::getInstance().push(new message("Player[UID=" + std::to_string(_session.m_pi.uid)
+					+ "] tentou trocar item[ID=" + std::to_string(changed_char_typeid) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
+					+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o character equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+			*_pCe = nullptr;
+			ret = true;
+		}
+						
+	} else if (all_char.empty()) { // Verifica parts, auxparts, cards, hair e setitem
+
+		std::vector< IFF::GrandPrixConditionEquip > all_part;
+		std::vector< IFF::GrandPrixConditionEquip >::iterator it_part;
+
+		std::copy_if(_gp_condition.begin(), _gp_condition.end(), std::back_inserter(all_part), [](auto& _el) {
+			return sIff::getInstance().getItemGroupIdentify(_el.item_typeid) == iff::PART;
+		});
+
+		if (!all_part.empty() && !std::any_of(all_part.begin(), all_part.end(), [&pCe](auto& _el) {
+			return std::find(pCe->parts_typeid, LAST_ELEMENT_IN_ARRAY(pCe->parts_typeid), _el.item_typeid) != LAST_ELEMENT_IN_ARRAY(pCe->parts_typeid);
+		})) {
+
+			it_part = std::find_if(all_part.begin(), all_part.end(), [&_session, &pCe](auto& _el) {
+
+				uint32_t char_typeid = (iff::CHARACTER << 26) | sIff::getInstance().getItemCharIdentify(_el.item_typeid);
+
+				return (pCe = _session.m_pi.findCharacterByTypeid(char_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pCe->_typeid) == iff::CHARACTER
+					&& std::find(pCe->parts_typeid, LAST_ELEMENT_IN_ARRAY(pCe->parts_typeid), _el.item_typeid) != LAST_ELEMENT_IN_ARRAY(pCe->parts_typeid);
+			});
+
+			// Procura o character que o player tem que ter para jogar esse Grand Prix
+			if (it_part != all_part.end()) {
+
+				// Atualiza o character equipado do player
+				_session.m_pi.ei.char_info = pCe;
+				_session.m_pi.ue.character_id = pCe->id;
+
+				ret = true;
+								
+			}else {
+									
+				// Player não tem o character necessário para jogar esse Grand Prix, kick ele dá sala
+				_smp::message_pool::getInstance().push(new message("Player[UID=" + std::to_string(_session.m_pi.uid)
+						+ "] tentou trocar item[ID=" + std::to_string(changed_char_typeid) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
+						+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o character equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+				*_pCe = nullptr;
+				ret = true;
+			}
+
+		} else if (all_part.empty()) { // Verifica auxparts
+
+			std::vector< IFF::GrandPrixConditionEquip > all_auxpart;
+			std::vector< IFF::GrandPrixConditionEquip >::iterator it_auxpart;
+
+			std::copy_if(_gp_condition.begin(), _gp_condition.end(), std::back_inserter(all_auxpart), [](auto& _el) {
+				return sIff::getInstance().getItemGroupIdentify(_el.item_typeid) == iff::AUX_PART;
+			});
+
+			if (!all_auxpart.empty() && !std::any_of(all_auxpart.begin(), all_auxpart.end(), [&pCe](auto& _el) {
+				return std::find(pCe->auxparts, LAST_ELEMENT_IN_ARRAY(pCe->auxparts), _el.item_typeid) != LAST_ELEMENT_IN_ARRAY(pCe->auxparts);
+			})) {
+
+				it_auxpart = std::find_if(all_auxpart.begin(), all_auxpart.end(), [&_session, &pCe](auto& _el) {
+					return std::find_if(_session.m_pi.mp_ce.begin(), _session.m_pi.mp_ce.end(), [&_el, &pCe](auto& _el2) {
+
+						pCe = &_el2.second;
+
+						return std::find(pCe->auxparts, LAST_ELEMENT_IN_ARRAY(pCe->auxparts), _el.item_typeid) != LAST_ELEMENT_IN_ARRAY(pCe->auxparts);
+					}) != _session.m_pi.mp_ce.end();
+				});
+
+				// Procura o character que o player tem que ter para jogar esse Grand Prix
+				if (it_auxpart != all_auxpart.end()) {
+
+					// Atualiza o character equipado do player
+					_session.m_pi.ei.char_info = pCe;
+					_session.m_pi.ue.character_id = pCe->id;
+
+					ret = true;
+								
+				}else {
+									
+					// Player não tem o character necessário para jogar esse Grand Prix, kick ele dá sala
+					_smp::message_pool::getInstance().push(new message("Player[UID=" + std::to_string(_session.m_pi.uid)
+							+ "] tentou trocar item[ID=" + std::to_string(changed_char_typeid) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
+							+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o character equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+					*_pCe = nullptr;
+					ret = true;
+				}
+
+			} else if (all_auxpart.empty()) { // Verifica cards
+
+				std::vector< IFF::GrandPrixConditionEquip > all_card;
+				std::vector< IFF::GrandPrixConditionEquip >::iterator it_card;
+
+				std::copy_if(_gp_condition.begin(), _gp_condition.end(), std::back_inserter(all_card), [](auto& _el) {
+					return sIff::getInstance().getItemGroupIdentify(_el.item_typeid) == iff::CARD;
+				});
+
+				if (!all_card.empty() && !std::any_of(all_card.begin(), all_card.end(), [&pCe](auto& _el) {
+					return std::find(pCe->card_character, LAST_ELEMENT_IN_ARRAY(pCe->card_NPC), _el.item_typeid) != LAST_ELEMENT_IN_ARRAY(pCe->card_NPC);
+				})) {
+
+					it_card = std::find_if(all_card.begin(), all_card.end(), [&_session, &pCe](auto& _el) {
+						return std::find_if(_session.m_pi.mp_ce.begin(), _session.m_pi.mp_ce.end(), [&_el, &pCe](auto& _el2) {
+
+							pCe = &_el2.second;
+
+							return std::find(pCe->card_character, LAST_ELEMENT_IN_ARRAY(pCe->card_NPC), _el.item_typeid) != LAST_ELEMENT_IN_ARRAY(pCe->card_NPC);
+						}) != _session.m_pi.mp_ce.end();
+					});
+
+					// Procura o character que o player tem que ter para jogar esse Grand Prix
+					if (it_card != all_card.end()) {
+
+						// Atualiza o character equipado do player
+						_session.m_pi.ei.char_info = pCe;
+						_session.m_pi.ue.character_id = pCe->id;
+
+						ret = true;
+								
+					}else {
+									
+						// Player não tem o character necessário para jogar esse Grand Prix, kick ele dá sala
+						_smp::message_pool::getInstance().push(new message("Player[UID=" + std::to_string(_session.m_pi.uid)
+								+ "] tentou trocar item[ID=" + std::to_string(changed_char_typeid) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
+								+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o character equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+						*_pCe = nullptr;
+						ret = true;
+					}
+
+				}else if (all_card.empty()) { // hair
+
+					std::vector< IFF::GrandPrixConditionEquip > all_hair;
+					std::vector< IFF::GrandPrixConditionEquip >::iterator it_hair;
+
+					std::copy_if(_gp_condition.begin(), _gp_condition.end(), std::back_inserter(all_hair), [](auto& _el) {
+						return sIff::getInstance().getItemGroupIdentify(_el.item_typeid) == iff::HAIR_STYLE;
+					});
+
+					if (!all_hair.empty() && !std::any_of(all_hair.begin(), all_hair.end(), [&pCe](auto& _el) {
+
+						auto hair = sIff::getInstance().findHairStyle(_el.item_typeid);
+
+						uint32_t char_typeid = (iff::CHARACTER << 26) | hair->character;
+
+						return pCe->_typeid == char_typeid && pCe->default_hair == hair->cor;
+					})) {
+
+						it_hair = std::find_if(all_hair.begin(), all_hair.end(), [&_session, &pCe](auto& _el) {
+
+							auto hair = sIff::getInstance().findHairStyle(_el.item_typeid);
+
+							uint32_t char_typeid = (iff::CHARACTER << 26) | hair->character;
+
+							return (pCe = _session.m_pi.findCharacterByTypeid(char_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pCe->_typeid) == iff::CHARACTER
+								&& pCe->default_hair == hair->cor;
+						});
+
+						// Procura o character que o player tem que ter para jogar esse Grand Prix
+						if (it_hair != all_hair.end()) {
+
+							// Atualiza o character equipado do player
+							_session.m_pi.ei.char_info = pCe;
+							_session.m_pi.ue.character_id = pCe->id;
+
+							ret = true;
+								
+						}else {
+									
+							// Player não tem o character necessário para jogar esse Grand Prix, kick ele dá sala
+							_smp::message_pool::getInstance().push(new message("Player[UID=" + std::to_string(_session.m_pi.uid)
+									+ "] tentou trocar item[ID=" + std::to_string(changed_char_typeid) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
+									+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o character equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+							*_pCe = nullptr;
+							ret = true;
+						}
+
+					} else if (all_hair.empty()) { // Verifica setitem
+
+						std::vector< IFF::GrandPrixConditionEquip > all_setitem;
+						std::vector< IFF::GrandPrixConditionEquip >::iterator it_setitem;
+
+						std::copy_if(_gp_condition.begin(), _gp_condition.end(), std::back_inserter(all_setitem), [](auto& _el) {
+							return sIff::getInstance().getItemGroupIdentify(_el.item_typeid) == iff::SET_ITEM;
+						});
+
+						if (!all_setitem.empty() && !std::any_of(all_setitem.begin(), all_setitem.end(), [&_session, &pCe](auto& _el) {
+
+							auto setitem = sIff::getInstance().findSetItem(_el.item_typeid);
+
+							return setitem != nullptr && std::all_of(setitem->packege.item_typeid, LAST_ELEMENT_IN_ARRAY(setitem->packege.item_typeid), [&_session, &pCe](auto& _el2) {
+								
+								if (_el2 == 0)
+									return true;
+
+								uint32_t type = sIff::getInstance().getItemGroupIdentify(_el2);
+								uint32_t char_typeid = 0u;
+
+								if (type == iff::CHARACTER)
+									return pCe->_typeid == _el2;
+
+								if (type == iff::PART) {
+
+									char_typeid = (iff::CHARACTER << 26) | sIff::getInstance().getItemCharIdentify(_el2);
+
+									if (pCe->_typeid != char_typeid)
+										return false;
+
+									return std::any_of(pCe->parts_typeid, LAST_ELEMENT_IN_ARRAY(pCe->parts_typeid), [&_el2](auto& _el3) {
+										return _el2 == _el3;
+									});
+								}
+
+								if (type == iff::HAIR_STYLE) {
+
+									auto hair = sIff::getInstance().findHairStyle(_el2);
+
+									if (hair == nullptr)
+										return false;
+
+									char_typeid = (iff::CHARACTER << 26) | hair->character;
+
+									return pCe->_typeid == char_typeid && pCe->default_hair == hair->cor;
+								}
+
+								if (type == iff::AUX_PART)
+									return std::any_of(pCe->auxparts, LAST_ELEMENT_IN_ARRAY(pCe->auxparts), [&_el2](auto& _el3) {
+										return _el2 == _el3;
+									});
+
+								if (type == iff::CARD)
+									return std::any_of(pCe->card_character, LAST_ELEMENT_IN_ARRAY(pCe->card_NPC), [&_el2](auto& _el3) {
+										return _el2 == _el3;
+									});
+
+								return _session.m_pi.checkEquipedItem(_el2);
+							});
+						})) {
+
+							it_setitem = std::find_if(all_setitem.begin(), all_setitem.end(), [&_session, &pCe](auto& _el) {
+								return std::find_if(_session.m_pi.mp_ce.begin(), _session.m_pi.mp_ce.end(), [&_session, &pCe, &_el](auto& _el2) {
+
+									auto setitem = sIff::getInstance().findSetItem(_el.item_typeid);
+
+									pCe = &_el2.second;
+
+									return setitem != nullptr && std::all_of(setitem->packege.item_typeid, LAST_ELEMENT_IN_ARRAY(setitem->packege.item_typeid), [&_session, &pCe](auto& _el3) {
+								
+										if (_el3 == 0)
+											return true;
+
+										uint32_t type = sIff::getInstance().getItemGroupIdentify(_el3);
+										uint32_t char_typeid = 0u;
+
+										if (type == iff::CHARACTER)
+											return pCe->_typeid == _el3;
+
+										if (type == iff::PART) {
+
+											char_typeid = (iff::CHARACTER << 26) | sIff::getInstance().getItemCharIdentify(_el3);
+
+											if (pCe->_typeid != char_typeid)
+												return false;
+
+											return std::any_of(pCe->parts_typeid, LAST_ELEMENT_IN_ARRAY(pCe->parts_typeid), [&_el3](auto& _el4) {
+												return _el3 == _el4;
+											});
+										}
+
+										if (type == iff::HAIR_STYLE) {
+
+											auto hair = sIff::getInstance().findHairStyle(_el3);
+
+											if (hair == nullptr)
+												return false;
+
+											char_typeid = (iff::CHARACTER << 26) | hair->character;
+
+											return pCe->_typeid == char_typeid && pCe->default_hair == hair->cor;
+										}
+
+										if (type == iff::AUX_PART)
+											return std::any_of(pCe->auxparts, LAST_ELEMENT_IN_ARRAY(pCe->auxparts), [&_el3](auto& _el4) {
+												return _el3 == _el4;
+											});
+
+										if (type == iff::CARD)
+											return std::any_of(pCe->card_character, LAST_ELEMENT_IN_ARRAY(pCe->card_NPC), [&_el3](auto& _el4) {
+												return _el3 == _el4;
+											});
+
+										return _session.m_pi.checkEquipedItem(_el3);
+									});
+
+								}) != _session.m_pi.mp_ce.end();
+							});
+
+							// Procura o character que o player tem que ter para jogar esse Grand Prix
+							if (it_setitem != all_setitem.end()) {
+
+								// Atualiza o character equipado do player
+								_session.m_pi.ei.char_info = pCe;
+								_session.m_pi.ue.character_id = pCe->id;
+
+								ret = true;
+								
+							}else {
+									
+								// Player não tem o character necessário para jogar esse Grand Prix, kick ele dá sala
+								_smp::message_pool::getInstance().push(new message("Player[UID=" + std::to_string(_session.m_pi.uid)
+										+ "] tentou trocar item[ID=" + std::to_string(changed_char_typeid) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
+										+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o character equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+								*_pCe = nullptr;
+								ret = true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return ret;
+}
+
+bool RoomGrandPrix::checkMascot(player& _session, MascotInfoEx** _pMi, std::vector< IFF::GrandPrixConditionEquip >& _gp_condition) {
+	
+	if (_pMi == nullptr || *_pMi == nullptr)
+		return false;
+
+	bool ret = false;
+	MascotInfoEx* pMi = *_pMi;
+	uint32_t changed_mascot_typeid = pMi->_typeid;
+
+	std::vector< IFF::GrandPrixConditionEquip > all_mascot;
+	std::vector< IFF::GrandPrixConditionEquip >::iterator it_mascot;
+
+	std::copy_if(_gp_condition.begin(), _gp_condition.end(), std::back_inserter(all_mascot), [](auto& _el) {
+		return sIff::getInstance().getItemGroupIdentify(_el.item_typeid) == iff::MASCOT;
+	});
+
+	if (!all_mascot.empty() && !std::any_of(all_mascot.begin(), all_mascot.end(), [&pMi](auto& _el) -> bool {
+		return _el.item_typeid == pMi->_typeid;
+	})) {
+
+		it_mascot = std::find_if(all_mascot.begin(), all_mascot.end(), [&_session, &pMi](auto& _el) {
+			return (pMi = _session.m_pi.findMascotByTypeid(_el.item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pMi->_typeid) == iff::MASCOT;
+		});
+
+		// Procura o mascot que o player tem que ter para jogar esse Grand Prix
+		if (it_mascot != all_mascot.end()) {
+
+			// Atualiza o mascot equipado do player
+			_session.m_pi.ei.mascot_info = pMi;
+			_session.m_pi.ue.mascot_id = pMi->id;
+
+			ret = true;
+								
+		}else {
+									
+			// Player não tem o mascot necessário para jogar esse Grand Prix, kick ele dá sala
+			_smp::message_pool::getInstance().push(new message("Player[UID=" + std::to_string(_session.m_pi.uid)
+					+ "] tentou trocar item[ID=" + std::to_string(changed_mascot_typeid) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
+					+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o mascot equipada. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+			*_pMi = nullptr;
+			ret = true;
+		}
+	}
+
+	return ret;
+}
+
+bool RoomGrandPrix::checkItemSlot(player& _session, UserEquip** _pUe, std::vector< IFF::GrandPrixConditionEquip >& _gp_condition) {
+
+	if (_pUe == nullptr || *_pUe == nullptr)
+		return false;
+
+	bool ret = false;
+	UserEquip* pUe = *_pUe;
+
+	std::vector< IFF::GrandPrixConditionEquip > all_item_equipable;
+	std::vector< IFF::GrandPrixConditionEquip >::iterator it_item_equipable;
+
+	std::copy_if(_gp_condition.begin(), _gp_condition.end(), std::back_inserter(all_item_equipable), [](auto& _el) {
+		return sIff::getInstance().getItemGroupIdentify(_el.item_typeid) == iff::ITEM && sIff::getInstance().IsItemEquipable(_el.item_typeid);
+	});
+
+	if (!all_item_equipable.empty() && !std::any_of(all_item_equipable.begin(), all_item_equipable.end(), [&pUe](auto& _el) -> bool {
+		return std::find(pUe->item_slot, LAST_ELEMENT_IN_ARRAY(pUe->item_slot), _el.item_typeid) != LAST_ELEMENT_IN_ARRAY(pUe->item_slot);
+	})) {
+
+		WarehouseItemEx *pWi = nullptr;
+
+		it_item_equipable = std::find_if(all_item_equipable.begin(), all_item_equipable.end(), [&_session, &pWi](auto& _el) {
+			return (pWi = _session.m_pi.findWarehouseItemByTypeid(_el.item_typeid)) != nullptr && sIff::getInstance().getItemGroupIdentify(pWi->_typeid) == iff::ITEM && sIff::getInstance().IsItemEquipable(pWi->_typeid);
+		});
+
+		// Procura o item equipável que o player tem que ter para jogar esse Grand Prix
+		if (it_item_equipable != all_item_equipable.end()) {
+
+			// Atualiza o item slot, troca o primeiro item do slot pelo item requerido
+			pUe->item_slot[0] = pWi->_typeid;
+
+			ret = true;
+								
+		}else {
+									
+			// Player não tem o Item Equipável necessário para jogar esse Grand Prix, kick ele dá sala
+			_smp::message_pool::getInstance().push(new message("Player[UID=" + std::to_string(_session.m_pi.uid)
+					+ "] tentou trocar item[ID=" + std::to_string(all_item_equipable[0].item_typeid) + "] equipado na sala[NUMERO=" + std::to_string(m_ri.numero)
+					+ "] Grand Prix, mas a sala tem uma condicao que nao pode trocar o item equipado. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));
+
+			*_pUe = nullptr;
+			ret = true;
+		}
+	}
+
+	return ret;
 }
 
 // Static Help Check room is valid
