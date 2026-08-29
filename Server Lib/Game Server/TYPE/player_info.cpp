@@ -1499,11 +1499,11 @@ bool PlayerInfo::ownerSetItem(uint32_t _typeid) {
 	auto set = sIff::getInstance().findSetItem(_typeid);
 
 	if (set != nullptr) {
-		for (auto i = 0u; i < (sizeof(set->packege.item_typeid) / sizeof(set->packege.item_typeid[0])); ++i) {
+		for (auto i = 0u; i < (sizeof(set->package.item_typeid) / sizeof(set->package.item_typeid[0])); ++i) {
 			// Eleminar a verificação do character que ele só inclui se o player não tiver ele
 			// se ele tiver não faz diferença não anula o verificação do set
-			if (set->packege.item_typeid[i] != 0 && sIff::getInstance().getItemGroupIdentify(set->packege.item_typeid[i]) != iff::CHARACTER)
-				if (ownerItem(set->packege.item_typeid[i]))	// se tiver 1 item que seja não pode ganhar o set se não vai duplicar os itens, que ele tem
+			if (set->package.item_typeid[i] != 0 && sIff::getInstance().getItemGroupIdentify(set->package.item_typeid[i]) != iff::CHARACTER)
+				if (ownerItem(set->package.item_typeid[i]))	// se tiver 1 item que seja não pode ganhar o set se não vai duplicar os itens, que ele tem
 					return true;
 		}
 	}

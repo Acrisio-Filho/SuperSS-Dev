@@ -5,6 +5,7 @@
 #include "util_time.h"
 #include "exception.h"
 #include "../TYPE/stda_error.h"
+#include <cstring>
 
 using namespace stdA;
 
@@ -399,6 +400,23 @@ bool stdA::isSameDayNow(SYSTEMTIME& _st) {
 	GetLocalTime(&st);
 
 	return isSameDay(_st, st);
+}
+
+bool stdA::isWeekend(SYSTEMTIME* _st) {
+	
+	SYSTEMTIME st{ 0u };
+
+	if (_st != nullptr)
+#if defined(_WIN32)
+		memcpy_s(&st, sizeof(SYSTEMTIME), _st, sizeof(SYSTEMTIME));
+#elif defined(__linux__)
+		memcpy(&st, _st, sizeof(SYSTEMTIME));
+#endif
+	else
+		GetLocalTime(&st);
+	
+	// Domingo ou Sábado
+	return st.wDayOfWeek == 0u || st.wDayOfWeek == 6u;
 }
 
 bool stdA::isEmpty(SYSTEMTIME& _st) {

@@ -1176,7 +1176,7 @@ bool RoomGrandPrix::checkCharacter(player& _session, CharacterInfo** _pCe, std::
 
 							auto setitem = sIff::getInstance().findSetItem(_el.item_typeid);
 
-							return setitem != nullptr && std::all_of(setitem->packege.item_typeid, LAST_ELEMENT_IN_ARRAY(setitem->packege.item_typeid), [&_session, &pCe](auto& _el2) {
+							return setitem != nullptr && std::all_of(setitem->package.item_typeid, LAST_ELEMENT_IN_ARRAY(setitem->package.item_typeid), [&_session, &pCe](auto& _el2) {
 								
 								if (_el2 == 0)
 									return true;
@@ -1232,7 +1232,7 @@ bool RoomGrandPrix::checkCharacter(player& _session, CharacterInfo** _pCe, std::
 
 									pCe = &_el2.second;
 
-									return setitem != nullptr && std::all_of(setitem->packege.item_typeid, LAST_ELEMENT_IN_ARRAY(setitem->packege.item_typeid), [&_session, &pCe](auto& _el3) {
+									return setitem != nullptr && std::all_of(setitem->package.item_typeid, LAST_ELEMENT_IN_ARRAY(setitem->package.item_typeid), [&_session, &pCe](auto& _el3) {
 								
 										if (_el3 == 0)
 											return true;

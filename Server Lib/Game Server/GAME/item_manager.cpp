@@ -192,14 +192,14 @@ std::vector< stItem > item_manager::getItemOfSetItem(player& _session, uint32_t 
 		throw exception("[item_manager::getItemOfSetItem][Error] item[TYPEID=" + std::to_string(_typeid) 
 			+ "] nao foi encontrado. Player: " + std::to_string(_session.m_pi.uid), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_ITEM_MANAGER, 2, 0));
 
-	for (auto i = 0u; i < (sizeof(set_item->packege.item_typeid) / sizeof(set_item->packege.item_typeid[0])); ++i) {
-		if (set_item->packege.item_typeid[i] != 0) {
+	for (auto i = 0u; i < (sizeof(set_item->package.item_typeid) / sizeof(set_item->package.item_typeid[0])); ++i) {
+		if (set_item->package.item_typeid[i] != 0) {
 			item.clear();
 			bi.clear();
 
 			/*item.id = ~0u;
-			item._typeid = set_item->packege.item_typeid[i];
-			item.qntd = set_item->packege.item_qntd[i];
+			item._typeid = set_item->package.item_typeid[i];
+			item.qntd = set_item->package.item_qntd[i];
 
 			item.type = 2;
 
@@ -219,8 +219,8 @@ std::vector< stItem > item_manager::getItemOfSetItem(player& _session, uint32_t 
 			}*/
 
 			bi.id = -1;
-			bi._typeid = set_item->packege.item_typeid[i];
-			bi.qntd = set_item->packege.item_qntd[i];
+			bi._typeid = set_item->package.item_typeid[i];
+			bi.qntd = set_item->package.item_qntd[i];
 
 			initItemFromBuyItem(_session.m_pi, item, bi, _shop, 0, 0, _chk_level);
 
@@ -228,7 +228,7 @@ std::vector< stItem > item_manager::getItemOfSetItem(player& _session, uint32_t 
 				v_item.push_back(item);
 			else
 				throw exception("[item_manager::getItemOfSetItem][Error] erro ao inicializar item[TYPEID=" 
-					+ std::to_string(set_item->packege.item_typeid[i]) + "]. Player: " + std::to_string(_session.m_pi.uid), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_ITEM_MANAGER, 25, 0));
+					+ std::to_string(set_item->package.item_typeid[i]) + "]. Player: " + std::to_string(_session.m_pi.uid), STDA_MAKE_ERROR(STDA_ERROR_TYPE::_ITEM_MANAGER, 25, 0));
 		}
 	}
 
@@ -5843,11 +5843,11 @@ bool item_manager::ownerSetItem(uint32_t _uid, uint32_t _typeid) {
 	auto set = sIff::getInstance().findSetItem(_typeid);
 
 	if (set != nullptr) {
-		for (auto i = 0u; i < (sizeof(set->packege.item_typeid) / sizeof(set->packege.item_typeid[0])); ++i) {
+		for (auto i = 0u; i < (sizeof(set->package.item_typeid) / sizeof(set->package.item_typeid[0])); ++i) {
 			// Eleminar a verificação do character que ele só inclui se o player não tiver ele
 			// se ele tiver não faz diferença não anula o verificação do set
-			if (set->packege.item_typeid[i] != 0 && sIff::getInstance().getItemGroupIdentify(set->packege.item_typeid[i]) != iff::CHARACTER)
-				if (ownerItem(_uid, set->packege.item_typeid[i]))	// se tiver 1 item que seja não pode ganhar o set se não vai duplicar os itens, que ele tem
+			if (set->package.item_typeid[i] != 0 && sIff::getInstance().getItemGroupIdentify(set->package.item_typeid[i]) != iff::CHARACTER)
+				if (ownerItem(_uid, set->package.item_typeid[i]))	// se tiver 1 item que seja não pode ganhar o set se não vai duplicar os itens, que ele tem
 					return true;
 		}
 	}

@@ -110,6 +110,8 @@ namespace stdA {
 
 	bool isSameDayNow(SYSTEMTIME& _st);
 
+	bool isWeekend(SYSTEMTIME* _st = nullptr);
+
 	// Check is System Time Windows is empty
 	bool isEmpty(SYSTEMTIME& _st);
 }

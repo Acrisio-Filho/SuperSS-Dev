@@ -429,7 +429,7 @@ std::vector< IFF::AddonPart > iff::load_addon_part() {
 };
 
 std::map< uint32_t, IFF::ArtifactManaInfo > iff::load_artifact_mana_info() {
-	MAKE_UNZIP_MAP(uint32_t, IFF::ArtifactManaInfo, artifact_typeid, "iff::load_artifact_mana_info", "ArtifactManaInfo.iff");
+	MAKE_UNZIP_MAP(uint32_t, IFF::ArtifactManaInfo, _typeid, "iff::load_artifact_mana_info", "ArtifactManaInfo.iff");
 };
 
 std::vector< IFF::CaddieVoiceTable > iff::load_caddie_voice_table() {

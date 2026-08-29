@@ -1,7 +1,9 @@
 // IFF Manager.cpp : Este arquivo contém a função 'main'. A execução do programa começa e termina ali.
 //
 
+#if defined(_WIN32)
 #pragma pack(1)
+#endif
 
 #include "pch.h"
 #include <iostream>
@@ -11,16 +13,22 @@
 
 #include "../../Projeto IOCP/TYPE/set_se_exception_with_mini_dump.h"
 
+#if defined(_WIN32)
 #include <DbgHelp.h>
 
 #pragma comment(lib, "DbgHelp.lib")
+#elif defined(__linux__)
+#define _stricmp strcasecmp
+#endif
 
 using namespace stdA;
 
 int main(int argc, char* argv[]) {
 
+#if defined(_WIN32)
 	// SEH TRANLATER CATCH VIOLATION EXCEPTION
 	STDA_SET_SE_EXCEPTION;
+#endif
 
 	// Init Message_Pool Logs
 	_smp::message_pool::getInstance().reload_log_files();
@@ -174,7 +182,7 @@ int main(int argc, char* argv[]) {
 						common->shop.flag_shop.uFlagShop.us_flag_shop = el.second.shop.flag_shop.uFlagShop.us_flag_shop;
 						
 						// Desconto Shop
-						common->shop.desconto = el.second.shop.desconto;
+						common->shop.sale_price = el.second.shop.sale_price;
 						
 						// Preço Shop
 						common->shop.price = el.second.shop.price;
@@ -590,14 +598,14 @@ int main(int argc, char* argv[]) {
 
 					if (setitem != nullptr) {
 
-						for (auto i = 0ul; i < (sizeof(setitem->packege.item_typeid) / sizeof(setitem->packege.item_typeid[0])); ++i) {
+						for (auto i = 0ul; i < (sizeof(setitem->package.item_typeid) / sizeof(setitem->package.item_typeid[0])); ++i) {
 
-							if (setitem->packege.item_typeid[i] > 0ul && iff.getItemGroupIdentify(setitem->packege.item_typeid[i]) != iff::CHARACTER) {
+							if (setitem->package.item_typeid[i] > 0ul && iff.getItemGroupIdentify(setitem->package.item_typeid[i]) != iff::CHARACTER) {
 
-								auto common_item = iff.findCommomItem(setitem->packege.item_typeid[i]);
+								auto common_item = iff.findCommomItem(setitem->package.item_typeid[i]);
 
 								if (common_item != nullptr)
-									items.push_back({ setitem->packege.item_typeid[i], common_item->icon });
+									items.push_back({ setitem->package.item_typeid[i], common_item->icon });
 							}
 						}
 					}
@@ -1053,7 +1061,7 @@ int main(int argc, char* argv[]) {
 					
 					_smp::message_pool::getInstance().push(new message(std::string("Card Pack:\nTypeid: ") + std::to_string(el.second._typeid) + " (0x" 
 							+ hex_util::ltoaToHex(el.second._typeid) + ")\nName: " + std::string(el.second.name) + "\nPrice: " 
-							+ std::to_string(el.second.shop.price) + "\tDescPrice: " + std::to_string(el.second.shop.desconto)
+							+ std::to_string(el.second.shop.price) + "\tDescPrice: " + std::to_string(el.second.shop.sale_price)
 							+ "\nCP Shop: " + (el.second.shop.flag_shop.uFlagShop.stFlagShop.is_cash ? "CP" : "Pang")
 							+ " -\t Saleable: " + (el.second.shop.flag_shop.uFlagShop.stFlagShop.is_saleable ? "Yes" : "No")
 							+ " -\t Giftable: " + (el.second.shop.flag_shop.uFlagShop.stFlagShop.is_giftable ? "Yes" : "No")
@@ -1105,10 +1113,10 @@ int main(int argc, char* argv[]) {
 							if (el.second.tiki.tiki_pts == 0ul) {
 
 								el.second.tiki.tiki_pts = 1ul;
-								el.second.tiki.qnt_per_tikis_pts = (el.second.tiki.milage_pts != 0ul) ? 1000ul / el.second.tiki.milage_pts : 1ul;
+								el.second.tiki.qnt_per_tiki_pts = (el.second.tiki.milage_pts != 0ul) ? 1000ul / el.second.tiki.milage_pts : 1ul;
 
 							}else
-								el.second.tiki.qnt_per_tikis_pts = 1ul;
+								el.second.tiki.qnt_per_tiki_pts = 1ul;
 
 							update = true;
 						}
@@ -1246,14 +1254,14 @@ int main(int argc, char* argv[]) {
 
 					if (setitem != nullptr) {
 
-						for (auto i = 0ul; i < (sizeof(setitem->packege.item_typeid) / sizeof(setitem->packege.item_typeid[0])); ++i) {
+						for (auto i = 0ul; i < (sizeof(setitem->package.item_typeid) / sizeof(setitem->package.item_typeid[0])); ++i) {
 
-							if (setitem->packege.item_typeid[i] > 0ul && iff.getItemGroupIdentify(setitem->packege.item_typeid[i]) != iff::CHARACTER) {
+							if (setitem->package.item_typeid[i] > 0ul && iff.getItemGroupIdentify(setitem->package.item_typeid[i]) != iff::CHARACTER) {
 
-								auto common_item = iff.findCommomItem(setitem->packege.item_typeid[i]);
+								auto common_item = iff.findCommomItem(setitem->package.item_typeid[i]);
 
 								if (common_item != nullptr)
-									items.push_back({ setitem->packege.item_typeid[i], common_item->icon });
+									items.push_back({ setitem->package.item_typeid[i], common_item->icon });
 							}
 						}
 					}

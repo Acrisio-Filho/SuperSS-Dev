@@ -1961,7 +1961,7 @@ void Game::requestInitItemUsedGame(player& _session, PlayerGameInfo& _pgi) {
 		auto club = sIff::getInstance().findClubSet(ui.club._typeid);
 
 		if (club != nullptr)
-			ui.club.rate = club->work_shop.rate;
+			ui.club.rate = club->work_shop.mastery_rate;
 		else
 			_smp::message_pool::getInstance().push(new message("[Game::requestIniItemUsedGame][WARNING] player[UID=" + std::to_string(_session.m_pi.uid) + "] esta equipado com um ClubSet[TYPEID=" 
 					+ std::to_string(_session.m_pi.ei.csi._typeid) + ", ID=" + std::to_string(_session.m_pi.ei.csi.id) + "] que nao tem no IFF_STRUCT do Server. Hacker ou Bug", CL_FILE_LOG_AND_CONSOLE));

@@ -1,6 +1,6 @@
 // Arquivo iff_writer.cpp
 // Criado em 03/06/2019 as 19:48 por Acrisio
-// Implementa��o da classe iff_writer
+// Implementação da classe iff_writer
 
 #pragma pack(1)
 
@@ -41,14 +41,14 @@
 					break; \
 		} \
 \
-		/* Cabe��rio */ \
+		/* Cabeçário */ \
 		IFF::Head head{ 0 }; \
 \
 		/* External Attributes */ \
 		zip_uint8_t opsys; \
 		zip_uint32_t attr; \
 \
-		/* Encontrou o arquivo ele existe, abre para ler o cabe��rio */ \
+		/* Encontrou o arquivo ele existe, abre para ler o cabeçário */ \
 		if (index < num_entries) { \
 \
 			zip_file *file = zip_fopen_index(z, index, ZIP_FL_UNCHANGED); \
@@ -64,10 +64,10 @@
 \
 				zip_fread(file, (char*)&head, sizeof(IFF::Head)); \
 \
-				/* Fecha o file depois que pegou o cabe�ario */ \
+				/* Fecha o file depois que pegou o cabeçario */ \
 				zip_fclose(file); \
 \
-				/* Verifica a vers�o do cabe�alho */ \
+				/* Verifica a versão do cabeçalho */ \
 				if (head.version != IFF_VERSION/*13*/ || (head.count_element * sizeof(_type) + sizeof(IFF::Head)) != ZIP_GET_REAL_SIZE(st.size)) { \
 \
 					_smp::message_pool::getInstance().push(new message("[iff_writer::" + std::string((_method)) + "][Error] " + std::string((_iff_name))  \
@@ -97,7 +97,7 @@
 				return; \
 			} \
 \
-		}else {	/* N�o existe cria um cabe�ario e seta o file attributos */ \
+		}else {	/* Não existe cria um cabeçario e seta o file attributos */ \
 \
 			_smp::message_pool::getInstance().push(new message("[iff_writer::" + std::string((_method)) + "][Log] nao tinha o arquivo "  \
 					+ std::string((_iff_name)) + ", cria um novo.", CL_FILE_LOG_AND_CONSOLE)); \
@@ -378,7 +378,7 @@ void iff_writer::saveGrandPrixAIOptionalData() {
 }
 
 void iff_writer::saveGrandPrixConditionEquip() {
-	SAVE_IFF_MAP(IFF::GrandPrixConditionEquip, "saveGrandPrixConditionEquip", "GrandPrixConditionEquip.iff", m_grand_prix_condition_equip);
+	SAVE_IFF_VECTOR(IFF::GrandPrixConditionEquip, "saveGrandPrixConditionEquip", "GrandPrixConditionEquip.iff", m_grand_prix_condition_equip);
 }
 
 void iff_writer::saveGrandPrixData() {
@@ -430,7 +430,7 @@ void iff_writer::saveLevelUpPrizeItem() {
 }
 
 void iff_writer::saveNonVisibleItemTable() {
-	SAVE_IFF_MAP(IFF::NonVisibleItemTable, "saveNonVisibleItemTable", "NonVisibleItemTable.iff", m_non_visible_item_table);
+	SAVE_IFF_VECTOR(IFF::NonVisibleItemTable, "saveNonVisibleItemTable", "NonVisibleItemTable.iff", m_non_visible_item_table);
 }
 
 void iff_writer::savePointShop() {

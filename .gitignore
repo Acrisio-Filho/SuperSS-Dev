@@ -12,6 +12,7 @@ Server Lib/Linux Builds/*/game
 Server Lib/Linux Builds/*/login
 Server Lib/Linux Builds/*/msn
 Server Lib/Linux Builds/*/rank
+Server Lib/Linux Builds/*/iff
 
 *.filters
 *.user

@@ -90,6 +90,9 @@
 const unsigned int  angel_wings[]{ 134309888u, 134580224u, 134842368u, 135120896u, 135366656u, 135661568u, 135858176u, 136194048u, 136398848u, 136660992u, 137185294u, 137447424u, 138004480u };
 const unsigned int  gacha_angel_wings[]{ 134309903u, 134580239u, 134842383u, 135120911u, 135366671u, 135661583u, 135858191u, 136194063u, 136398863u, 136661007u, 136923153u, 137185284u, 137447436u, 138004492u };
 
+// Grand Prix Event Type Weekend(Final de semana)
+constexpr uint32_t kGrandPrixEventTypeWeekend = 2u;
+
 namespace stdA {
 
 #if defined(__linux__)
@@ -227,7 +230,8 @@ namespace stdA {
 
 			// 16 Bit unsigned short
 			for (auto i = 0u; i < 16u; ++i)
-				if ((grand_prix_event >> i) & 1)
+				if ((grand_prix_event >> i) & 1
+					&& ((i + 1) != kGrandPrixEventTypeWeekend || isWeekend()))
 					count++;
 
 			return count;
@@ -238,7 +242,8 @@ namespace stdA {
 
 			// 16 Bit unisgned short
 			for (auto i = 0u; i < 16u; ++i)
-				if ((grand_prix_event >> i) & 1)
+				if ((grand_prix_event >> i) & 1
+					&& ((i + 1) != kGrandPrixEventTypeWeekend || isWeekend()))
 					v_value.push_back(i + 1);
 
 			return v_value;
@@ -641,7 +646,7 @@ namespace stdA {
 
 			for (auto i = 0u; i < (sizeof(parts_typeid) / sizeof(parts_typeid[0])); ++i) {
 				if (parts_id[i] != 0 && (part = sIff::getInstance().findPart(parts_typeid[i])) != nullptr)
-					if (part->flag_caddie_card_slot)	// Tem um Part que Libera o terceiro Caddie Card Slot
+					if (part->caddie_slot)	// Tem um Part que Libera o terceiro Caddie Card Slot
 						return true;
 			}
 

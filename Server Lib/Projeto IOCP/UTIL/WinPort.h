@@ -141,6 +141,14 @@
     #define INVALID_HANDLE_VALUE -1
 #endif
 
+#ifndef FILE_ATTRIBUTE_HIDDEN
+    #define FILE_ATTRIBUTE_HIDDEN 0x00000002
+#endif
+
+#ifndef FILE_ATTRIBUTE_SYSTEM
+    #define FILE_ATTRIBUTE_SYSTEM 0x00000004  
+#endif
+
 inline timespec _milliseconds_to_timespec_clock_realtime(DWORD _dwMilliseconds) {
 
     timespec ts{ 0u };
